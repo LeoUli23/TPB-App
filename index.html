@@ -9,7 +9,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TPB">
 <link rel="manifest" href="manifest.webmanifest?v=3">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3">
+<link rel="apple-touch-icon-precomposed" sizes="180x180" href="apple-touch-icon.png?v=3">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3">
 <style>:root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>TPB Ensemble</title>
@@ -346,6 +348,8 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
 /* v4 · F-014: Tab-Beschriftung wächst nur begrenzt mit, damit alle Tabs passen */
 .tab { font-size: 12px; letter-spacing: 0; padding-inline: 0; }
 .tabbar { padding-left: max(4px, env(safe-area-inset-left, 0px)); padding-right: max(4px, env(safe-area-inset-right, 0px)); }
+.panel > p { margin: 0; }
+.panel > p b { font-weight: 600; }
 .fsbtns .fchip { flex: 1 1 0; text-align: center; padding-inline: 8px; }
 .fsbtns .fchip span { display: block; font-family: var(--font-display); line-height: 1; margin-bottom: 4px; color: var(--gold); }
 
@@ -387,8 +391,21 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
      Adresse eintragen, sobald sie feststeht (z. B. "https://leouli23.github.io/<Repository>/"). */
   var TOOLS = [
     { id: "buehne", title: "Bühnenplaner", sub: "Bühnenpläne je Programm", url: "https://leouli23.github.io/TPB-B-hnenplan/" },
-    { id: "instr", title: "Instrumentenübersicht", sub: "Schlagwerk-Disposition je Stück, wächst mit dem Notenarchiv", url: "https://leouli23.github.io/Untertitel-Studio/" }
+    { id: "instr", title: "Instrumentenübersicht", sub: "Schlagwerk-Disposition je Stück, wächst mit dem Notenarchiv", url: "https://leouli23.github.io/Untertitel-Studio/",
+      /* F-012: Nach dem Umbenennen des Repositorys gilt automatisch die neue Adresse */
+      urls: ["https://leouli23.github.io/TPB-Schlagwerk-Disposition/", "https://leouli23.github.io/Untertitel-Studio/"] }
   ];
+  function resolveTools() {
+    TOOLS.forEach(function (t) {
+      if (!t.urls || !window.fetch) return;
+      (function next(i) {
+        if (i >= t.urls.length) return;
+        fetch(t.urls[i], { method: "HEAD", cache: "no-store" }).then(function (res) {
+          if (res.ok) { t.url = t.urls[i]; } else { next(i + 1); }
+        }).catch(function () { /* nicht erreichbar: bisherige Adresse bleibt */ });
+      })(0);
+    });
+  }
   function toolById(id) { return TOOLS.filter(function (t) { return t.id === id; })[0]; }
 
   /* ---------- F-007: Leitung mit fünf Sparten ----------
@@ -689,13 +706,44 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     "</ul>";
   }
 
+  /* ---------- F-003: Hinweis zum Installieren, solange die App im Browser läuft ---------- */
+  var HINT_KEY = "tpb-install-hint";
+  var deferredPrompt = null;
+  function isStandalone() {
+    try { return navigator.standalone === true || window.matchMedia("(display-mode: standalone)").matches; } catch (e) { return false; }
+  }
+  function isIOS() {
+    var ua = navigator.userAgent || "";
+    return /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  }
+  function hintDismissed() { try { return localStorage.getItem(HINT_KEY) === "1"; } catch (e) { return false; } }
+  function installHint() {
+    if (isStandalone() || window.top !== window || hintDismissed()) return "";
+    var body;
+    if (deferredPrompt) {
+      body = "<p>Die App lässt sich direkt installieren, mit dem TPB-Logo auf dem Startbildschirm.</p>" +
+        '<div class="btns"><button type="button" class="btn primary" data-action="install">App installieren</button><button type="button" class="btn" data-action="hint-off">Später</button></div>';
+    } else if (isIOS()) {
+      body = "<p>In Safari unten auf Teilen tippen, dann „Zum Home-Bildschirm“. Kommst du über WhatsApp oder Mail, erst „In Safari öffnen“ wählen.</p>" +
+        '<div class="btns"><button type="button" class="btn" data-action="hint-off">Verstanden</button></div>';
+    } else {
+      return "";
+    }
+    return '<div class="panel"><p><b>Als App auf den Startbildschirm</b></p>' + body + "</div>";
+  }
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    try { render(); } catch (err) { /* noch nicht bereit */ }
+  });
+
   /* ---------- Screens ---------- */
   function screenStart() {
     var up = upcoming();
     var next = up.filter(function (p) { return p.status !== "idee"; }).slice(0, 3);
     var counts = { zugesagt: 0, planung: 0, idee: 0 };
     state.projects.forEach(function (p) { counts[p.status]++; });
-    var html = '<p class="banner">Klick-Prototyp: Termine laut eurer Übersicht vom 28.09.26, Rückmeldungen sind Beispiele. Änderungen bleiben nur auf diesem Gerät.</p>';
+    var html = installHint() + '<p class="banner">Klick-Prototyp: Termine laut eurer Übersicht vom 28.09.26, Rückmeldungen sind Beispiele. Änderungen bleiben nur auf diesem Gerät.</p>';
 
     if (state.role === "leitung") {
       var alerts = up.filter(function (p) { return p.status === "zugesagt" && staffing(p).state !== "gruen"; });
@@ -847,10 +895,10 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
       "<div><b>Planungstabellen je Projekt</b><span>Hotel, Reise, Programm; in der echten App hinter dem Login</span></div>" +
       "</div></section>" +
       '<section class="sec"><h2 class="sec-h">Als App installieren</h2><ol class="steps">' +
-      "<li>iPhone: Seite in Safari öffnen, Teilen tippen, „Zum Home-Bildschirm“ wählen.</li>" +
+      "<li>iPhone: Seite in Safari öffnen (Link aus WhatsApp oder Mail erst mit „In Safari öffnen“), unten Teilen tippen, „Zum Home-Bildschirm“ wählen. Dann erscheint das TPB-Logo als App-Symbol.</li>" +
       "<li>Android: Seite in Chrome öffnen, im Menü „App installieren“ wählen.</li>" +
       "<li>Neue Versionen kommen automatisch beim nächsten Öffnen.</li></ol></section>" +
-      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 4 · Stand 27.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
+      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 5 · Stand 27.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
       '<div class="btns"><button type="button" class="btn" id="reset" data-action="reset">Beispieldaten zurücksetzen</button></div></section>';
   }
 
@@ -1079,6 +1127,12 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     else if (a === "role") { state.role = v; }
     else if (a === "filter") { state.filter = v; }
     else if (a === "fs") { state.fs = v; applyFont(); }
+    else if (a === "hint-off") { try { localStorage.setItem(HINT_KEY, "1"); } catch (err) { /* nur in diesem Fenster */ } }
+    else if (a === "install" && deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function () { deferredPrompt = null; render(); });
+      return;
+    }
     else if (a === "respond" && p) {
       var cur = resp(p, state.me);
       p.resp[state.me] = cur.r === v ? { r: "offen" } : { r: v };
@@ -1138,6 +1192,7 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
 
   applyFont();
   render();
+  resolveTools();
   /* Geänderte iPhone-Textgröße beim Zurückkehren in die App übernehmen */
   document.addEventListener("visibilitychange", function () { if (!document.hidden) applyFont(); });
 
