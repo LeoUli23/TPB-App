@@ -30,14 +30,14 @@
   --raise: #1d1a15;
   --housing: #080706;
   --rule: #2c281f;
-  --text: #efe8d8;
-  --muted: #aaa08b;
-  --faint: #756d5c;
+  --text: #fbf8f1;
+  --muted: #c8bfab;
+  --faint: #a1977f;
   --gold: #c9a95c;
   --gold-hi: #d8ae3d;
   --on-gold: #15110a;
   --plan: #84abcd;
-  --idee: #9d9585;
+  --idee: #b3aa97;
   --klaer: #b99aea;
   --st-rot: #ff5b4f;
   --st-gelb: #ffbd3a;
@@ -47,9 +47,9 @@
   --font-display: "Bodoni Moda", "Bodoni 72", Didot, Georgia, serif;
   --font-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --step--2: 0.6875rem;
-  --step--1: 0.8125rem;
-  --step-0: 0.9375rem;
+  --step--2: 0.75rem;
+  --step--1: 0.875rem;
+  --step-0: 1rem;
   --step-1: 1.125rem;
   --step-2: 1.5rem;
   --step-3: 2rem;
@@ -128,7 +128,7 @@ button { font-family: inherit; }
 .pc-date { display: block; margin-top: 3px; color: var(--muted); font-size: var(--step--1); font-variant-numeric: tabular-nums; }
 .pc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .pc-side { display: grid; justify-items: end; gap: 4px; color: var(--muted); font: 500 0.75rem/1.2 var(--font-data); font-variant-numeric: tabular-nums; text-align: right; }
-.lock { display: inline-flex; align-items: center; gap: 5px; color: var(--faint); font: 500 0.6875rem/1.2 var(--font-data); }
+.lock { display: inline-flex; align-items: center; gap: 5px; color: var(--faint); font: 500 0.75rem/1.2 var(--font-data); }
 .lock svg { flex: none; }
 
 /* Attention rows */
@@ -167,7 +167,7 @@ button { font-family: inherit; }
 .day + .day { border-top: 1px solid var(--rule); }
 .day-date { color: var(--muted); font: 500 0.75rem/1.4 var(--font-data); font-variant-numeric: tabular-nums; }
 .day-body { min-width: 0; }
-.day-type { display: block; color: var(--faint); font: 500 0.625rem/1.3 var(--font-data); letter-spacing: 0.14em; text-transform: uppercase; }
+.day-type { display: block; color: var(--faint); font: 500 0.75rem/1.3 var(--font-data); letter-spacing: 0.14em; text-transform: uppercase; }
 .day-text { display: block; font-weight: 500; overflow-wrap: anywhere; }
 .day-place { display: block; color: var(--muted); font-size: var(--step--1); overflow-wrap: anywhere; }
 .day.is-konzert .day-type { color: var(--gold); }
@@ -182,7 +182,7 @@ button.seat { cursor: pointer; }
 .seat.mine { background: color-mix(in srgb, var(--gold) 8%, transparent); }
 .seat-name { font-weight: 500; }
 .seat-sub { display: block; color: var(--muted); font-size: 0.75rem; }
-.pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; border: 1px solid var(--rule); font: 500 0.6875rem/1 var(--font-data); white-space: nowrap; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; border: 1px solid var(--rule); font: 500 0.75rem/1 var(--font-data); white-space: nowrap; }
 .pill.ja { color: var(--st-gruen); border-color: color-mix(in srgb, var(--st-gruen) 45%, var(--rule)); }
 .pill.nein { color: var(--st-rot); border-color: color-mix(in srgb, var(--st-rot) 45%, var(--rule)); }
 .pill.offen { color: var(--muted); }
@@ -216,10 +216,10 @@ button.seat { cursor: pointer; }
   padding-left: max(8px, env(safe-area-inset-left, 0px));
   padding-right: max(8px, env(safe-area-inset-right, 0px));
 }
-.tab { appearance: none; border: 0; background: none; color: var(--faint); display: grid; justify-items: center; gap: 3px; padding: 6px 2px; font: 600 0.625rem/1.1 var(--font-ui); letter-spacing: 0.02em; cursor: pointer; position: relative; }
+.tab { appearance: none; border: 0; background: none; color: var(--faint); display: grid; justify-items: center; gap: 3px; padding: 6px 2px; font: 600 0.75rem/1.1 var(--font-ui); letter-spacing: 0.02em; cursor: pointer; position: relative; }
 .tab[aria-current="page"] { color: var(--gold); }
 .tab svg { width: 22px; height: 22px; }
-.badge { position: absolute; top: 1px; left: calc(50% + 6px); min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--st-rot); color: var(--on-gold); font: 600 0.625rem/16px var(--font-ui); text-align: center; }
+.badge { position: absolute; top: 0; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--st-rot); color: var(--on-gold); font: 600 0.75rem/18px var(--font-ui); text-align: center; }
 
 /* Sheet and toast */
 .scrim { position: fixed; inset: 0; z-index: 20; background: var(--scrim); }
@@ -322,13 +322,13 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
 .tile-ico svg { width: 22px; height: 22px; }
 .tile b { display: block; font-weight: 600; line-height: 1.3; }
 .tile .tile-sub { display: block; color: var(--muted); font-size: var(--step--1); line-height: 1.35; margin-top: 2px; }
-.tile .tile-count { display: block; margin-top: 6px; color: var(--faint); font: 500 0.6875rem/1.2 var(--font-data); letter-spacing: 0.04em; }
+.tile .tile-count { display: block; margin-top: 6px; color: var(--faint); font: 500 0.75rem/1.2 var(--font-data); letter-spacing: 0.04em; }
 .files { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
 .file { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 14px; }
 .file + .file { border-top: 1px solid var(--rule); }
 .file b { display: block; font-weight: 500; overflow-wrap: anywhere; }
 .file span.sub { display: block; color: var(--faint); font-size: 0.75rem; }
-.ftype { min-width: 38px; padding: 4px 0; border-radius: 6px; border: 1px solid var(--rule); color: var(--muted); font: 500 0.625rem/1 var(--font-data); letter-spacing: 0.08em; text-align: center; }
+.ftype { min-width: 38px; padding: 4px 0; border-radius: 6px; border: 1px solid var(--rule); color: var(--muted); font: 500 0.75rem/1 var(--font-data); letter-spacing: 0.08em; text-align: center; }
 .stage { display: inline-flex; align-items: center; gap: 6px; }
 .stage.intern { color: var(--klaer); }
 .stage.ensemble { color: var(--st-gruen); }
@@ -342,6 +342,12 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
   border: 0; border-block: 1px solid var(--rule); background: var(--ink);
 }
 @media (min-width: 41rem) { .toolframe { width: 100%; margin-inline: 0; border: 1px solid var(--rule); border-radius: 14px; } }
+
+/* v4 · F-014: Tab-Beschriftung wächst nur begrenzt mit, damit alle Tabs passen */
+.tab { font-size: 12px; letter-spacing: 0; padding-inline: 0; }
+.tabbar { padding-left: max(4px, env(safe-area-inset-left, 0px)); padding-right: max(4px, env(safe-area-inset-right, 0px)); }
+.fsbtns .fchip { flex: 1 1 0; text-align: center; padding-inline: 8px; }
+.fsbtns .fchip span { display: block; font-family: var(--font-display); line-height: 1; margin-bottom: 4px; color: var(--gold); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
@@ -528,14 +534,38 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
   }
 
   /* ---------- State ---------- */
-  function fresh() { return { role: "leitung", me: "sz1", tab: "start", pid: null, view: null, filter: "alle", projects: seed() }; }
+  function fresh() { return { role: "leitung", me: "sz1", tab: "start", pid: null, view: null, filter: "alle", fs: "1", projects: seed() }; }
   var state;
   try { state = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { state = null; }
   if (!state || !Array.isArray(state.projects)) state = fresh();
+  if (!state.fs) state.fs = "1";
   /* Beim Start immer auf der Übersicht des Tabs beginnen */
   state.pid = null;
   state.view = null;
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* nur in diesem Fenster */ } }
+
+  /* ---------- F-014: Schriftgröße ----------
+     Grundlage ist die Textgröße aus den iPhone-Einstellungen (wo verfügbar),
+     darauf kommt die Stufe aus der App. */
+  var FS = [["1", "Normal", "1rem"], ["1.15", "Größer", "1.2rem"], ["1.3", "Groß", "1.4rem"]];
+  function systemBase() {
+    var base = 16;
+    try {
+      if (window.CSS && CSS.supports && CSS.supports("font", "-apple-system-body")) {
+        var d = document.createElement("div");
+        d.style.cssText = "position:absolute;visibility:hidden;font:-apple-system-body";
+        document.body.appendChild(d);
+        var v = parseFloat(getComputedStyle(d).fontSize);
+        d.parentNode.removeChild(d);
+        if (v > 0) base = v * 16 / 17; /* iPhone-Standard 17 px entspricht 16 px */
+      }
+    } catch (e) { /* ohne Systemwert bleibt 16 px */ }
+    return base;
+  }
+  function applyFont() {
+    var px = Math.min(systemBase() * (parseFloat(state.fs) || 1), 26);
+    document.documentElement.style.fontSize = (Math.round(px * 100) / 100) + "px";
+  }
 
   /* ---------- Helpers ---------- */
   var $ = function (s) { return document.querySelector(s); };
@@ -804,7 +834,11 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
           return s.files.filter(function (f) { return f.s === "ensemble"; }).map(function (f) { return fileRow(f, s.title); }).join("");
         }).join("") + '</ul><p class="note">Beispiele. Hier erscheint, was eine Sparte fürs Ensemble freigibt.</p></section>';
     }
-    return shared + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
+    var fsSec = '<section class="sec"><h2 class="sec-h">Schriftgröße</h2><div class="filters fsbtns" role="group" aria-label="Schriftgröße">' +
+      FS.map(function (f) {
+        return '<button type="button" class="fchip" data-action="fs" data-v="' + f[0] + '" aria-pressed="' + (state.fs === f[0]) + '"><span style="font-size:' + f[2] + '">A</span>' + f[1] + "</button>";
+      }).join("") + '</div><p class="note">Gilt für dieses Gerät. Zusätzlich übernimmt die App die Textgröße aus den iPhone-Einstellungen (Anzeige &amp; Helligkeit → Textgröße).</p></section>';
+    return fsSec + shared + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
       TOOLS.map(function (t) {
         return '<button type="button" class="row" data-action="tool" data-v="' + t.id + '"><span><b>' + esc(t.title) + "</b><span>" + esc(t.sub) + "</span></span></button>";
       }).join("") +
@@ -816,7 +850,7 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
       "<li>iPhone: Seite in Safari öffnen, Teilen tippen, „Zum Home-Bildschirm“ wählen.</li>" +
       "<li>Android: Seite in Chrome öffnen, im Menü „App installieren“ wählen.</li>" +
       "<li>Neue Versionen kommen automatisch beim nächsten Öffnen.</li></ol></section>" +
-      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 3 · Stand 27.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
+      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 4 · Stand 27.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
       '<div class="btns"><button type="button" class="btn" id="reset" data-action="reset">Beispieldaten zurücksetzen</button></div></section>';
   }
 
@@ -940,7 +974,7 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     var tabs = TABS.filter(function (t) { return lead || !t[3]; });
     $("#tabbar").style.gridTemplateColumns = "repeat(" + tabs.length + ", minmax(0, 1fr))";
     $("#tabbar").innerHTML = tabs.map(function (t) {
-      var label = t[0] === "meine" ? (lead ? "Erinnern" : "Rückmeldung") : t[1];
+      var label = t[0] === "meine" ? (lead ? "Erinnern" : "Zusagen") : t[1];
       var cur = state.tab === t[0];
       return '<button type="button" class="tab" data-action="tab" data-v="' + t[0] + '"' + (cur ? ' aria-current="page"' : "") + ">" +
         '<svg viewBox="0 0 24 24" aria-hidden="true">' + t[2] + "</svg>" + label +
@@ -1044,6 +1078,7 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     }
     else if (a === "role") { state.role = v; }
     else if (a === "filter") { state.filter = v; }
+    else if (a === "fs") { state.fs = v; applyFont(); }
     else if (a === "respond" && p) {
       var cur = resp(p, state.me);
       p.resp[state.me] = cur.r === v ? { r: "offen" } : { r: v };
@@ -1084,9 +1119,9 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     else if (a === "close") { closeSheet(); return; }
     else if (a === "reset") {
       if (el.getAttribute("data-armed") !== "1") { el.setAttribute("data-armed", "1"); el.textContent = "Wirklich zurücksetzen?"; return; }
-      var role = state.role, me = state.me;
+      var role = state.role, me = state.me, fs = state.fs;
       state = fresh();
-      state.role = role; state.me = me; state.tab = "infos";
+      state.role = role; state.me = me; state.fs = fs; state.tab = "infos";
       toast("Beispieldaten zurückgesetzt.");
     }
     else return;
@@ -1101,7 +1136,10 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
   $("#scrim").addEventListener("click", closeSheet);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("#sheet").hidden) closeSheet(); });
 
+  applyFont();
   render();
+  /* Geänderte iPhone-Textgröße beim Zurückkehren in die App übernehmen */
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) applyFont(); });
 
   /* Als installierte Web-App: Offline-Cache und automatische Updates */
   try {
