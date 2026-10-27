@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c0b09">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TPB">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<style>:root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>TPB Ensemble</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=IBM+Plex+Mono:wght@500&family=Instrument+Sans:wght@400;500;600&display=swap">
+</head>
+<body>
+<style>
+/* Layout: a phone app shell. Large Bodoni title at the top, content as quiet bands,
+   a fixed tab bar at the bottom. Gold marks what is fixed, blue what is planned,
+   violet what is still in Klärung and locked. Single dark look on purpose: TPB is gold on black. */
+:root {
+  color-scheme: dark;
+  --ink: #0c0b09;
+  --band: #15130f;
+  --raise: #1d1a15;
+  --housing: #080706;
+  --rule: #2c281f;
+  --text: #efe8d8;
+  --muted: #aaa08b;
+  --faint: #756d5c;
+  --gold: #c9a95c;
+  --gold-hi: #d8ae3d;
+  --on-gold: #15110a;
+  --plan: #84abcd;
+  --idee: #9d9585;
+  --klaer: #b99aea;
+  --st-rot: #ff5b4f;
+  --st-gelb: #ffbd3a;
+  --st-gruen: #43d18c;
+  --lamp-off: #2e2a21;
+  --scrim: rgba(5, 4, 3, 0.72);
+  --font-display: "Bodoni Moda", "Bodoni 72", Didot, Georgia, serif;
+  --font-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --step--2: 0.6875rem;
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.125rem;
+  --step-2: 1.5rem;
+  --step-3: 2rem;
+}
+html, body { background: var(--ink); }
+body {
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--step-0);
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 calc(88px + env(safe-area-inset-bottom, 0px));
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ink); }
+.wrap { max-width: 40rem; margin-inline: auto; }
+a { color: var(--gold-hi); text-underline-offset: 2px; }
+button { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* Top */
+.top { display: grid; gap: 4px; padding-block: 18px 6px; }
+.top-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.eyebrow { margin: 0; font: 500 var(--step--2)/1.2 var(--font-data); letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+.roles { display: inline-flex; padding: 2px; border: 1px solid var(--rule); border-radius: 999px; }
+.roles button { appearance: none; border: 0; background: none; color: var(--muted); font: 600 0.75rem/1 var(--font-ui); padding: 7px 11px; border-radius: 999px; cursor: pointer; }
+.roles button[aria-pressed="true"] { background: var(--gold); color: var(--on-gold); }
+.top h1 { margin: 6px 0 0; font-family: var(--font-display); font-weight: 500; font-size: var(--step-3); line-height: 1.08; text-wrap: balance; }
+.me { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: var(--step--1); }
+.me select { appearance: none; border: 1px solid var(--rule); border-radius: 8px; background: var(--band); color: var(--text); font: 500 var(--step--1)/1 var(--font-ui); padding: 7px 10px; }
+.back { appearance: none; border: 0; background: none; color: var(--gold); font: 600 var(--step--1)/1 var(--font-ui); padding: 8px 0; cursor: pointer; justify-self: start; }
+
+/* Blocks */
+.screen { display: grid; gap: 22px; padding-block: 10px 8px; }
+.sec { display: grid; gap: 10px; }
+.sec-h { margin: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font: 500 var(--step--2)/1.2 var(--font-data); letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
+.note { margin: 0; color: var(--muted); font-size: var(--step--1); }
+.banner { margin: 0; padding: 10px 12px; border: 1px dashed var(--rule); border-radius: 12px; color: var(--muted); font-size: var(--step--1); }
+.tally { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: var(--step--1); }
+.tally b { color: var(--text); font-variant-numeric: tabular-nums; }
+
+/* Chips and dots */
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.dot.zugesagt { background: var(--gold); }
+.dot.planung { background: var(--plan); }
+.dot.idee { background: transparent; border: 1.5px solid var(--idee); width: 7px; height: 7px; }
+.dot.klaer { background: var(--klaer); }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--rule); font: 500 var(--step--2)/1 var(--font-data); letter-spacing: 0.02em; color: var(--muted); white-space: nowrap; }
+.chip.zugesagt { color: var(--gold); border-color: color-mix(in srgb, var(--gold) 45%, var(--rule)); }
+.chip.planung { color: var(--plan); border-color: color-mix(in srgb, var(--plan) 45%, var(--rule)); }
+.chip.idee { color: var(--idee); border-style: dashed; }
+.chip.klaer { color: var(--klaer); border-color: color-mix(in srgb, var(--klaer) 50%, var(--rule)); border-style: dashed; }
+.legend { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 0.75rem; }
+.legend li { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Ampel (shared look with the To-do-Map) */
+.housing { display: inline-grid; gap: 3px; justify-items: center; width: 18px; padding: 4px 0; border-radius: 9px; background: var(--housing); border: 1px solid var(--rule); flex: none; }
+.lamp { width: 9px; height: 9px; border-radius: 50%; background: var(--lamp-off); }
+.housing.rot .l-rot { background: var(--st-rot); box-shadow: 0 0 8px color-mix(in srgb, var(--st-rot) 65%, transparent); }
+.housing.gelb .l-gelb { background: var(--st-gelb); box-shadow: 0 0 8px color-mix(in srgb, var(--st-gelb) 65%, transparent); }
+.housing.gruen .l-gruen { background: var(--st-gruen); box-shadow: 0 0 8px color-mix(in srgb, var(--st-gruen) 65%, transparent); }
+.housing.big { width: 26px; gap: 5px; padding: 6px 0; border-radius: 13px; }
+.housing.big .lamp { width: 13px; height: 13px; }
+
+/* Project cards */
+.list { display: grid; gap: 8px; }
+.pcard {
+  appearance: none; width: 100%; text-align: left; color: inherit; cursor: pointer;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  padding: 14px; background: var(--band); border: 1px solid var(--rule); border-radius: 14px;
+}
+.pcard.s-idee { background: transparent; border-style: dashed; }
+.pc-title { display: flex; align-items: center; gap: 8px; font-weight: 600; line-height: 1.3; }
+.pc-date { display: block; margin-top: 3px; color: var(--muted); font-size: var(--step--1); font-variant-numeric: tabular-nums; }
+.pc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.pc-side { display: grid; justify-items: end; gap: 4px; color: var(--muted); font: 500 0.75rem/1.2 var(--font-data); font-variant-numeric: tabular-nums; text-align: right; }
+.lock { display: inline-flex; align-items: center; gap: 5px; color: var(--faint); font: 500 0.6875rem/1.2 var(--font-data); }
+.lock svg { flex: none; }
+
+/* Attention rows */
+.alert {
+  appearance: none; width: 100%; text-align: left; color: inherit; cursor: pointer;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center;
+  padding: 12px 14px; background: var(--band); border: 1px solid var(--rule); border-radius: 12px;
+}
+.alert b { display: block; font-weight: 600; }
+.alert span { color: var(--muted); font-size: var(--step--1); }
+
+/* Filters */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.fchip { appearance: none; border: 1px solid var(--rule); border-radius: 999px; background: none; color: var(--muted); font: 500 var(--step--1)/1 var(--font-ui); padding: 9px 13px; cursor: pointer; }
+.fchip[aria-pressed="true"] { border-color: var(--gold); color: var(--text); background: color-mix(in srgb, var(--gold) 14%, transparent); }
+.year { margin: 6px 0 0; font-family: var(--font-display); font-size: var(--step-2); font-weight: 500; }
+
+/* Detail */
+.meta { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; color: var(--muted); font-size: var(--step--1); }
+.panel { display: grid; gap: 12px; padding: 16px; background: var(--band); border: 1px solid var(--rule); border-radius: 14px; }
+.staff { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: center; }
+.staff b { display: block; font-family: var(--font-display); font-size: var(--step-1); font-weight: 500; }
+.staff span { color: var(--muted); font-size: var(--step--1); }
+.locked { border-style: dashed; }
+.locked p { margin: 0; color: var(--muted); font-size: var(--step--1); }
+.btn { appearance: none; border: 1px solid var(--rule); border-radius: 10px; background: none; color: var(--text); font: 600 var(--step--1)/1 var(--font-ui); padding: 13px 16px; cursor: pointer; }
+.btn.primary { background: var(--gold); border-color: var(--gold); color: var(--on-gold); }
+.btn.klaer { border-color: color-mix(in srgb, var(--klaer) 60%, var(--rule)); color: var(--klaer); }
+.btn.small { padding: 9px 12px; font-size: 0.75rem; }
+.btn[aria-pressed="true"].yes { background: var(--st-gruen); border-color: var(--st-gruen); color: var(--on-gold); }
+.btn[aria-pressed="true"].no { background: var(--st-rot); border-color: var(--st-rot); color: var(--on-gold); }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.days { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
+.day { display: grid; grid-template-columns: 5.4rem minmax(0, 1fr); gap: 4px 12px; padding: 12px 14px; }
+.day + .day { border-top: 1px solid var(--rule); }
+.day-date { color: var(--muted); font: 500 0.75rem/1.4 var(--font-data); font-variant-numeric: tabular-nums; }
+.day-body { min-width: 0; }
+.day-type { display: block; color: var(--faint); font: 500 0.625rem/1.3 var(--font-data); letter-spacing: 0.14em; text-transform: uppercase; }
+.day-text { display: block; font-weight: 500; overflow-wrap: anywhere; }
+.day-place { display: block; color: var(--muted); font-size: var(--step--1); overflow-wrap: anywhere; }
+.day.is-konzert .day-type { color: var(--gold); }
+.day.is-klaer { background: color-mix(in srgb, var(--klaer) 8%, transparent); }
+.day.is-klaer .day-type, .day.is-klaer .day-place { color: var(--klaer); }
+.day .btn { margin-top: 8px; }
+
+.reg { display: grid; gap: 0; border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
+.reg-h { margin: 0; padding: 9px 14px; background: var(--raise); color: var(--muted); font: 500 var(--step--2)/1.2 var(--font-data); letter-spacing: 0.14em; text-transform: uppercase; display: flex; justify-content: space-between; }
+.seat { appearance: none; width: 100%; border: 0; border-top: 1px solid var(--rule); background: none; color: inherit; text-align: left; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 14px; font: inherit; }
+button.seat { cursor: pointer; }
+.seat.mine { background: color-mix(in srgb, var(--gold) 8%, transparent); }
+.seat-name { font-weight: 500; }
+.seat-sub { display: block; color: var(--muted); font-size: 0.75rem; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; border: 1px solid var(--rule); font: 500 0.6875rem/1 var(--font-data); white-space: nowrap; }
+.pill.ja { color: var(--st-gruen); border-color: color-mix(in srgb, var(--st-gruen) 45%, var(--rule)); }
+.pill.nein { color: var(--st-rot); border-color: color-mix(in srgb, var(--st-rot) 45%, var(--rule)); }
+.pill.offen { color: var(--muted); }
+.pill.sub { color: var(--st-gelb); border-color: color-mix(in srgb, var(--st-gelb) 45%, var(--rule)); }
+
+/* Rows for Rückmeldung / Erinnerungen */
+.rrow { display: grid; gap: 10px; padding: 14px; background: var(--band); border: 1px solid var(--rule); border-radius: 14px; }
+.rrow-h { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }
+.rrow-h b { display: block; font-weight: 600; }
+.rrow-h span { color: var(--muted); font-size: var(--step--1); }
+.link { appearance: none; border: 0; background: none; color: var(--gold); font: 600 var(--step--1)/1.2 var(--font-ui); padding: 4px 0; cursor: pointer; text-align: left; }
+
+/* Infos and Noten */
+.links { display: grid; border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
+.links > * { display: grid; gap: 2px; padding: 13px 14px; color: inherit; text-decoration: none; }
+.links > * + * { border-top: 1px solid var(--rule); }
+.links b { font-weight: 600; }
+.links span { color: var(--muted); font-size: var(--step--1); }
+.links a b { color: var(--gold-hi); }
+.score { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 13px 14px; opacity: 0.6; }
+.score + .score { border-top: 1px solid var(--rule); }
+.steps { margin: 0; padding-left: 20px; display: grid; gap: 4px; color: var(--muted); font-size: var(--step--1); }
+
+/* Tab bar */
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 15;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  background: var(--ink); border-top: 1px solid var(--rule);
+  padding-top: 6px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(8px, env(safe-area-inset-left, 0px));
+  padding-right: max(8px, env(safe-area-inset-right, 0px));
+}
+.tab { appearance: none; border: 0; background: none; color: var(--faint); display: grid; justify-items: center; gap: 3px; padding: 6px 2px; font: 600 0.625rem/1.1 var(--font-ui); letter-spacing: 0.02em; cursor: pointer; position: relative; }
+.tab[aria-current="page"] { color: var(--gold); }
+.tab svg { width: 22px; height: 22px; }
+.badge { position: absolute; top: 1px; left: calc(50% + 6px); min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--st-rot); color: var(--on-gold); font: 600 0.625rem/16px var(--font-ui); text-align: center; }
+
+/* Sheet and toast */
+.scrim { position: fixed; inset: 0; z-index: 20; background: var(--scrim); }
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; max-height: 86vh; overflow-y: auto;
+  background: var(--raise); border-top: 1px solid var(--gold); border-radius: 16px 16px 0 0;
+  padding-top: 18px; padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.sheet-inner { max-width: 36rem; margin-inline: auto; display: grid; gap: 14px; }
+.sheet h2 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: var(--step-2); line-height: 1.15; }
+.sheet .btns { flex-direction: column; }
+.sheet .btn { width: 100%; text-align: center; }
+.fld { display: grid; gap: 6px; }
+.fld label { color: var(--muted); font: 500 var(--step--2)/1.2 var(--font-data); letter-spacing: 0.14em; text-transform: uppercase; }
+.fld input { width: 100%; box-sizing: border-box; border: 1px solid var(--rule); border-radius: 10px; background: var(--ink); color: var(--text); font: 400 1rem/1.4 var(--font-ui); padding: 11px 12px; }
+.toast { position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom, 0px)); z-index: 30; transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px); padding: 11px 15px; border-radius: 10px; background: var(--text); color: var(--ink); font-size: var(--step--1); font-weight: 500; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap" id="app"></div>
+<nav class="tabbar" id="tabbar" aria-label="Hauptmenü"></nav>
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden><div class="sheet-inner" id="sheet-inner"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var KEY = "tpb-prototyp-1";
+
+  /* ---------- Besetzung: bis zu 20 Plätze ---------- */
+  var SEATS = [];
+  function addSeats(reg, n, prefix) {
+    if (!n) { SEATS.push({ id: prefix, reg: reg, label: reg }); return; }
+    for (var i = 1; i <= n; i++) SEATS.push({ id: prefix + i, reg: reg, label: reg + " " + i });
+  }
+  addSeats("Trompete", 6, "trp");
+  addSeats("Horn", 4, "hr");
+  addSeats("Posaune", 3, "pos");
+  addSeats("Tenorhorn", 0, "thr");
+  addSeats("Tuba", 2, "tb");
+  addSeats("Pauke", 0, "pk");
+  addSeats("Schlagzeug", 3, "sz");
+  var SEAT = {};
+  SEATS.forEach(function (s) { SEAT[s.id] = s; });
+  var ALL = SEATS.map(function (s) { return s.id; });
+  var REGS = ["Trompete", "Horn", "Posaune", "Tenorhorn", "Tuba", "Pauke", "Schlagzeug"];
+  var REG_SHORT = { Trompete: "Trp", Horn: "Hr", Posaune: "Pos", Tenorhorn: "Thr", Tuba: "Tb", Pauke: "Pk", Schlagzeug: "Schlgz." };
+
+  function respAll(seats, over) {
+    var r = {};
+    seats.forEach(function (id) { r[id] = { r: "ja" }; });
+    Object.keys(over || {}).forEach(function (id) { r[id] = over[id]; });
+    return r;
+  }
+  function without(list, ids) { return list.filter(function (x) { return ids.indexOf(x) < 0; }); }
+
+  /* ---------- Termine laut Übersicht vom 28.09.26 ---------- */
+  function seed() {
+    var p2seats = without(ALL, ["trp6", "sz3"]);
+    return [
+      { id: "p1", title: "Aufnahme in Berlin", status: "zugesagt", start: "2026-11-30", end: "2026-12-02", conductor: "mit Tugan Sokhiev", seats: ALL.slice(),
+        resp: respAll(ALL, { hr3: { r: "nein", sub: "zugesagt" }, pos2: { r: "offen" }, sz3: { r: "offen" } }),
+        days: [
+          { d: "2026-11-30", e: "2026-12-01", type: "reise", text: "Anreise nach Berlin" },
+          { d: "2026-11-30", t: "ab 18 Uhr", type: "aufnahme", text: "Aufnahmen, nur Trompeten", place: "Teldex Studio Berlin" },
+          { d: "2026-12-01", t: "ab 10 Uhr", type: "aufnahme", text: "Aufnahmen mit Tugan Sokhiev, open End", place: "Teldex Studio Berlin" },
+          { d: "2026-12-02", type: "reise", text: "Rückreise ab Berlin" }
+        ] },
+      { id: "p2", title: "Konzert im Wiener Konzerthaus", status: "zugesagt", start: "2027-02-10", end: "2027-02-12", conductor: "ohne Dirigent", seats: p2seats,
+        resp: respAll(p2seats, { trp4: { r: "nein", sub: "angefragt" }, tb2: { r: "nein" }, hr2: { r: "offen" }, thr: { r: "offen" }, sz2: { r: "offen" } }),
+        days: [
+          { d: "2027-02-10", type: "reise", text: "Anreise nach Wien" },
+          { d: "2027-02-10", t: "ab 13 Uhr", type: "probe", text: "Probe", place: "Wien" },
+          { d: "2027-02-11", t: "vormittags", type: "probe", text: "Probe", place: "Wien" },
+          { d: "2027-02-11", t: "18–19 Uhr", type: "probe", text: "Anspielprobe", place: "Wiener Konzerthaus" },
+          { d: "2027-02-11", t: "19:30 Uhr", type: "konzert", text: "Konzert", place: "Wiener Konzerthaus" },
+          { d: "2027-02-12", type: "reise", text: "Rückreise ab Wien" }
+        ] },
+      { id: "p3", title: "Konzertreise Mai 2027", status: "zugesagt", start: "2027-05-10", end: "2027-05-23", rangeLabel: "10.–12.05. und 15.–23.05.2027", conductor: "mit Tugan Sokhiev", seats: ALL.slice(),
+        resp: respAll(ALL, { sz1: { r: "offen" }, trp2: { r: "offen" }, pk: { r: "nein", sub: "angefragt" } }),
+        days: [
+          { d: "2027-05-10", type: "reise", text: "Anreise nach Berlin" },
+          { d: "2027-05-10", t: "ab 14 Uhr", type: "probe", text: "Probe", place: "Berlin" },
+          { d: "2027-05-11", t: "ab 16 Uhr", type: "probe", text: "Probe", place: "Berlin" },
+          { d: "2027-05-12", type: "reise", text: "Rückreise ab Berlin" },
+          { d: "2027-05-15", type: "reise", text: "Anreise nach Klausenburg" },
+          { d: "2027-05-16", type: "konzert", text: "Konzert", place: "Klausenburg" },
+          { d: "2027-05-17", type: "reise", text: "Reise nach Wien" },
+          { d: "2027-05-18", type: "konzert", text: "Konzert", place: "Graz" },
+          { d: "2027-05-19", type: "konzert", text: "Konzert", place: "Madrid" },
+          { d: "2027-05-20", type: "konzert", text: "Konzert", place: "Wien, Musikverein" },
+          { d: "2027-05-21", type: "konzert", text: "Konzert", confirmed: false },
+          { d: "2027-05-22", type: "konzert", text: "Konzert", place: "München" },
+          { d: "2027-05-23", type: "reise", text: "Abreise ab München" }
+        ] },
+      { id: "p4", title: "Sommertour August 2027", status: "planung", start: "2027-08-12", end: "2027-08-22", conductor: "ohne Dirigent", seats: ALL.slice(), resp: {},
+        days: [
+          { d: "2027-08-12", type: "probe", text: "Proben" },
+          { d: "2027-08-13", type: "konzert", text: "Konzert", place: "Reichenau an der Rax" },
+          { d: "2027-08-14", type: "konzert", text: "Konzert", place: "Attergauer Kultursommer" },
+          { d: "2027-08-15", type: "konzert", text: "Konzert", place: "Theater im Park" },
+          { d: "2027-08-16", e: "2027-08-22", type: "konzert", text: "Konzerte", confirmed: false }
+        ] },
+      { id: "p5", title: "Herbsttour September 2027", status: "planung", start: "2027-09-14", end: "2027-09-27", conductor: "Dirigent offen", seats: ALL.slice(), resp: {},
+        hint: "In der Übersicht steht über diesem Block noch „Sommertour August 2027“. China laut Liste 14.09.–26.09., hier vorerst 20.–26.09.",
+        days: [
+          { d: "2027-09-14", e: "2027-09-15", type: "probe", text: "Proben", confirmed: false },
+          { d: "2027-09-16", type: "konzert", text: "Konzert", confirmed: false },
+          { d: "2027-09-17", type: "konzert", text: "Konzert", place: "Turin" },
+          { d: "2027-09-18", type: "konzert", text: "Konzert", place: "Mailand" },
+          { d: "2027-09-19", type: "reise", text: "Flug nach China" },
+          { d: "2027-09-20", e: "2027-09-26", type: "konzert", text: "Konzerte", place: "China" },
+          { d: "2027-09-27", type: "reise", text: "Rückreise aus China" }
+        ] },
+      { id: "p6", title: "Japantour 2028", status: "planung", start: "2028-01-27", end: "2028-02-07", conductor: "ohne Dirigent", seats: ALL.slice(), resp: {},
+        days: [
+          { d: "2028-01-27", e: "2028-01-28", type: "probe", text: "Proben", place: "Berlin" },
+          { d: "2028-01-29", type: "reise", text: "Flug nach Japan" },
+          { d: "2028-01-30", e: "2028-02-06", type: "konzert", text: "Konzerte", place: "Japan" },
+          { d: "2028-02-07", type: "reise", text: "Rückreise aus Japan" }
+        ] },
+      { id: "p7", title: "Konzertreise April 2028", status: "planung", start: "2028-04-16", end: "2028-04-24", conductor: "Dirigent in Klärung", seats: ALL.slice(), resp: {},
+        days: [
+          { d: "2028-04-16", e: "2028-04-17", type: "probe", text: "Proben" },
+          { d: "2028-04-18", e: "2028-04-23", type: "konzert", text: "Weitere Konzerte", confirmed: false },
+          { d: "2028-04-19", type: "konzert", text: "Konzert", place: "Aix-en-Provence" },
+          { d: "2028-04-24", type: "reise", text: "Rückreise" }
+        ] },
+      { id: "p8", title: "Konzertreise Taiwan und Singapur", status: "planung", start: "2028-05-04", end: "2028-05-15", conductor: "Dirigent in Klärung", seats: ALL.slice(), resp: {},
+        days: [
+          { d: "2028-05-04", e: "2028-05-05", type: "probe", text: "Proben" },
+          { d: "2028-05-06", e: "2028-05-14", type: "konzert", text: "Konzerte", place: "Taiwan und Singapur" },
+          { d: "2028-05-15", type: "reise", text: "Rückreise" }
+        ] },
+      { id: "p9", title: "Konzertreise Juni 2028", status: "planung", start: "2028-06-24", end: "2028-07-01", conductor: "Dirigent in Klärung", seats: ALL.slice(), resp: {},
+        hint: "Die Übersicht nennt den 31.06. als Ende; hier gilt der 30.06. als letzter Konzerttag.",
+        days: [
+          { d: "2028-06-24", type: "probe", text: "Proben" },
+          { d: "2028-06-25", e: "2028-06-30", type: "konzert", text: "Konzerte", confirmed: false },
+          { d: "2028-07-01", type: "reise", text: "Rückreise" }
+        ] },
+      { id: "p10", title: "Residenz mit Workshops", status: "idee", start: null, end: null, conductor: "", seats: ALL.slice(), resp: {},
+        hint: "Mehrtägiges Format mit Konzert und Workshops für junge Bläser; Ort und Zeitraum in Klärung.",
+        days: [] }
+    ];
+  }
+
+  /* ---------- State ---------- */
+  function fresh() { return { role: "leitung", me: "sz1", tab: "start", pid: null, filter: "alle", projects: seed() }; }
+  var state;
+  try { state = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { state = null; }
+  if (!state || !Array.isArray(state.projects)) state = fresh();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* nur in diesem Fenster */ } }
+
+  /* ---------- Helpers ---------- */
+  var $ = function (s) { return document.querySelector(s); };
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  var WD = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+  function toDate(iso) { var p = iso.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function dm(iso) { var p = iso.split("-"); return p[2] + "." + p[1] + "."; }
+  function dayLabel(x) { return WD[toDate(x.d).getDay()] + " " + dm(x.d) + (x.e ? "–" + dm(x.e) : ""); }
+  function range(p) {
+    if (p.rangeLabel) return p.rangeLabel;
+    if (!p.start) return "Zeitraum offen";
+    return dm(p.start) + "–" + dm(p.end) + p.end.slice(0, 4);
+  }
+  function todayIso() {
+    var t = new Date();
+    return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
+  }
+  var STATUS_LABEL = { zugesagt: "Zugesagt", planung: "In Planung", idee: "Idee" };
+  var TYPE_LABEL = { reise: "Reise", probe: "Probe", konzert: "Konzert", aufnahme: "Aufnahme" };
+  function byId(id) { return state.projects.filter(function (p) { return p.id === id; })[0]; }
+  function sorted() {
+    return state.projects.slice().sort(function (a, b) {
+      if (!a.start) return 1;
+      if (!b.start) return -1;
+      return a.start < b.start ? -1 : a.start > b.start ? 1 : 0;
+    });
+  }
+  function upcoming() {
+    var t = todayIso();
+    return sorted().filter(function (p) { return p.start && p.end >= t; });
+  }
+  function resp(p, sid) { return (p.resp && p.resp[sid]) || { r: "offen" }; }
+  function klaerCount(p) { return p.days.filter(function (d) { return d.confirmed === false; }).length; }
+  function staffing(p) {
+    if (p.status !== "zugesagt") return { state: "locked" };
+    var c = { ja: 0, nein: 0, offen: 0, ang: 0, zu: 0, gaps: 0 };
+    p.seats.forEach(function (sid) {
+      var r = resp(p, sid);
+      if (r.r === "ja") c.ja++;
+      else if (r.r === "nein") {
+        c.nein++;
+        if (r.sub === "zugesagt") c.zu++;
+        else if (r.sub === "angefragt") c.ang++;
+        else c.gaps++;
+      } else c.offen++;
+    });
+    c.total = p.seats.length;
+    c.filled = c.ja + c.zu;
+    c.state = c.gaps ? "rot" : (c.offen || c.ang) ? "gelb" : "gruen";
+    c.label = c.gaps ? (c.gaps === 1 ? "1 Lücke ohne Aushilfe" : c.gaps + " Lücken ohne Aushilfe")
+      : c.offen ? (c.offen === 1 ? "1 Rückmeldung offen" : c.offen + " Rückmeldungen offen")
+      : c.ang ? "Aushilfe angefragt" : "Besetzung vollständig";
+    return c;
+  }
+  function housing(st, big) {
+    return '<span class="housing ' + st + (big ? " big" : "") + '" aria-hidden="true"><span class="lamp l-rot"></span><span class="lamp l-gelb"></span><span class="lamp l-gruen"></span></span>';
+  }
+  var LOCK = '<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+  function seatPill(r) {
+    if (r.r === "ja") return '<span class="pill ja">Zusage</span>';
+    if (r.r === "nein") {
+      if (r.sub === "zugesagt") return '<span class="pill ja">Aushilfe fix</span>';
+      if (r.sub === "angefragt") return '<span class="pill sub">Aushilfe angefragt</span>';
+      return '<span class="pill nein">Absage</span>';
+    }
+    return '<span class="pill offen">' + (r.reminded ? "erinnert" : "offen") + "</span>";
+  }
+  function regSummary(seats) {
+    return REGS.map(function (reg) {
+      var n = seats.filter(function (sid) { return SEAT[sid].reg === reg; }).length;
+      return n ? n + " " + REG_SHORT[reg] : "";
+    }).filter(Boolean).join(" · ");
+  }
+  function myOpen() {
+    return upcoming().filter(function (p) { return p.status === "zugesagt" && p.seats.indexOf(state.me) >= 0 && resp(p, state.me).r === "offen"; });
+  }
+  function openSeatsTotal() {
+    var n = 0;
+    upcoming().forEach(function (p) {
+      if (p.status !== "zugesagt") return;
+      p.seats.forEach(function (sid) { var r = resp(p, sid); if (r.r === "offen" || (r.r === "nein" && !r.sub)) n++; });
+    });
+    return n;
+  }
+
+  /* ---------- Pieces ---------- */
+  function card(p) {
+    var st = staffing(p);
+    var k = klaerCount(p);
+    var side;
+    if (p.status === "zugesagt") {
+      side = housing(st.state) + "<span>" + st.filled + "/" + st.total + "</span>";
+    } else {
+      side = '<span class="lock">' + LOCK + "Besetzung<br>gesperrt</span>";
+    }
+    var mine = "";
+    if (state.role === "musiker" && p.status === "zugesagt" && p.seats.indexOf(state.me) >= 0) {
+      var r = resp(p, state.me);
+      mine = r.r === "ja" ? '<span class="pill ja">Du: Zusage</span>' : r.r === "nein" ? '<span class="pill nein">Du: Absage</span>' : '<span class="pill offen">Du: offen</span>';
+    }
+    return '<button type="button" class="pcard s-' + p.status + '" data-action="open" data-pid="' + p.id + '">' +
+      "<span>" +
+        '<span class="pc-title"><i class="dot ' + p.status + '" aria-hidden="true"></i>' + esc(p.title) + "</span>" +
+        '<span class="pc-date">' + esc(range(p)) + (p.conductor ? " · " + esc(p.conductor) : "") + "</span>" +
+        '<span class="pc-tags"><span class="chip ' + p.status + '">' + STATUS_LABEL[p.status] + "</span>" +
+          (k ? '<span class="chip klaer">' + k + " in Klärung</span>" : "") + mine + "</span>" +
+      "</span>" +
+      '<span class="pc-side">' + side + "</span>" +
+    "</button>";
+  }
+  function legend() {
+    return '<ul class="legend">' +
+      '<li><i class="dot zugesagt"></i>Zugesagt</li>' +
+      '<li><i class="dot planung"></i>In Planung</li>' +
+      '<li><i class="dot idee"></i>Idee</li>' +
+      '<li><i class="dot klaer"></i>In Klärung, gesperrt</li>' +
+    "</ul>";
+  }
+
+  /* ---------- Screens ---------- */
+  function screenStart() {
+    var up = upcoming();
+    var next = up.filter(function (p) { return p.status !== "idee"; }).slice(0, 3);
+    var counts = { zugesagt: 0, planung: 0, idee: 0 };
+    state.projects.forEach(function (p) { counts[p.status]++; });
+    var html = '<p class="banner">Klick-Prototyp: Termine laut eurer Übersicht vom 28.09.26, Rückmeldungen sind Beispiele. Änderungen bleiben nur auf diesem Gerät.</p>';
+
+    if (state.role === "leitung") {
+      var alerts = up.filter(function (p) { return p.status === "zugesagt" && staffing(p).state !== "gruen"; });
+      html += '<section class="sec"><h2 class="sec-h">Braucht Aufmerksamkeit</h2>';
+      html += alerts.length ? '<div class="list">' + alerts.map(function (p) {
+        var st = staffing(p);
+        return '<button type="button" class="alert" data-action="open" data-pid="' + p.id + '">' + housing(st.state) +
+          "<span><b>" + esc(p.title) + "</b><span>" + st.label + "</span></span></button>";
+      }).join("") + "</div>" : '<p class="note">Alle zugesagten Projekte sind vollständig besetzt.</p>';
+      html += "</section>";
+    } else {
+      var open = myOpen();
+      html += '<section class="sec"><h2 class="sec-h">Deine offenen Rückmeldungen<span>' + open.length + "</span></h2>";
+      html += open.length ? open.map(respRow).join("") : '<p class="note">Du hast auf alles geantwortet.</p>';
+      html += "</section>";
+    }
+
+    html += '<section class="sec"><h2 class="sec-h">Als Nächstes</h2><div class="list">' + next.map(card).join("") + "</div></section>";
+    html += '<p class="tally"><span><b>' + counts.zugesagt + "</b> zugesagt</span><span><b>" + counts.planung + "</b> in Planung</span><span><b>" + counts.idee + "</b> Idee</span></p>";
+    return html;
+  }
+
+  function screenKalender() {
+    var f = state.filter;
+    var list = sorted().filter(function (p) { return f === "alle" || p.status === f; });
+    var html = '<div class="filters" role="group" aria-label="Filter">' +
+      [["alle", "Alle"], ["zugesagt", "Zugesagt"], ["planung", "In Planung"], ["idee", "Idee"]].map(function (x) {
+        return '<button type="button" class="fchip" data-action="filter" data-v="' + x[0] + '" aria-pressed="' + (f === x[0]) + '">' + x[1] + "</button>";
+      }).join("") + "</div>" + legend();
+    var groups = {};
+    var order = [];
+    list.forEach(function (p) {
+      var g = p.start ? p.start.slice(0, 4) : "Ohne Datum";
+      if (!groups[g]) { groups[g] = []; order.push(g); }
+      groups[g].push(p);
+    });
+    if (!list.length) html += '<p class="note">Keine Projekte in diesem Filter.</p>';
+    order.forEach(function (g) {
+      html += '<section class="sec"><h2 class="year">' + g + '</h2><div class="list">' + groups[g].map(card).join("") + "</div></section>";
+    });
+    return html;
+  }
+
+  function respRow(p) {
+    var r = resp(p, state.me);
+    var k = klaerCount(p);
+    return '<div class="rrow"><div class="rrow-h"><span><b>' + esc(p.title) + "</b><span>" + esc(range(p)) + "</span></span>" +
+      '<button type="button" class="link" data-action="open" data-pid="' + p.id + '">Details</button></div>' +
+      (k ? '<p class="note">' + k + (k === 1 ? " Termin ist" : " Termine sind") + " noch in Klärung und zählen erst nach der Bestätigung.</p>" : "") +
+      '<div class="btns"><button type="button" class="btn yes" data-action="respond" data-pid="' + p.id + '" data-v="ja" aria-pressed="' + (r.r === "ja") + '">Zusage</button>' +
+      '<button type="button" class="btn no" data-action="respond" data-pid="' + p.id + '" data-v="nein" aria-pressed="' + (r.r === "nein") + '">Absage</button></div></div>';
+  }
+
+  function screenMeine() {
+    var up = upcoming();
+    if (state.role === "musiker") {
+      var mine = up.filter(function (p) { return p.status === "zugesagt" && p.seats.indexOf(state.me) >= 0; });
+      var planned = up.filter(function (p) { return p.status === "planung"; });
+      var html = '<section class="sec"><h2 class="sec-h">Zugesagte Projekte</h2>' + (mine.length ? mine.map(respRow).join("") : '<p class="note">Für deinen Platz steht nichts an.</p>') + "</section>";
+      html += '<section class="sec"><h2 class="sec-h">In Planung</h2><p class="note">Hier öffnet sich die Rückmeldung, sobald die Leitung ein Projekt zusagt.</p><div class="list">' + planned.map(card).join("") + "</div></section>";
+      return html;
+    }
+    var html2 = "";
+    var withOpen = up.filter(function (p) { return p.status === "zugesagt" && staffing(p).offen; });
+    html2 += '<section class="sec"><h2 class="sec-h">Ohne Rückmeldung</h2>';
+    html2 += withOpen.length ? withOpen.map(function (p) {
+      var ids = p.seats.filter(function (sid) { return resp(p, sid).r === "offen"; });
+      var all = ids.every(function (sid) { return resp(p, sid).reminded; });
+      return '<div class="rrow"><div class="rrow-h"><span><b>' + esc(p.title) + "</b><span>" + ids.map(function (s) { return SEAT[s].label; }).join(", ") + "</span></span>" +
+        '<button type="button" class="link" data-action="open" data-pid="' + p.id + '">Details</button></div>' +
+        '<div class="btns"><button type="button" class="btn' + (all ? "" : " primary") + '" data-action="remindall" data-pid="' + p.id + '">' + (all ? "Alle erinnert" : "Alle " + ids.length + " erinnern") + "</button></div></div>";
+    }).join("") : '<p class="note">Alle haben sich eingetragen.</p>';
+    html2 += "</section>";
+
+    var gaps = [];
+    up.forEach(function (p) {
+      if (p.status !== "zugesagt") return;
+      p.seats.forEach(function (sid) { var r = resp(p, sid); if (r.r === "nein" && !r.sub) gaps.push([p, sid]); });
+    });
+    html2 += '<section class="sec"><h2 class="sec-h">Lücken ohne Aushilfe</h2>';
+    html2 += gaps.length ? gaps.map(function (g) {
+      return '<div class="rrow"><div class="rrow-h"><span><b>' + SEAT[g[1]].label + "</b><span>" + esc(g[0].title) + "</span></span></div>" +
+        '<div class="btns"><button type="button" class="btn primary" data-action="seatact" data-pid="' + g[0].id + '" data-sid="' + g[1] + '" data-v="sub-ask">Aushilfe anfragen</button></div></div>';
+    }).join("") : '<p class="note">Keine offenen Lücken.</p>';
+    html2 += "</section>";
+    return html2;
+  }
+
+  function screenInfos() {
+    return '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
+      '<a href="https://leouli23.github.io/" target="_blank" rel="noopener"><b>Bühnenplaner</b><span>Bühnenpläne je Programm</span></a>' +
+      '<a href="https://leouli23.github.io/" target="_blank" rel="noopener"><b>Instrumentenübersicht</b><span>Instrumente je Stück, wächst mit dem Notenarchiv</span></a>' +
+      "<div><b>Technik-Rider</b><span>Beispiel: kommt mit dem Ausbau</span></div>" +
+      "<div><b>Dresscode</b><span>Beispiel: pflegt die Leitung je Projekt</span></div>" +
+      "<div><b>Planungstabellen je Projekt</b><span>Hotel, Reise, Programm; in der echten App hinter dem Login</span></div>" +
+      "</div></section>" +
+      '<section class="sec"><h2 class="sec-h">Als App installieren</h2><ol class="steps">' +
+      "<li>iPhone: Seite in Safari öffnen, Teilen tippen, „Zum Home-Bildschirm“ wählen.</li>" +
+      "<li>Android: Seite in Chrome öffnen, im Menü „App installieren“ wählen.</li>" +
+      "<li>Neue Versionen kommen automatisch beim nächsten Öffnen.</li></ol></section>" +
+      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 1 · Stand 26.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
+      '<div class="btns"><button type="button" class="btn" id="reset" data-action="reset">Beispieldaten zurücksetzen</button></div></section>';
+  }
+
+  function screenNoten() {
+    var rows = [1, 2, 3].map(function (n) {
+      return '<div class="score"><span><b>Beispiel-Arrangement ' + n + '</b><br><span class="note">Partitur · Stimmen je Platz · Bühnenplan</span></span><span class="chip">Stufe 2</span></div>';
+    }).join("");
+    return '<section class="sec"><h2 class="sec-h">Ausbaustufe 2</h2>' +
+      '<p class="note">Hier liegen später eure eigenen Arrangements: je Stück Partitur und Stimmen für jeden Platz, nur für die Stammbesetzung. Dieselben Stammdaten speisen die Instrumentenübersicht und später den Vertrieb über Vienna Signature Scores.</p>' +
+      '<div class="links">' + rows + "</div></section>";
+  }
+
+  function screenDetail(p) {
+    var st = staffing(p);
+    var lead = state.role === "leitung";
+    var html = '<p class="meta"><span class="chip ' + p.status + '">' + STATUS_LABEL[p.status] + "</span><span>" + esc(range(p)) + "</span>" + (p.conductor ? "<span>" + esc(p.conductor) + "</span>" : "") + "</p>";
+    if (p.hint) html += '<p class="note">' + esc(p.hint) + "</p>";
+
+    if (p.status === "zugesagt") {
+      html += '<div class="panel"><div class="staff">' + housing(st.state, true) + "<span><b>" + st.label + "</b><span>" + st.filled + " von " + st.total + " Plätzen besetzt · " + regSummary(p.seats) + "</span></span></div>";
+      if (!lead && p.seats.indexOf(state.me) >= 0) {
+        var r = resp(p, state.me);
+        html += '<div class="btns"><button type="button" class="btn yes" data-action="respond" data-pid="' + p.id + '" data-v="ja" aria-pressed="' + (r.r === "ja") + '">Zusage</button>' +
+          '<button type="button" class="btn no" data-action="respond" data-pid="' + p.id + '" data-v="nein" aria-pressed="' + (r.r === "nein") + '">Absage</button></div>';
+      }
+      html += "</div>";
+    } else {
+      html += '<div class="panel locked"><p><span class="lock">' + LOCK + "Besetzung gesperrt</span></p><p>" +
+        (p.status === "idee" ? "Eine Idee wird erst zum Projekt, wenn die Leitung sie plant." : "Die Besetzung öffnet sich, sobald die Leitung das Projekt zusagt. Soll-Besetzung: " + p.seats.length + " Plätze, " + regSummary(p.seats) + ".") + "</p>" +
+        (lead && p.status === "planung" ? '<div class="btns"><button type="button" class="btn primary" data-action="confirmproject" data-pid="' + p.id + '">Projekt zusagen</button></div>' : "") +
+        (lead && p.status === "idee" ? '<div class="btns"><button type="button" class="btn" data-action="toplan" data-pid="' + p.id + '">In Planung nehmen</button></div>' : "") +
+        "</div>";
+    }
+
+    if (p.days.length) {
+      html += '<section class="sec"><h2 class="sec-h">Ablaufplan</h2><ul class="days">' + p.days.map(function (d, i) {
+        var kl = d.confirmed === false;
+        return '<li class="day is-' + d.type + (kl ? " is-klaer" : "") + '"><span class="day-date">' + dayLabel(d) + "</span>" +
+          '<span class="day-body"><span class="day-type">' + TYPE_LABEL[d.type] + (d.t ? " · " + esc(d.t) : "") + (kl ? " · in Klärung" : "") + "</span>" +
+          '<span class="day-text">' + esc(d.text) + "</span>" +
+          (kl ? '<span class="day-place">Ort in Klärung, für die Besetzung gesperrt</span>' : d.place ? '<span class="day-place">' + esc(d.place) + "</span>" : "") +
+          (kl && lead ? '<button type="button" class="btn small klaer" data-action="confirmday" data-pid="' + p.id + '" data-i="' + i + '">Termin bestätigen</button>' : "") +
+          "</span></li>";
+      }).join("") + "</ul></section>";
+    }
+
+    if (p.status === "zugesagt") {
+      html += '<section class="sec"><h2 class="sec-h">Besetzung Platz für Platz</h2>';
+      REGS.forEach(function (reg) {
+        var ids = p.seats.filter(function (sid) { return SEAT[sid].reg === reg; });
+        if (!ids.length) return;
+        var filled = ids.filter(function (sid) { var r = resp(p, sid); return r.r === "ja" || r.sub === "zugesagt"; }).length;
+        html += '<div class="reg"><p class="reg-h"><span>' + reg + "</span><span>" + filled + "/" + ids.length + "</span></p>" + ids.map(function (sid) {
+          var r = resp(p, sid);
+          var tag = lead ? "button" : "div";
+          var attrs = lead ? ' type="button" data-action="seat" data-pid="' + p.id + '" data-sid="' + sid + '"' : "";
+          var sub = r.r === "nein" && r.sub === "zugesagt" ? "Stammspieler abgesagt, Aushilfe spielt" : r.r === "nein" && r.sub === "angefragt" ? "Stammspieler abgesagt" : r.r === "nein" ? "Stammspieler abgesagt" : "";
+          return "<" + tag + ' class="seat' + (sid === state.me && !lead ? " mine" : "") + '"' + attrs + "><span><span class=\"seat-name\">" + SEAT[sid].label + (sid === state.me && !lead ? " · du" : "") + '</span>' + (sub ? '<span class="seat-sub">' + sub + "</span>" : "") + "</span>" + seatPill(r) + "</" + tag + ">";
+        }).join("") + "</div>";
+      });
+      html += "</section>";
+    }
+    return html;
+  }
+
+  /* ---------- Render ---------- */
+  var TABS = [
+    ["start", "Start", '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>'],
+    ["kalender", "Kalender", '<rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M9 3v4M15 3v4" fill="none" stroke="currentColor" stroke-width="1.7"/>'],
+    ["meine", "", '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.7"/>'],
+    ["infos", "Infos", '<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 11v6M12 7.5v.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>'],
+    ["noten", "Noten", '<path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><ellipse cx="7" cy="18" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.7"/><ellipse cx="17" cy="16" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.7"/>']
+  ];
+  var TITLES = { start: "", kalender: "Kalender", infos: "Infos & Links", noten: "Noten" };
+
+  function render() {
+    var p = state.pid ? byId(state.pid) : null;
+    if (state.pid && !p) state.pid = null;
+    var lead = state.role === "leitung";
+    var title = p ? p.title
+      : state.tab === "start" ? (lead ? "Guten Tag, Leitung" : "Guten Tag, " + SEAT[state.me].label)
+      : state.tab === "meine" ? (lead ? "Erinnerungen" : "Meine Rückmeldung")
+      : TITLES[state.tab];
+    var top = '<header class="top"><div class="top-row"><p class="eyebrow">The Philharmonic Brass</p>' +
+      '<div class="roles" role="group" aria-label="Ansicht"><button type="button" data-action="role" data-v="leitung" aria-pressed="' + lead + '">Leitung</button>' +
+      '<button type="button" data-action="role" data-v="musiker" aria-pressed="' + !lead + '">Musiker</button></div></div>' +
+      (p ? '<button type="button" class="back" data-action="back">‹ Zurück</button>' : "") +
+      "<h1>" + esc(title) + "</h1>" +
+      (!lead && !p ? '<label class="me" for="me-seat">Ich spiele <select id="me-seat">' + SEATS.map(function (s) {
+        return '<option value="' + s.id + '"' + (s.id === state.me ? " selected" : "") + ">" + s.label + "</option>";
+      }).join("") + "</select></label>" : "") +
+      "</header>";
+    var body = p ? screenDetail(p)
+      : state.tab === "kalender" ? screenKalender()
+      : state.tab === "meine" ? screenMeine()
+      : state.tab === "infos" ? screenInfos()
+      : state.tab === "noten" ? screenNoten()
+      : screenStart();
+    $("#app").innerHTML = top + '<main class="screen">' + body + "</main>";
+
+    var badge = lead ? openSeatsTotal() : myOpen().length;
+    $("#tabbar").innerHTML = TABS.map(function (t) {
+      var label = t[0] === "meine" ? (lead ? "Erinnerungen" : "Rückmeldung") : t[1];
+      var cur = !p && state.tab === t[0];
+      return '<button type="button" class="tab" data-action="tab" data-v="' + t[0] + '"' + (cur ? ' aria-current="page"' : "") + ">" +
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' + t[2] + "</svg>" + label +
+        (t[0] === "meine" && badge ? '<span class="badge">' + badge + "</span>" : "") + "</button>";
+    }).join("");
+  }
+
+  /* ---------- Sheet & toast ---------- */
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $("#toast");
+    t.textContent = msg;
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 2800);
+  }
+  var sheetCtx = null;
+  function openSheet(html, ctx) {
+    sheetCtx = ctx || null;
+    $("#sheet-inner").innerHTML = html;
+    $("#scrim").hidden = false;
+    $("#sheet").hidden = false;
+    var f = $("#sheet-inner input, #sheet-inner button");
+    if (f) setTimeout(function () { f.focus(); }, 30);
+  }
+  function closeSheet() {
+    $("#sheet").hidden = true;
+    $("#scrim").hidden = true;
+    sheetCtx = null;
+  }
+
+  function seatSheet(p, sid) {
+    var r = resp(p, sid);
+    var acts = [];
+    if (r.r === "offen") { acts.push(["remind", "Erinnern", " primary"]); acts.push(["set-ja", "Als Zusage eintragen", ""]); acts.push(["set-nein", "Als Absage eintragen", ""]); }
+    if (r.r === "ja") acts.push(["set-nein", "Als Absage eintragen", ""]);
+    if (r.r === "nein" && !r.sub) acts.push(["sub-ask", "Aushilfe anfragen", " primary"]);
+    if (r.r === "nein" && r.sub === "angefragt") { acts.push(["sub-yes", "Aushilfe hat zugesagt", " primary"]); acts.push(["sub-no", "Aushilfe hat abgesagt", ""]); }
+    if (r.r === "nein" && r.sub === "zugesagt") acts.push(["sub-no", "Aushilfe austragen", ""]);
+    if (r.r !== "offen") acts.push(["reset", "Zurück auf offen", ""]);
+    var stateText = r.r === "ja" ? "Stammspieler hat zugesagt." : r.r === "offen" ? (r.reminded ? "Noch keine Rückmeldung, bereits erinnert." : "Noch keine Rückmeldung.")
+      : r.sub === "zugesagt" ? "Stammspieler hat abgesagt, die Aushilfe spielt." : r.sub === "angefragt" ? "Stammspieler hat abgesagt, Aushilfe ist angefragt." : "Stammspieler hat abgesagt, noch keine Aushilfe.";
+    openSheet('<h2 id="sheet-title">' + SEAT[sid].label + '</h2><p class="note">' + esc(p.title) + " · " + stateText + "</p>" +
+      '<div class="btns">' + acts.map(function (a) {
+        return '<button type="button" class="btn' + a[2] + '" data-action="seatact" data-pid="' + p.id + '" data-sid="' + sid + '" data-v="' + a[0] + '">' + a[1] + "</button>";
+      }).join("") + '<button type="button" class="btn" data-action="close">Abbrechen</button></div>');
+  }
+
+  function seatAct(p, sid, v) {
+    var r = Object.assign({}, resp(p, sid));
+    if (v === "remind") { r.reminded = true; toast("Erinnerung an " + SEAT[sid].label + " vorgemerkt. Im Prototyp geht nichts raus."); }
+    if (v === "set-ja") { r = { r: "ja" }; }
+    if (v === "set-nein") { r = { r: "nein" }; }
+    if (v === "sub-ask") { r.r = "nein"; r.sub = "angefragt"; toast("Aushilfe für " + SEAT[sid].label + " angefragt."); }
+    if (v === "sub-yes") { r.sub = "zugesagt"; toast("Aushilfe spielt. Platz ist besetzt."); }
+    if (v === "sub-no") { delete r.sub; }
+    if (v === "reset") { r = { r: "offen" }; }
+    p.resp[sid] = r;
+  }
+
+  /* ---------- Actions ---------- */
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-action]");
+    if (!el) return;
+    var a = el.getAttribute("data-action");
+    var p = el.getAttribute("data-pid") ? byId(el.getAttribute("data-pid")) : null;
+    var v = el.getAttribute("data-v");
+    var scrollTop = false;
+
+    if (a === "tab") { state.tab = v; state.pid = null; scrollTop = true; }
+    else if (a === "open" && p) { state.pid = p.id; scrollTop = true; }
+    else if (a === "back") { state.pid = null; scrollTop = true; }
+    else if (a === "role") { state.role = v; }
+    else if (a === "filter") { state.filter = v; }
+    else if (a === "respond" && p) {
+      var cur = resp(p, state.me);
+      p.resp[state.me] = cur.r === v ? { r: "offen" } : { r: v };
+      toast(p.resp[state.me].r === "ja" ? "Zusage gespeichert" : p.resp[state.me].r === "nein" ? "Absage gespeichert. Die Leitung sieht die Lücke sofort." : "Rückmeldung zurückgenommen");
+    }
+    else if (a === "seat" && p) { seatSheet(p, el.getAttribute("data-sid")); return; }
+    else if (a === "seatact" && p) { seatAct(p, el.getAttribute("data-sid"), v); closeSheet(); }
+    else if (a === "remindall" && p) {
+      p.seats.forEach(function (sid) { var r = resp(p, sid); if (r.r === "offen") p.resp[sid] = { r: "offen", reminded: true }; });
+      toast("Erinnerung vorgemerkt. Im Prototyp geht nichts raus.");
+    }
+    else if (a === "confirmproject" && p) {
+      p.status = "zugesagt";
+      p.resp = {};
+      toast("Projekt zugesagt. Alle " + p.seats.length + " Plätze bekommen eine Rückmelde-Anfrage.");
+    }
+    else if (a === "toplan" && p) { p.status = "planung"; toast("Idee in Planung genommen."); }
+    else if (a === "confirmday" && p) {
+      var i = +el.getAttribute("data-i");
+      var d = p.days[i];
+      openSheet('<h2 id="sheet-title">Termin bestätigen</h2><p class="note">' + esc(p.title) + " · " + dayLabel(d) + " · " + TYPE_LABEL[d.type] + "</p>" +
+        '<div class="fld"><label for="f-ort">Ort</label><input id="f-ort" type="text" autocomplete="off" maxlength="80" placeholder="z. B. Stadt und Saal"></div>' +
+        '<p class="note">Danach ist der Termin bestätigt und für die Besetzung offen.</p>' +
+        '<div class="btns"><button type="button" class="btn primary" data-action="confirmday-save">Bestätigen und freigeben</button><button type="button" class="btn" data-action="close">Abbrechen</button></div>', { pid: p.id, i: i });
+      return;
+    }
+    else if (a === "confirmday-save" && sheetCtx) {
+      var pp = byId(sheetCtx.pid);
+      var dd = pp && pp.days[sheetCtx.i];
+      if (dd) {
+        var ort = ($("#f-ort").value || "").trim();
+        dd.confirmed = true;
+        dd.place = ort || "Ort bestätigt";
+        toast("Termin bestätigt und freigegeben.");
+      }
+      closeSheet();
+    }
+    else if (a === "close") { closeSheet(); return; }
+    else if (a === "reset") {
+      if (el.getAttribute("data-armed") !== "1") { el.setAttribute("data-armed", "1"); el.textContent = "Wirklich zurücksetzen?"; return; }
+      var role = state.role, me = state.me;
+      state = fresh();
+      state.role = role; state.me = me; state.tab = "infos";
+      toast("Beispieldaten zurückgesetzt.");
+    }
+    else return;
+
+    save();
+    render();
+    if (scrollTop) window.scrollTo(0, 0);
+  });
+  document.addEventListener("change", function (e) {
+    if (e.target && e.target.id === "me-seat") { state.me = e.target.value; save(); render(); }
+  });
+  $("#scrim").addEventListener("click", closeSheet);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("#sheet").hidden) closeSheet(); });
+
+  render();
+
+  /* Als installierte Web-App: Offline-Cache und automatische Updates */
+  try {
+    if ("serviceWorker" in navigator && location.protocol === "https:" && window.top === window && document.querySelector('link[rel="manifest"]')) {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    }
+  } catch (e) { /* in der Vorschau ohne Installation */ }
+})();
+</script>
+
+</body>
+</html>
