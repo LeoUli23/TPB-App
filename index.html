@@ -683,7 +683,7 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
       side = '<span class="lock">' + LOCK + "Besetzung<br>gesperrt</span>";
     }
     var mine = "";
-    if (state.role === "musiker" && p.status === "zugesagt" && p.seats.indexOf(state.me) >= 0) {
+    if (p.status === "zugesagt" && p.seats.indexOf(state.me) >= 0) {
       var r = resp(p, state.me);
       mine = r.r === "ja" ? '<span class="pill ja">Du: Zusage</span>' : r.r === "nein" ? '<span class="pill nein">Du: Absage</span>' : '<span class="pill offen">Du: offen</span>';
     }
@@ -754,6 +754,11 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
           "<span><b>" + esc(p.title) + "</b><span>" + st.label + "</span></span></button>";
       }).join("") + "</div>" : '<p class="note">Alle zugesagten Projekte sind vollständig besetzt.</p>';
       html += "</section>";
+      /* F-015: Die Leitung spielt selbst mit und sagt eigene Termine zu */
+      var ownOpen = myOpen();
+      if (ownOpen.length) {
+        html += '<section class="sec"><h2 class="sec-h">Deine offenen Rückmeldungen<span>' + ownOpen.length + "</span></h2>" + ownOpen.map(respRow).join("") + "</section>";
+      }
     } else {
       var open = myOpen();
       html += '<section class="sec"><h2 class="sec-h">Deine offenen Rückmeldungen<span>' + open.length + "</span></h2>";
@@ -898,7 +903,7 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
       "<li>iPhone: Seite in Safari öffnen (Link aus WhatsApp oder Mail erst mit „In Safari öffnen“), unten Teilen tippen, „Zum Home-Bildschirm“ wählen. Dann erscheint das TPB-Logo als App-Symbol.</li>" +
       "<li>Android: Seite in Chrome öffnen, im Menü „App installieren“ wählen.</li>" +
       "<li>Neue Versionen kommen automatisch beim nächsten Öffnen.</li></ol></section>" +
-      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 5 · Stand 27.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
+      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 6 · Stand 27.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
       '<div class="btns"><button type="button" class="btn" id="reset" data-action="reset">Beispieldaten zurücksetzen</button></div></section>';
   }
 
@@ -919,9 +924,9 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
 
     if (p.status === "zugesagt") {
       html += '<div class="panel"><div class="staff">' + housing(st.state, true) + "<span><b>" + st.label + "</b><span>" + st.filled + " von " + st.total + " Plätzen besetzt · " + regSummary(p.seats) + "</span></span></div>";
-      if (!lead && p.seats.indexOf(state.me) >= 0) {
+      if (p.seats.indexOf(state.me) >= 0) {
         var r = resp(p, state.me);
-        html += '<div class="btns"><button type="button" class="btn yes" data-action="respond" data-pid="' + p.id + '" data-v="ja" aria-pressed="' + (r.r === "ja") + '">Zusage</button>' +
+        html += '<p class="note">Deine Rückmeldung als ' + SEAT[state.me].label + "</p>" + '<div class="btns"><button type="button" class="btn yes" data-action="respond" data-pid="' + p.id + '" data-v="ja" aria-pressed="' + (r.r === "ja") + '">Zusage</button>' +
           '<button type="button" class="btn no" data-action="respond" data-pid="' + p.id + '" data-v="nein" aria-pressed="' + (r.r === "nein") + '">Absage</button></div>';
       }
       html += "</div>";
@@ -956,7 +961,7 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
           var tag = lead ? "button" : "div";
           var attrs = lead ? ' type="button" data-action="seat" data-pid="' + p.id + '" data-sid="' + sid + '"' : "";
           var sub = r.r === "nein" && r.sub === "zugesagt" ? "Stammspieler abgesagt, Aushilfe spielt" : r.r === "nein" && r.sub === "angefragt" ? "Stammspieler abgesagt" : r.r === "nein" ? "Stammspieler abgesagt" : "";
-          return "<" + tag + ' class="seat' + (sid === state.me && !lead ? " mine" : "") + '"' + attrs + "><span><span class=\"seat-name\">" + SEAT[sid].label + (sid === state.me && !lead ? " · du" : "") + '</span>' + (sub ? '<span class="seat-sub">' + sub + "</span>" : "") + "</span>" + seatPill(r) + "</" + tag + ">";
+          return "<" + tag + ' class="seat' + (sid === state.me ? " mine" : "") + '"' + attrs + "><span><span class=\"seat-name\">" + SEAT[sid].label + (sid === state.me ? " · du" : "") + '</span>' + (sub ? '<span class="seat-sub">' + sub + "</span>" : "") + "</span>" + seatPill(r) + "</" + tag + ">";
         }).join("") + "</div>";
       });
       html += "</section>";
@@ -1003,7 +1008,7 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
       '<button type="button" data-action="role" data-v="musiker" aria-pressed="' + !lead + '">Musiker</button></div></div>' +
       (sv ? '<button type="button" class="back" data-action="back">' + BACK_ICON + "Zurück</button>" : "") +
       "<h1>" + esc(title) + "</h1>" +
-      (!lead && !sv ? '<label class="me" for="me-seat">Ich spiele <select id="me-seat">' + SEATS.map(function (s) {
+      (!sv ? '<label class="me" for="me-seat">Ich spiele <select id="me-seat">' + SEATS.map(function (s) {
         return '<option value="' + s.id + '"' + (s.id === state.me ? " selected" : "") + ">" + s.label + "</option>";
       }).join("") + "</select></label>" : "") +
       "</header>";
