@@ -8,9 +8,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TPB">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest?v=3">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3">
 <style>:root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>TPB Ensemble</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -238,6 +238,111 @@ button.seat { cursor: pointer; }
 .fld input { width: 100%; box-sizing: border-box; border: 1px solid var(--rule); border-radius: 10px; background: var(--ink); color: var(--text); font: 400 1rem/1.4 var(--font-ui); padding: 11px 12px; }
 .toast { position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom, 0px)); z-index: 30; transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px); padding: 11px 15px; border-radius: 10px; background: var(--text); color: var(--ink); font-size: var(--step--1); font-weight: 500; }
 
+/* v2 · F-005/F-006: Was man antippen kann, liegt erhaben mit Schatten und goldenem Pfeil.
+   Was nur informiert, liegt flach. Beim Drücken gibt die Fläche sichtbar nach. */
+:root {
+  --tap: #221e18;
+  --tap-hi: #2c271f;
+  --tap-edge: #403829;
+  --lift: inset 0 1px 0 rgba(255, 240, 210, 0.06), 0 1px 2px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.45);
+  --press: inset 0 2px 4px rgba(0, 0, 0, 0.55);
+  --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 14'%3E%3Cpath d='M1.5 1.5 6.5 7l-5 5.5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.pcard, .alert, button.seat, .links > .row, .tile, .back, .link, .btn, .fchip {
+  -webkit-user-select: none; user-select: none; touch-action: manipulation;
+  transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.pcard, .alert, .tile {
+  background: linear-gradient(180deg, var(--tap-hi), var(--tap));
+  border-color: var(--tap-edge);
+  box-shadow: var(--lift);
+}
+.pcard.s-idee { background: linear-gradient(180deg, var(--tap-hi), var(--tap)); border-color: var(--idee); }
+.pcard { grid-template-columns: minmax(0, 1fr) auto 8px; }
+.alert { grid-template-columns: auto minmax(0, 1fr) 8px; }
+button.seat { grid-template-columns: minmax(0, 1fr) auto 8px; background: linear-gradient(180deg, color-mix(in srgb, var(--tap-hi) 70%, transparent), transparent); }
+.pcard::after, .alert::after, button.seat::after, .links > .row::after, .tile::after, .link::after {
+  content: ""; width: 8px; height: 14px; justify-self: end; align-self: center; flex: none;
+  background: var(--gold);
+  -webkit-mask: var(--chev) center / contain no-repeat; mask: var(--chev) center / contain no-repeat;
+}
+.pcard:active, .alert:active, .tile:active, .back:active, .link:active, .btn:active, .fchip:active {
+  transform: translateY(1px) scale(0.985);
+  box-shadow: var(--press);
+  background: var(--tap);
+}
+button.seat:active, .links > .row:active { background: var(--tap); box-shadow: var(--press); }
+
+/* Zurück: eigene Taste, groß genug für den Daumen */
+.back {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin: 4px 0 2px;
+  padding: 0 18px 0 12px; border: 1px solid var(--tap-edge); border-radius: 999px;
+  background: linear-gradient(180deg, var(--tap-hi), var(--tap)); box-shadow: var(--lift);
+  color: var(--text); font: 600 var(--step-0)/1 var(--font-ui);
+}
+.back svg { width: 18px; height: 18px; color: var(--gold); flex: none; }
+
+/* Knöpfe */
+.btn { background: linear-gradient(180deg, var(--tap-hi), var(--tap)); border-color: var(--tap-edge); box-shadow: var(--lift); min-height: 44px; }
+.btn.primary { background: linear-gradient(180deg, var(--gold-hi), var(--gold)); border-color: var(--gold-hi); }
+.btn.primary:active { background: var(--gold); }
+.btn.small { min-height: 36px; }
+.fchip { background: linear-gradient(180deg, var(--tap-hi), var(--tap)); border-color: var(--tap-edge); box-shadow: var(--lift); min-height: 40px; }
+.link {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px 0 14px;
+  border: 1px solid var(--tap-edge); border-radius: 999px;
+  background: linear-gradient(180deg, var(--tap-hi), var(--tap)); box-shadow: var(--lift);
+  color: var(--text); white-space: nowrap;
+}
+.link::after { width: 6px; height: 11px; }
+
+/* Reine Anzeige bleibt flach */
+.panel, .rrow { box-shadow: none; }
+.links > div { background: transparent; }
+.links > div b { color: var(--muted); }
+
+/* Zeilen in Listen, die etwas öffnen */
+.links > .row {
+  appearance: none; width: 100%; border: 0; text-align: left; cursor: pointer; font: inherit; color: inherit;
+  grid-template-columns: minmax(0, 1fr) 8px; align-items: center; gap: 12px;
+  background: linear-gradient(180deg, var(--tap-hi), var(--tap));
+}
+.links > .row > span { display: grid; gap: 2px; min-width: 0; }
+.links > .row b { color: var(--gold-hi); }
+.links > * + .row, .links > .row + * { border-top: 1px solid var(--tap-edge); }
+
+/* F-007: Leitung mit fünf Sparten */
+.tiles { display: grid; gap: 10px; }
+.tile {
+  appearance: none; width: 100%; text-align: left; color: inherit; cursor: pointer; font: inherit;
+  display: grid; grid-template-columns: 40px minmax(0, 1fr) 8px; gap: 14px; align-items: center;
+  padding: 14px; border: 1px solid var(--tap-edge); border-radius: 14px;
+}
+.tile-ico { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; background: var(--housing); border: 1px solid var(--rule); color: var(--gold); }
+.tile-ico svg { width: 22px; height: 22px; }
+.tile b { display: block; font-weight: 600; line-height: 1.3; }
+.tile .tile-sub { display: block; color: var(--muted); font-size: var(--step--1); line-height: 1.35; margin-top: 2px; }
+.tile .tile-count { display: block; margin-top: 6px; color: var(--faint); font: 500 0.6875rem/1.2 var(--font-data); letter-spacing: 0.04em; }
+.files { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
+.file { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 14px; }
+.file + .file { border-top: 1px solid var(--rule); }
+.file b { display: block; font-weight: 500; overflow-wrap: anywhere; }
+.file span.sub { display: block; color: var(--faint); font-size: 0.75rem; }
+.ftype { min-width: 38px; padding: 4px 0; border-radius: 6px; border: 1px solid var(--rule); color: var(--muted); font: 500 0.625rem/1 var(--font-data); letter-spacing: 0.08em; text-align: center; }
+.stage { display: inline-flex; align-items: center; gap: 6px; }
+.stage.intern { color: var(--klaer); }
+.stage.ensemble { color: var(--st-gruen); }
+
+/* F-002: Werkzeuge direkt in der App */
+.toolframe {
+  display: block; box-sizing: border-box;
+  width: calc(100% + 2 * max(16px, env(safe-area-inset-left, 0px)));
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  height: calc(100dvh - 230px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); min-height: 420px;
+  border: 0; border-block: 1px solid var(--rule); background: var(--ink);
+}
+@media (min-width: 41rem) { .toolframe { width: 100%; margin-inline: 0; border: 1px solid var(--rule); border-radius: 14px; } }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
@@ -271,6 +376,57 @@ button.seat { cursor: pointer; }
   var ALL = SEATS.map(function (s) { return s.id; });
   var REGS = ["Trompete", "Horn", "Posaune", "Tenorhorn", "Tuba", "Pauke", "Schlagzeug"];
   var REG_SHORT = { Trompete: "Trp", Horn: "Hr", Posaune: "Pos", Tenorhorn: "Thr", Tuba: "Tb", Pauke: "Pk", Schlagzeug: "Schlgz." };
+
+  /* ---------- F-001/F-002: Werkzeuge, öffnen sich in der App ----------
+     Adresse eintragen, sobald sie feststeht (z. B. "https://leouli23.github.io/<Repository>/"). */
+  var TOOLS = [
+    { id: "buehne", title: "Bühnenplaner", sub: "Bühnenpläne je Programm", url: "https://leouli23.github.io/TPB-B-hnenplan/" },
+    { id: "instr", title: "Instrumentenübersicht", sub: "Schlagwerk-Disposition je Stück, wächst mit dem Notenarchiv", url: "https://leouli23.github.io/Untertitel-Studio/" }
+  ];
+  function toolById(id) { return TOOLS.filter(function (t) { return t.id === id; })[0]; }
+
+  /* ---------- F-007: Leitung mit fünf Sparten ----------
+     Stufe "intern" sieht nur die Leitung, Stufe "ensemble" sehen alle Musiker.
+     Die Einträge sind Beispiele; Hochladen und Freigeben kommen mit dem Login (Supabase). */
+  var SPARTEN = [
+    { id: "vorstand", title: "Vorstand", sub: "Verein, Verträge, Grundsatzentscheidungen",
+      icon: '<path d="M12 3l8 4H4z M5 9h14M6 9v8M10 9v8M14 9v8M18 9v8M4 20h16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+      files: [
+        { t: "PDF", n: "Protokolle der Leitungssitzungen", s: "intern" },
+        { t: "DOK", n: "Verträge und Vereinbarungen", s: "intern" },
+        { t: "PDF", n: "Ensemble-Regeln und Ansprechpartner", s: "ensemble" }
+      ] },
+    { id: "medien", title: "Medien & Social Media", sub: "Online-Präsenz, Presse, Fotos und Videos",
+      icon: '<rect x="3" y="6" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 6l1.5-2h5L16 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+      files: [
+        { t: "DOK", n: "Redaktionsplan Social Media", s: "intern" },
+        { t: "LINK", n: "Pressefotos, Originale", s: "intern" },
+        { t: "LINK", n: "Fotos und Videos zum Teilen", s: "ensemble" },
+        { t: "PDF", n: "Leitfaden: Posten für TPB", s: "ensemble" }
+      ] },
+    { id: "finanzen", title: "Finanzen", sub: "Budget, Gagen, Abrechnungen",
+      icon: '<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6 9.5v5M18 9.5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+      files: [
+        { t: "DOK", n: "Budget je Projekt", s: "intern" },
+        { t: "DOK", n: "Gagenübersicht", s: "intern" },
+        { t: "PDF", n: "Reisekosten: Formular und Fristen", s: "ensemble" }
+      ] },
+    { id: "reise", title: "Reiseleitung & Tourneeplanung", sub: "Reisen, Hotels, Abfahrten, Tourpläne",
+      icon: '<path d="M3 14l18-7-6 13-3-5z M12 15l9-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+      files: [
+        { t: "DOK", n: "Hotel- und Reiseangebote", s: "intern" },
+        { t: "PDF", n: "Tourplan mit Abfahrts- und Hoteldaten", s: "ensemble" },
+        { t: "PDF", n: "Treffpunkte und Abfahrtszeiten", s: "ensemble" }
+      ] },
+    { id: "musik", title: "Musikalische Leitung", sub: "Programm, Besetzung, Proben",
+      icon: '<path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><ellipse cx="7" cy="18" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="17" cy="16" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+      files: [
+        { t: "DOK", n: "Programmplanung und Besetzungswünsche", s: "intern" },
+        { t: "PDF", n: "Probenpläne", s: "ensemble" },
+        { t: "PDF", n: "Hinweise zu Programm und Stücken", s: "ensemble" }
+      ] }
+  ];
+  function sparteById(id) { return SPARTEN.filter(function (s) { return s.id === id; })[0]; }
 
   function respAll(seats, over) {
     var r = {};
@@ -372,10 +528,13 @@ button.seat { cursor: pointer; }
   }
 
   /* ---------- State ---------- */
-  function fresh() { return { role: "leitung", me: "sz1", tab: "start", pid: null, filter: "alle", projects: seed() }; }
+  function fresh() { return { role: "leitung", me: "sz1", tab: "start", pid: null, view: null, filter: "alle", projects: seed() }; }
   var state;
   try { state = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { state = null; }
   if (!state || !Array.isArray(state.projects)) state = fresh();
+  /* Beim Start immer auf der Übersicht des Tabs beginnen */
+  state.pid = null;
+  state.view = null;
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* nur in diesem Fenster */ } }
 
   /* ---------- Helpers ---------- */
@@ -595,10 +754,60 @@ button.seat { cursor: pointer; }
     return html2;
   }
 
+  var STAGE_LABEL = { intern: "Intern · nur Leitung", ensemble: "Fürs Ensemble freigegeben" };
+  function fileRow(f, extra) {
+    return '<li class="file"><span class="ftype">' + f.t + "</span><span><b>" + esc(f.n) + '</b><span class="sub">Beispiel' + (extra ? " · " + esc(extra) : "") + "</span></span></li>";
+  }
+  var UPLOAD_LOCKED = '<div class="panel locked"><p><span class="lock">' + LOCK + 'Hochladen kommt mit dem Login</span></p>' +
+    "<p>Dann kann jede Sparte PDFs, Dokumente und Links ablegen und je Eintrag wählen: intern für die Leitung oder freigegeben fürs Ensemble.</p></div>";
+
+  function screenLeitung() {
+    var html = '<p class="note">Alle in der Leitung sehen alle fünf Sparten. Jede Sparte hat eine eigene Ablage mit zwei Stufen: intern für die Leitung und freigegeben fürs Ensemble.</p>';
+    html += '<section class="sec"><h2 class="sec-h">Sparten</h2><div class="tiles">' + SPARTEN.map(function (s) {
+      var i = s.files.filter(function (f) { return f.s === "intern"; }).length;
+      var e = s.files.length - i;
+      return '<button type="button" class="tile" data-action="sparte" data-v="' + s.id + '">' +
+        '<span class="tile-ico"><svg viewBox="0 0 24 24" aria-hidden="true">' + s.icon + "</svg></span>" +
+        "<span><b>" + esc(s.title) + '</b><span class="tile-sub">' + esc(s.sub) + '</span><span class="tile-count">' + i + " intern · " + e + " fürs Ensemble</span></span>" +
+        "</button>";
+    }).join("") + "</div></section>";
+    html += '<p class="banner">Die Einträge in den Sparten sind Beispiele. Hochladen und Freigeben kommen mit Login und Datenbank.</p>';
+    return html;
+  }
+
+  function screenSparte(s) {
+    var html = '<p class="note">' + esc(s.sub) + "</p>";
+    ["intern", "ensemble"].forEach(function (st) {
+      var list = s.files.filter(function (f) { return f.s === st; });
+      html += '<section class="sec"><h2 class="sec-h"><span class="stage ' + st + '">' + STAGE_LABEL[st] + "</span><span>" + list.length + "</span></h2>" +
+        (list.length ? '<ul class="files">' + list.map(function (f) { return fileRow(f); }).join("") + "</ul>" : '<p class="note">Noch nichts abgelegt.</p>') + "</section>";
+    });
+    html += UPLOAD_LOCKED;
+    return html;
+  }
+
+  function screenTool(t) {
+    if (t.url) {
+      return '<iframe class="toolframe" src="' + esc(t.url) + '" title="' + esc(t.title) + '" loading="lazy"></iframe>' +
+        '<p class="note"><a href="' + esc(t.url) + '" target="_blank" rel="noopener">Im Browser öffnen</a></p>';
+    }
+    return '<div class="panel locked"><p><span class="lock">' + LOCK + "Adresse fehlt noch</span></p>" +
+      "<p>Sobald die Adresse eingetragen ist, öffnet sich der " + esc(t.title) + " hier direkt in der App, mit Zurück-Taste zur Übersicht.</p></div>";
+  }
+
   function screenInfos() {
-    return '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
-      '<a href="https://leouli23.github.io/" target="_blank" rel="noopener"><b>Bühnenplaner</b><span>Bühnenpläne je Programm</span></a>' +
-      '<a href="https://leouli23.github.io/" target="_blank" rel="noopener"><b>Instrumentenübersicht</b><span>Instrumente je Stück, wächst mit dem Notenarchiv</span></a>' +
+    var lead = state.role === "leitung";
+    var shared = "";
+    if (!lead) {
+      shared = '<section class="sec"><h2 class="sec-h">Von der Leitung freigegeben</h2><ul class="files">' +
+        SPARTEN.map(function (s) {
+          return s.files.filter(function (f) { return f.s === "ensemble"; }).map(function (f) { return fileRow(f, s.title); }).join("");
+        }).join("") + '</ul><p class="note">Beispiele. Hier erscheint, was eine Sparte fürs Ensemble freigibt.</p></section>';
+    }
+    return shared + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
+      TOOLS.map(function (t) {
+        return '<button type="button" class="row" data-action="tool" data-v="' + t.id + '"><span><b>' + esc(t.title) + "</b><span>" + esc(t.sub) + "</span></span></button>";
+      }).join("") +
       "<div><b>Technik-Rider</b><span>Beispiel: kommt mit dem Ausbau</span></div>" +
       "<div><b>Dresscode</b><span>Beispiel: pflegt die Leitung je Projekt</span></div>" +
       "<div><b>Planungstabellen je Projekt</b><span>Hotel, Reise, Programm; in der echten App hinter dem Login</span></div>" +
@@ -607,7 +816,7 @@ button.seat { cursor: pointer; }
       "<li>iPhone: Seite in Safari öffnen, Teilen tippen, „Zum Home-Bildschirm“ wählen.</li>" +
       "<li>Android: Seite in Chrome öffnen, im Menü „App installieren“ wählen.</li>" +
       "<li>Neue Versionen kommen automatisch beim nächsten Öffnen.</li></ol></section>" +
-      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 1 · Stand 26.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
+      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 3 · Stand 27.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
       '<div class="btns"><button type="button" class="btn" id="reset" data-action="reset">Beispieldaten zurücksetzen</button></div></section>';
   }
 
@@ -678,30 +887,49 @@ button.seat { cursor: pointer; }
     ["start", "Start", '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>'],
     ["kalender", "Kalender", '<rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M9 3v4M15 3v4" fill="none" stroke="currentColor" stroke-width="1.7"/>'],
     ["meine", "", '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.7"/>'],
+    ["leitung", "Leitung", '<path d="M3 7.5V18a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 18V9.5A1.5 1.5 0 0 0 19.5 8H12l-2-2.5H4.5A1.5 1.5 0 0 0 3 7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>', true],
     ["infos", "Infos", '<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 11v6M12 7.5v.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>'],
     ["noten", "Noten", '<path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><ellipse cx="7" cy="18" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.7"/><ellipse cx="17" cy="16" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.7"/>']
   ];
-  var TITLES = { start: "", kalender: "Kalender", infos: "Infos & Links", noten: "Noten" };
+  var TITLES = { start: "", kalender: "Kalender", leitung: "Leitung", infos: "Infos & Links", noten: "Noten" };
+  var BACK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  /* Unterseite: Projekt, Sparte oder Werkzeug */
+  function subView() {
+    if (state.pid) { var p = byId(state.pid); if (p) return { k: "projekt", p: p, title: p.title }; }
+    if (state.view) {
+      var parts = state.view.split(":");
+      if (parts[0] === "sparte") { var s = sparteById(parts[1]); if (s && state.role === "leitung") return { k: "sparte", s: s, title: s.title }; }
+      if (parts[0] === "tool") { var t = toolById(parts[1]); if (t) return { k: "tool", t: t, title: t.title }; }
+    }
+    state.pid = null;
+    state.view = null;
+    return null;
+  }
 
   function render() {
-    var p = state.pid ? byId(state.pid) : null;
-    if (state.pid && !p) state.pid = null;
     var lead = state.role === "leitung";
-    var title = p ? p.title
+    if (!lead && state.tab === "leitung") state.tab = "start";
+    var sv = subView();
+    var p = sv && sv.k === "projekt" ? sv.p : null;
+    var title = sv ? sv.title
       : state.tab === "start" ? (lead ? "Guten Tag, Leitung" : "Guten Tag, " + SEAT[state.me].label)
       : state.tab === "meine" ? (lead ? "Erinnerungen" : "Meine Rückmeldung")
       : TITLES[state.tab];
     var top = '<header class="top"><div class="top-row"><p class="eyebrow">The Philharmonic Brass</p>' +
       '<div class="roles" role="group" aria-label="Ansicht"><button type="button" data-action="role" data-v="leitung" aria-pressed="' + lead + '">Leitung</button>' +
       '<button type="button" data-action="role" data-v="musiker" aria-pressed="' + !lead + '">Musiker</button></div></div>' +
-      (p ? '<button type="button" class="back" data-action="back">‹ Zurück</button>' : "") +
+      (sv ? '<button type="button" class="back" data-action="back">' + BACK_ICON + "Zurück</button>" : "") +
       "<h1>" + esc(title) + "</h1>" +
-      (!lead && !p ? '<label class="me" for="me-seat">Ich spiele <select id="me-seat">' + SEATS.map(function (s) {
+      (!lead && !sv ? '<label class="me" for="me-seat">Ich spiele <select id="me-seat">' + SEATS.map(function (s) {
         return '<option value="' + s.id + '"' + (s.id === state.me ? " selected" : "") + ">" + s.label + "</option>";
       }).join("") + "</select></label>" : "") +
       "</header>";
     var body = p ? screenDetail(p)
+      : sv && sv.k === "sparte" ? screenSparte(sv.s)
+      : sv && sv.k === "tool" ? screenTool(sv.t)
       : state.tab === "kalender" ? screenKalender()
+      : state.tab === "leitung" ? screenLeitung()
       : state.tab === "meine" ? screenMeine()
       : state.tab === "infos" ? screenInfos()
       : state.tab === "noten" ? screenNoten()
@@ -709,9 +937,11 @@ button.seat { cursor: pointer; }
     $("#app").innerHTML = top + '<main class="screen">' + body + "</main>";
 
     var badge = lead ? openSeatsTotal() : myOpen().length;
-    $("#tabbar").innerHTML = TABS.map(function (t) {
-      var label = t[0] === "meine" ? (lead ? "Erinnerungen" : "Rückmeldung") : t[1];
-      var cur = !p && state.tab === t[0];
+    var tabs = TABS.filter(function (t) { return lead || !t[3]; });
+    $("#tabbar").style.gridTemplateColumns = "repeat(" + tabs.length + ", minmax(0, 1fr))";
+    $("#tabbar").innerHTML = tabs.map(function (t) {
+      var label = t[0] === "meine" ? (lead ? "Erinnern" : "Rückmeldung") : t[1];
+      var cur = state.tab === t[0];
       return '<button type="button" class="tab" data-action="tab" data-v="' + t[0] + '"' + (cur ? ' aria-current="page"' : "") + ">" +
         '<svg viewBox="0 0 24 24" aria-hidden="true">' + t[2] + "</svg>" + label +
         (t[0] === "meine" && badge ? '<span class="badge">' + badge + "</span>" : "") + "</button>";
@@ -771,6 +1001,30 @@ button.seat { cursor: pointer; }
     p.resp[sid] = r;
   }
 
+  /* ---------- Zurück auch per Wischgeste und Android-Zurücktaste ---------- */
+  var inSub = false;
+  function enterSub() {
+    if (inSub) return;
+    try { history.pushState({ tpbSub: 1 }, ""); inSub = true; } catch (e) { inSub = false; }
+  }
+  function leaveSub() {
+    state.pid = null;
+    state.view = null;
+    if (inSub) { inSub = false; try { history.back(); } catch (e) { /* ohne Verlauf */ } }
+  }
+  window.addEventListener("popstate", function () {
+    if (!inSub && !state.pid && !state.view) return;
+    inSub = false;
+    state.pid = null;
+    state.view = null;
+    closeSheet();
+    save();
+    render();
+    window.scrollTo(0, 0);
+  });
+  /* iOS zeigt den Druckzustand nur mit einem Touch-Listener */
+  document.addEventListener("touchstart", function () {}, { passive: true });
+
   /* ---------- Actions ---------- */
   document.addEventListener("click", function (e) {
     var el = e.target.closest("[data-action]");
@@ -780,9 +1034,14 @@ button.seat { cursor: pointer; }
     var v = el.getAttribute("data-v");
     var scrollTop = false;
 
-    if (a === "tab") { state.tab = v; state.pid = null; scrollTop = true; }
-    else if (a === "open" && p) { state.pid = p.id; scrollTop = true; }
-    else if (a === "back") { state.pid = null; scrollTop = true; }
+    if (a === "tab") { leaveSub(); state.tab = v; scrollTop = true; }
+    else if (a === "open" && p) { enterSub(); state.pid = p.id; state.view = null; scrollTop = true; }
+    else if (a === "sparte") { enterSub(); state.view = "sparte:" + v; state.pid = null; scrollTop = true; }
+    else if (a === "tool") { enterSub(); state.view = "tool:" + v; state.pid = null; scrollTop = true; }
+    else if (a === "back") {
+      if (inSub) { history.back(); return; }
+      state.pid = null; state.view = null; scrollTop = true;
+    }
     else if (a === "role") { state.role = v; }
     else if (a === "filter") { state.filter = v; }
     else if (a === "respond" && p) {
