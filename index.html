@@ -891,7 +891,8 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
       FS.map(function (f) {
         return '<button type="button" class="fchip" data-action="fs" data-v="' + f[0] + '" aria-pressed="' + (state.fs === f[0]) + '"><span style="font-size:' + f[2] + '">A</span>' + f[1] + "</button>";
       }).join("") + '</div><p class="note">Gilt für dieses Gerät. Zusätzlich übernimmt die App die Textgröße aus den iPhone-Einstellungen (Anzeige &amp; Helligkeit → Textgröße).</p></section>';
-    return fsSec + shared + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
+    var dress = '<section class="sec"><h2 class="sec-h">Kleiderordnung</h2><div class="panel"><p>Herren im Frack, Frauen dementsprechend schwarz.</p></div></section>';
+    return fsSec + dress + shared + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
       TOOLS.map(function (t) {
         return '<button type="button" class="row" data-action="tool" data-v="' + t.id + '"><span><b>' + esc(t.title) + "</b><span>" + esc(t.sub) + "</span></span></button>";
       }).join("") +
@@ -903,7 +904,7 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
       "<li>iPhone: Seite in Safari öffnen (Link aus WhatsApp oder Mail erst mit „In Safari öffnen“), unten Teilen tippen, „Zum Home-Bildschirm“ wählen. Dann erscheint das TPB-Logo als App-Symbol.</li>" +
       "<li>Android: Seite in Chrome öffnen, im Menü „App installieren“ wählen.</li>" +
       "<li>Neue Versionen kommen automatisch beim nächsten Öffnen.</li></ol></section>" +
-      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 7 · Stand 28.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
+      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 8 · Stand 28.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
       '<div class="btns"><button type="button" class="btn" id="reset" data-action="reset">Beispieldaten zurücksetzen</button></div></section>';
   }
 

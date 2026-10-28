@@ -1,6 +1,6 @@
 /* TPB Ensemble: Seiten kommen frisch aus dem Netz, damit Updates sofort ankommen;
    ohne Netz springt der Cache ein. Für eine neue Version VERSION hochzählen. */
-const VERSION = "tpb-ensemble-v8";
+const VERSION = "tpb-ensemble-v9";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest?v=3", "apple-touch-icon.png?v=3", "icon-192.png?v=3", "icon-512.png?v=3", "icon-maskable-512.png?v=3"];
 
 self.addEventListener("install", (e) => {

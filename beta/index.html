@@ -384,6 +384,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%); background-size: 50% 100%; background-repeat: no-repeat; animation: tpb-load 1.1s linear infinite; }
 @keyframes tpb-load { from { background-position: -50% 0; } to { background-position: 150% 0; } }
 
+.seat-form { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
@@ -403,7 +404,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var SB_URL = "https://vibrpjzjwpzifpljjukp.supabase.co";
   var SB_KEY = "sb_publishable_lVHKTlObiihOnrm-724Wdg_oPmVxItB";
   var UI_KEY = "tpb-beta-ui";
-  var VERSION_LABEL = "Beta 1 · Stand 28.10.2026";
+  var VERSION_LABEL = "Beta 2 · Stand 28.10.2026";
 
   var $ = function (s) { return document.querySelector(s); };
   function esc(s) {
@@ -490,12 +491,14 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
 
   function mapProject(p) {
     var resp = {};
+    var players = {};
     var seats = (p.project_seats || []).map(function (ps) {
       var r = one(ps.responses);
       var s = one(ps.substitutes);
       var o = { r: r ? r.answer : "offen" };
       if (r && r.reminded_at) o.reminded = true;
-      if (s) o.sub = s.status;
+      if (s) { o.sub = s.status; if (s.name) o.subName = s.name; }
+      if (ps.member_id) players[ps.seat] = ps.member_id;
       resp[ps.seat] = o;
       return ps.seat;
     }).filter(function (sid) { return SEAT[sid]; }).sort(function (a, b) { return SEAT_IDX[a] - SEAT_IDX[b]; });
@@ -505,7 +508,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       return { id: d.id, d: d.day, e: d.day_end, t: d.time_text, type: d.type, text: d.text, place: d.place, confirmed: d.confirmed };
     });
     return { id: p.id, slug: p.slug, title: p.title, status: p.status, start: p.start_date, end: p.end_date,
-      rangeLabel: p.range_label, conductor: p.conductor, hint: p.hint, seats: seats, days: days, resp: resp };
+      rangeLabel: p.range_label, conductor: p.conductor, hint: p.hint, seats: seats, days: days, resp: resp, players: players };
   }
 
   async function loadAll(silent) {
@@ -524,7 +527,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
         sb.from("seats").select("id,register,label,sort").order("sort"),
         sb.from("projects").select("id,slug,title,status,start_date,end_date,range_label,conductor,hint," +
           "project_days(id,day,day_end,time_text,type,text,place,confirmed,sort)," +
-          "project_seats(seat,responses(answer,reminded_at,answered_by,updated_at),substitutes(status,note))"),
+          "project_seats(seat,member_id,responses(answer,reminded_at,answered_by,updated_at),substitutes(status,note,name))"),
         sb.from("documents").select("id,sparte,stage,title,kind,url,storage_path,file_type,file_size,project_id,created_by,created_at").order("created_at", { ascending: false }),
         sb.from("members").select("id,name,register,seat,is_leitung,sparte,active,user_id").order("name"),
         isLead() ? sb.from("member_emails").select("member_id,email") : Promise.resolve({ data: [] })
@@ -663,9 +666,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     }).filter(Boolean).join(" · ");
   }
   function myOpen() {
-    var s = mySeat();
-    if (!s) return [];
-    return upcoming().filter(function (p) { return p.status === "zugesagt" && p.seats.indexOf(s) >= 0 && resp(p, s).r === "offen"; });
+    return upcoming().filter(function (p) { var s = mySeatIn(p); return p.status === "zugesagt" && s && resp(p, s).r === "offen"; });
   }
   function openSeatsTotal() {
     var n = 0;
@@ -676,6 +677,25 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     return n;
   }
   function memberOnSeat(sid) { return members.filter(function (m) { return m.seat === sid && m.active; })[0]; }
+  /* Platztausch je Projekt (F-021): gesetzter Spieler vor Stammspieler; wer woanders gesetzt ist, spielt seinen Stammplatz in diesem Projekt nicht */
+  function seatOfMemberIn(p, mid) {
+    for (var k in (p.players || {})) { if (p.players[k] === mid) return k; }
+    return null;
+  }
+  function playerOf(p, sid) {
+    if (p.players && p.players[sid]) return memberById(p.players[sid]) || null;
+    var m = memberOnSeat(sid);
+    if (m && seatOfMemberIn(p, m.id)) return null;
+    return m || null;
+  }
+  function mySeatIn(p) {
+    if (!me) return null;
+    var k = seatOfMemberIn(p, me.id);
+    if (k) return p.seats.indexOf(k) >= 0 ? k : null;
+    var s = me.seat;
+    if (s && p.seats.indexOf(s) >= 0 && !(p.players && p.players[s])) return s;
+    return null;
+  }
   function firstName(n) { return String(n || "").trim().split(/\s+/)[0] || ""; }
 
   /* ---------- Bausteine ---------- */
@@ -686,8 +706,8 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       ? housing(st.state) + "<span>" + st.filled + "/" + st.total + "</span>"
       : '<span class="lock">' + LOCK + "Besetzung<br>gesperrt</span>";
     var mine = "";
-    var s = mySeat();
-    if (s && p.status === "zugesagt" && p.seats.indexOf(s) >= 0) {
+    var s = mySeatIn(p);
+    if (s && p.status === "zugesagt") {
       var r = resp(p, s);
       mine = r.r === "ja" ? '<span class="pill ja">Du: Zusage</span>' : r.r === "nein" ? '<span class="pill nein">Du: Absage</span>' : '<span class="pill offen">Du: offen</span>';
     }
@@ -761,7 +781,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       if (open.length) {
         html += '<section class="sec"><h2 class="sec-h">Deine offenen Rückmeldungen<span>' + open.length + "</span></h2>" + open.map(respRow).join("") + "</section>";
       }
-    } else if (mySeat()) {
+    } else if (mySeat() || projects.some(function (p) { return mySeatIn(p); })) {
       html += '<section class="sec"><h2 class="sec-h">Deine offenen Rückmeldungen<span>' + open.length + "</span></h2>";
       html += open.length ? open.map(respRow).join("") : '<p class="note">Du hast auf alles geantwortet.</p>';
       html += "</section>";
@@ -795,9 +815,11 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   }
 
   function respRow(p) {
-    var r = resp(p, mySeat());
+    var s = mySeatIn(p);
+    var r = resp(p, s);
     var k = klaerCount(p);
-    return '<div class="rrow"><div class="rrow-h"><span><b>' + esc(p.title) + "</b><span>" + esc(range(p)) + "</span></span>" +
+    var als = s && s !== mySeat() ? " · als " + SEAT[s].label : "";
+    return '<div class="rrow"><div class="rrow-h"><span><b>' + esc(p.title) + "</b><span>" + esc(range(p)) + als + "</span></span>" +
       '<button type="button" class="link" data-action="open" data-pid="' + p.id + '">Details</button></div>' +
       (k ? '<p class="note">' + k + (k === 1 ? " Termin ist" : " Termine sind") + " noch in Klärung und zählen erst nach der Bestätigung.</p>" : "") +
       '<div class="btns"><button type="button" class="btn yes" data-action="respond" data-pid="' + p.id + '" data-v="ja" aria-pressed="' + (r.r === "ja") + '">Zusage</button>' +
@@ -807,8 +829,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   function screenMeine() {
     var up = upcoming();
     if (!isLead()) {
-      var s = mySeat();
-      var mine = s ? up.filter(function (p) { return p.status === "zugesagt" && p.seats.indexOf(s) >= 0; }) : [];
+      var mine = up.filter(function (p) { return p.status === "zugesagt" && mySeatIn(p); });
       var planned = up.filter(function (p) { return p.status === "planung"; });
       var html = '<section class="sec"><h2 class="sec-h">Zugesagte Projekte</h2>' + (mine.length ? mine.map(respRow).join("") : '<p class="note">Für deinen Platz steht nichts an.</p>') + "</section>";
       html += '<section class="sec"><h2 class="sec-h">In Planung</h2><p class="note">Hier öffnet sich die Rückmeldung, sobald die Leitung ein Projekt zusagt.</p><div class="list">' + planned.map(card).join("") + "</div></section>";
@@ -832,7 +853,9 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     });
     html2 += '<section class="sec"><h2 class="sec-h">Lücken ohne Aushilfe</h2>';
     html2 += gaps.length ? gaps.map(function (g) {
-      return '<div class="rrow"><div class="rrow-h"><span><b>' + SEAT[g[1]].label + "</b><span>" + esc(g[0].title) + "</span></span></div>" +
+      var pl = playerOf(g[0], g[1]);
+      return '<div class="rrow"><div class="rrow-h"><span><b>' + SEAT[g[1]].label + "</b><span>" + esc(g[0].title) + (pl ? " · " + esc(pl.name) + " hat abgesagt" : "") + "</span></span>" +
+        '<button type="button" class="link" data-action="seat" data-pid="' + g[0].id + '" data-sid="' + g[1] + '">Platz</button></div>' +
         '<div class="btns"><button type="button" class="btn primary" data-action="seatact" data-pid="' + g[0].id + '" data-sid="' + g[1] + '" data-v="sub-ask">Aushilfe als angefragt markieren</button></div></div>';
     }).join("") : '<p class="note">Keine offenen Lücken.</p>';
     html2 += "</section>";
@@ -927,7 +950,8 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     var acc = '<section class="sec"><h2 class="sec-h">Dein Konto</h2><div class="panel"><p><b>' + esc(me.name) + "</b></p>" +
       '<p class="note">' + esc(userEmail) + "<br>" + (mySeat() ? esc(SEAT[mySeat()].label) : "Noch kein Platz zugeordnet") + (isLead() ? " · Leitung" + (me.sparte ? " (" + esc(SPARTE_TITLE[me.sparte]) + ")" : "") : "") + "</p>" +
       '<div class="btns"><button type="button" class="btn" data-action="logout">Abmelden</button></div></div></section>';
-    return fsSec + docs + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
+    var dress = '<section class="sec"><h2 class="sec-h">Kleiderordnung</h2><div class="panel"><p>Herren im Frack, Frauen dementsprechend schwarz.</p></div></section>';
+    return fsSec + dress + docs + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
       TOOLS.map(function (t) {
         return '<button type="button" class="row" data-action="tool" data-v="' + t.id + '"><span><b>' + esc(t.title) + "</b><span>" + esc(t.sub) + "</span></span></button>";
       }).join("") + "</div></section>" + acc +
@@ -949,12 +973,12 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   function screenDetail(p) {
     var st = staffing(p);
     var lead = isLead();
-    var s = mySeat();
+    var s = mySeatIn(p);
     var html = '<p class="meta"><span class="chip ' + p.status + '">' + STATUS_LABEL[p.status] + "</span><span>" + esc(range(p)) + "</span>" + (p.conductor ? "<span>" + esc(p.conductor) + "</span>" : "") + "</p>";
     if (p.hint) html += '<p class="note">' + esc(p.hint) + "</p>";
     if (p.status === "zugesagt") {
       html += '<div class="panel"><div class="staff">' + housing(st.state, true) + "<span><b>" + st.label + "</b><span>" + st.filled + " von " + st.total + " Plätzen besetzt · " + regSummary(p.seats) + "</span></span></div>";
-      if (s && p.seats.indexOf(s) >= 0) {
+      if (s) {
         var r = resp(p, s);
         html += '<p class="note">Deine Rückmeldung als ' + esc(SEAT[s].label) + '</p><div class="btns"><button type="button" class="btn yes" data-action="respond" data-pid="' + p.id + '" data-v="ja" aria-pressed="' + (r.r === "ja") + '">Zusage</button>' +
           '<button type="button" class="btn no" data-action="respond" data-pid="' + p.id + '" data-v="nein" aria-pressed="' + (r.r === "nein") + '">Absage</button></div>';
@@ -990,11 +1014,15 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
         var filled = ids.filter(function (sid) { var r = resp(p, sid); return r.r === "ja" || r.sub === "zugesagt"; }).length;
         html += '<div class="reg"><p class="reg-h"><span>' + reg + "</span><span>" + filled + "/" + ids.length + "</span></p>" + ids.map(function (sid) {
           var r = resp(p, sid);
-          var m = memberOnSeat(sid);
+          var m = playerOf(p, sid);
+          var home = memberOnSeat(sid);
           var tag = lead ? "button" : "div";
           var attrs = lead ? ' type="button" data-action="seat" data-pid="' + p.id + '" data-sid="' + sid + '"' : "";
-          var sub = r.r === "nein" && r.sub === "zugesagt" ? "abgesagt, Aushilfe spielt" : r.r === "nein" && r.sub === "angefragt" ? "abgesagt, Aushilfe angefragt" : r.r === "nein" ? "abgesagt" : "";
-          var who = m ? esc(m.name) : "noch niemand eingetragen";
+          var subWho = r.subName ? ": " + esc(r.subName) : "";
+          var sub = r.r === "nein" && r.sub === "zugesagt" ? "abgesagt, Aushilfe" + subWho + " spielt" : r.r === "nein" && r.sub === "angefragt" ? "abgesagt, Aushilfe" + subWho + " angefragt" : r.r === "nein" ? "abgesagt" : "";
+          var moved = home && !m ? seatOfMemberIn(p, home.id) : null;
+          var who = m ? esc(m.name) + (p.players[sid] ? " · nur in diesem Projekt" : "")
+            : moved ? "frei · " + esc(home.name) + " spielt " + esc(SEAT[moved] ? SEAT[moved].label : "einen anderen Platz") : "noch niemand eingetragen";
           return "<" + tag + ' class="seat' + (sid === s ? " mine" : "") + '"' + attrs + '><span><span class="seat-name">' + SEAT[sid].label + (sid === s ? " · du" : "") + '</span><span class="seat-sub">' + who + (sub ? " · " + sub : "") + "</span></span>" + seatPill(r) + "</" + tag + ">";
         }).join("") + "</div>";
       });
@@ -1216,7 +1244,8 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
 
   function seatSheet(p, sid) {
     var r = resp(p, sid);
-    var m = memberOnSeat(sid);
+    var m = playerOf(p, sid);
+    var home = memberOnSeat(sid);
     var acts = [];
     if (r.r === "offen") { acts.push(["remind", r.reminded ? "Erinnerung erneut vormerken" : "Zum Erinnern vormerken", " primary"]); acts.push(["set-ja", "Als Zusage eintragen", ""]); acts.push(["set-nein", "Als Absage eintragen", ""]); }
     if (r.r === "ja") acts.push(["set-nein", "Als Absage eintragen", ""]);
@@ -1226,10 +1255,60 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     if (r.r !== "offen") acts.push(["reset", "Zurück auf offen", ""]);
     var stateText = r.r === "ja" ? "Hat zugesagt." : r.r === "offen" ? (r.reminded ? "Noch keine Rückmeldung, zum Erinnern vorgemerkt." : "Noch keine Rückmeldung.")
       : r.sub === "zugesagt" ? "Hat abgesagt, die Aushilfe spielt." : r.sub === "angefragt" ? "Hat abgesagt, Aushilfe ist angefragt." : "Hat abgesagt, noch keine Aushilfe.";
-    openSheet('<h2 id="sheet-title">' + SEAT[sid].label + '</h2><p class="note">' + (m ? esc(m.name) + " · " : "") + esc(p.title) + " · " + stateText + "</p>" +
+    var cur = p.players[sid] || "";
+    var others = members.filter(function (x) { return x.active && (!home || x.id !== home.id); })
+      .sort(function (a, b) { return (a.seat ? SEAT_IDX[a.seat] : 99) - (b.seat ? SEAT_IDX[b.seat] : 99) || a.name.localeCompare(b.name); });
+    var playerForm = '<form id="f-player" class="seat-form" novalidate><div class="fld"><label for="f-pl">Wer spielt diesen Platz in diesem Projekt?</label><select id="f-pl" name="member">' +
+      '<option value="">' + (home ? "Stammspieler: " + esc(home.name) : "Stammplatz (noch frei)") + "</option>" +
+      others.map(function (x) { return '<option value="' + x.id + '"' + (x.id === cur ? " selected" : "") + ">" + esc(x.name) + " · " + (x.seat && SEAT[x.seat] ? esc(SEAT[x.seat].label) : "ohne festen Platz") + "</option>"; }).join("") +
+      '</select></div><div class="btns"><button type="submit" class="btn">Spieler übernehmen</button></div></form>';
+    var subForm = r.r === "nein" ? '<form id="f-subname" class="seat-form" novalidate><div class="fld"><label for="f-sn">Name der Aushilfe</label>' +
+      '<input id="f-sn" name="name" type="text" maxlength="80" autocomplete="off" placeholder="z. B. Vor- und Nachname" value="' + esc(r.subName || "") + '"></div>' +
+      '<p class="note">Nur die Leitung sieht Aushilfen und ihre Namen.</p><div class="btns"><button type="submit" class="btn">Name speichern</button></div></form>' : "";
+    openSheet('<h2 id="sheet-title">' + SEAT[sid].label + '</h2><p class="note">' + (m ? esc(m.name) + " · " : "") + esc(p.title) + " · " + stateText + (r.subName ? " Aushilfe: " + esc(r.subName) + "." : "") + "</p>" +
       '<div class="btns">' + acts.map(function (a) {
         return '<button type="button" class="btn' + a[2] + '" data-action="seatact" data-pid="' + p.id + '" data-sid="' + sid + '" data-v="' + a[0] + '">' + a[1] + "</button>";
-      }).join("") + '<button type="button" class="btn" data-action="close">Abbrechen</button></div>');
+      }).join("") + "</div>" + subForm + playerForm +
+      '<div class="btns"><button type="button" class="btn" data-action="close">Abbrechen</button></div>', { pid: p.id, sid: sid });
+  }
+
+  async function submitPlayer(form) {
+    var c = sheetCtx || {};
+    var p = byId(c.pid), sid = c.sid;
+    if (!p || !sid) return;
+    var mid = form.member.value || null;
+    var home = memberOnSeat(sid);
+    if (home && mid === home.id) mid = null;
+    if ((p.players[sid] || null) === mid) { closeSheet(); return; }
+    var who = mid ? memberById(mid) : home;
+    var label = SEAT[sid].label;
+    closeSheet();
+    await run(async function () {
+      if (mid) {
+        await sb.from("project_seats").update({ member_id: null }).eq("project_id", p.id).eq("member_id", mid).then(chk);
+        var hs = who && who.seat;
+        if (hs && hs !== sid && p.seats.indexOf(hs) >= 0 && !p.players[hs] && resp(p, hs).r !== "offen") {
+          if (resp(p, hs).sub) await deleteSub(p.id, hs);
+          await upsertResp(p.id, hs, { answer: "offen" });
+        }
+      }
+      await sb.from("project_seats").update({ member_id: mid }).eq("project_id", p.id).eq("seat", sid).then(chk);
+      if (resp(p, sid).sub) await deleteSub(p.id, sid);
+      await upsertResp(p.id, sid, { answer: "offen" });
+    }, (who ? who.name + " spielt " : "Stammbesetzung für ") + label + " in diesem Projekt. Die Rückmeldung steht wieder auf offen.");
+  }
+  async function submitSubName(form) {
+    var c = sheetCtx || {};
+    var p = byId(c.pid), sid = c.sid;
+    if (!p || !sid) return;
+    var name = (form.name.value || "").trim().replace(/\s+/g, " ").slice(0, 80);
+    var r = resp(p, sid);
+    if (!name && !r.sub) { closeSheet(); return; }
+    closeSheet();
+    await run(function () {
+      if (!name) return sb.from("substitutes").update({ name: null }).eq("project_id", p.id).eq("seat", sid).then(chk);
+      return sb.from("substitutes").upsert({ project_id: p.id, seat: sid, status: r.sub || "angefragt", name: name }, { onConflict: "project_id,seat" }).then(chk);
+    }, name ? "Aushilfe " + name + " für " + SEAT[sid].label + " eingetragen." : "Name der Aushilfe entfernt.");
   }
 
   function seatAct(p, sid, v) {
@@ -1453,12 +1532,13 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       deferredPrompt.userChoice.then(function () { deferredPrompt = null; render(); });
       return;
     }
-    else if (a === "respond" && p && mySeat()) {
-      var cur = resp(p, mySeat());
+    else if (a === "respond" && p && mySeatIn(p)) {
+      var mys = mySeatIn(p);
+      var cur = resp(p, mys);
       var ans = cur.r === v ? "offen" : v;
-      p.resp[mySeat()] = Object.assign({}, cur, { r: ans });
+      p.resp[mys] = Object.assign({}, cur, { r: ans });
       render();
-      run(function () { return upsertResp(p.id, mySeat(), { answer: ans }); },
+      run(function () { return upsertResp(p.id, mys, { answer: ans }); },
         ans === "ja" ? "Zusage gespeichert" : ans === "nein" ? "Absage gespeichert. Die Leitung sieht es sofort." : "Rückmeldung zurückgenommen");
       return;
     }
@@ -1554,6 +1634,8 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     else if (f.id === "f-upload") submitUpload(f);
     else if (f.id === "f-link") submitLink(f);
     else if (f.id === "f-invite") submitInvite(f);
+    else if (f.id === "f-player") submitPlayer(f);
+    else if (f.id === "f-subname") submitSubName(f);
   });
   document.addEventListener("change", function (e) {
     var t = e.target;
