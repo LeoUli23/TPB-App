@@ -404,7 +404,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var SB_URL = "https://vibrpjzjwpzifpljjukp.supabase.co";
   var SB_KEY = "sb_publishable_lVHKTlObiihOnrm-724Wdg_oPmVxItB";
   var UI_KEY = "tpb-beta-ui";
-  var VERSION_LABEL = "Beta 2 · Stand 28.10.2026";
+  var VERSION_LABEL = "Beta 3 · Stand 28.10.2026";
 
   var $ = function (s) { return document.querySelector(s); };
   function esc(s) {
@@ -478,6 +478,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var userEmail = "";
   var projects = [];
   var documents = [];
+  var stagePlans = [];
   var members = [];
   var emails = {};
   var lastLoad = 0;
@@ -485,6 +486,8 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var login = { step: "email", email: "", error: "", info: "", cooldownUntil: 0 };
 
   function isLead() { return !!(me && me.is_leitung); }
+  /* Bühnenpläne speichern dürfen Leitung, Pauke und Schlagzeug (wie in der Datenbank, 008) */
+  function canEditStage() { return !!(me && (me.is_leitung || me.register === "Pauke" || me.register === "Schlagzeug")); }
   function mySeat() { return me ? me.seat : null; }
   function one(x) { return Array.isArray(x) ? (x[0] || null) : (x || null); }
   function chk(res) { if (res && res.error) throw res.error; return res; }
@@ -530,9 +533,12 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
           "project_seats(seat,member_id,responses(answer,reminded_at,answered_by,updated_at),substitutes(status,note,name))"),
         sb.from("documents").select("id,sparte,stage,title,kind,url,storage_path,file_type,file_size,project_id,created_by,created_at").order("created_at", { ascending: false }),
         sb.from("members").select("id,name,register,seat,is_leitung,sparte,active,user_id").order("name"),
-        isLead() ? sb.from("member_emails").select("member_id,email") : Promise.resolve({ data: [] })
+        isLead() ? sb.from("member_emails").select("member_id,email") : Promise.resolve({ data: [] }),
+        sb.from("stage_plans").select("id,title,project_id,updated_at").order("updated_at", { ascending: false })
       ]);
-      res.forEach(chk);
+      res.slice(0, 5).forEach(chk);
+      /* Bühnenpläne: fehlt die Ablage (noch nicht eingerichtet), läuft die App ohne sie weiter */
+      stagePlans = res[5] && !res[5].error ? (res[5].data || []) : [];
       SEATS = res[0].data.map(function (s) { return { id: s.id, reg: s.register, label: s.label }; });
       SEAT = {}; SEAT_IDX = {};
       SEATS.forEach(function (s, i) { SEAT[s.id] = s; SEAT_IDX[s.id] = i; });
@@ -939,6 +945,34 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       '<p class="note"><a href="' + esc(t.url) + '" target="_blank" rel="noopener">Im Browser öffnen</a></p>';
   }
 
+  function planById(id) { return stagePlans.filter(function (x) { return x.id === id; })[0]; }
+  function planDate(s) { try { return new Date(s).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }); } catch (e) { return ""; } }
+  function planRows(list, withProject) {
+    return '<div class="links">' + list.map(function (x) {
+      var pr = withProject && x.project_id ? byId(x.project_id) : null;
+      var sub = [pr ? pr.title : "", "Stand " + planDate(x.updated_at)].filter(Boolean).join(" · ");
+      return '<button type="button" class="row" data-action="plan" data-v="' + x.id + '"><span><b>' + esc(x.title) + "</b><span>" + esc(sub) + "</span></span></button>";
+    }).join("") + "</div>";
+  }
+  function plansSection() {
+    var t = toolById("buehne");
+    var html = '<section class="sec"><h2 class="sec-h">Bühnenpläne<span>' + stagePlans.length + "</span></h2>";
+    html += stagePlans.length ? planRows(stagePlans, true) : '<p class="note">Noch keine Aufstellung gespeichert.</p>';
+    if (canEditStage() && t) {
+      html += '<p class="note">Neue Aufstellungen im Bühnenplaner entwerfen und dort über „TPB-App“ speichern.</p>' +
+        '<div class="btns"><button type="button" class="btn" data-action="tool" data-v="buehne">Bühnenplaner öffnen</button></div>';
+    }
+    return html + "</section>";
+  }
+  function screenPlan(x) {
+    var t = toolById("buehne");
+    var url = t.url + "?plan=" + encodeURIComponent(x.id);
+    var pr = x.project_id ? byId(x.project_id) : null;
+    return '<p class="note">' + (pr ? esc(pr.title) + " · " : "") + "Stand " + planDate(x.updated_at) + ". PDF über die Taste „PDF“ im Plan.</p>" +
+      '<iframe class="toolframe" src="' + esc(url) + '" title="' + esc(x.title) + '" loading="lazy"></iframe>' +
+      '<p class="note"><a href="' + esc(url) + '" target="_blank" rel="noopener">Im Browser öffnen</a></p>';
+  }
+
   function screenInfos() {
     var shared = documents.filter(function (d) { return d.stage === "ensemble"; });
     var fsSec = '<section class="sec"><h2 class="sec-h">Schriftgröße</h2><div class="filters fsbtns" role="group" aria-label="Schriftgröße">' +
@@ -951,7 +985,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       '<p class="note">' + esc(userEmail) + "<br>" + (mySeat() ? esc(SEAT[mySeat()].label) : "Noch kein Platz zugeordnet") + (isLead() ? " · Leitung" + (me.sparte ? " (" + esc(SPARTE_TITLE[me.sparte]) + ")" : "") : "") + "</p>" +
       '<div class="btns"><button type="button" class="btn" data-action="logout">Abmelden</button></div></div></section>';
     var dress = '<section class="sec"><h2 class="sec-h">Kleiderordnung</h2><div class="panel"><p>Herren im Frack, Frauen dementsprechend schwarz.</p></div></section>';
-    return fsSec + dress + docs + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
+    return fsSec + dress + plansSection() + docs + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
       TOOLS.map(function (t) {
         return '<button type="button" class="row" data-action="tool" data-v="' + t.id + '"><span><b>' + esc(t.title) + "</b><span>" + esc(t.sub) + "</span></span></button>";
       }).join("") + "</div></section>" + acc +
@@ -1001,6 +1035,10 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
           (kl && lead ? '<button type="button" class="btn small klaer" data-action="confirmday" data-pid="' + p.id + '" data-i="' + i + '">Termin bestätigen</button>' : "") +
           "</span></li>";
       }).join("") + "</ul></section>";
+    }
+    var pplans = stagePlans.filter(function (x) { return x.project_id === p.id; });
+    if (pplans.length) {
+      html += '<section class="sec"><h2 class="sec-h">Bühnenplan<span>' + pplans.length + "</span></h2>" + planRows(pplans, false) + "</section>";
     }
     var pdocs = documents.filter(function (d) { return d.project_id === p.id; });
     if (pdocs.length) {
@@ -1142,6 +1180,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       if (parts[0] === "sparte" && isLead()) { var s = sparteById(parts[1]); if (s) return { k: "sparte", s: s, title: s.title }; }
       if (parts[0] === "members" && isLead()) return { k: "members", title: "Mitglieder" };
       if (parts[0] === "tool") { var t = toolById(parts[1]); if (t) return { k: "tool", t: t, title: t.title }; }
+      if (parts[0] === "plan") { var sp = planById(parts.slice(1).join(":")); if (sp) return { k: "plan", sp: sp, title: sp.title }; }
     }
     ui.pid = null;
     ui.view = null;
@@ -1167,6 +1206,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       : sv && sv.k === "sparte" ? screenSparte(sv.s)
       : sv && sv.k === "members" ? screenMembers()
       : sv && sv.k === "tool" ? screenTool(sv.t)
+      : sv && sv.k === "plan" ? screenPlan(sv.sp)
       : ui.tab === "kalender" ? screenKalender()
       : ui.tab === "leitung" ? screenLeitung()
       : ui.tab === "meine" ? screenMeine()
@@ -1510,7 +1550,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     if (a === "reload") { loadAll(); return; }
     if (a === "close") { closeSheet(); return; }
     if (phase !== "app") return;
-    if (busy && ["tab", "open", "back", "sparte", "tool", "members", "filter", "fs", "doc", "doc-open"].indexOf(a) < 0) {
+    if (busy && ["tab", "open", "back", "sparte", "tool", "plan", "members", "filter", "fs", "doc", "doc-open"].indexOf(a) < 0) {
       toast("Einen Moment bitte, es wird noch gespeichert …");
       return;
     }
@@ -1520,6 +1560,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     else if (a === "sparte") { enterSub(); ui.view = "sparte:" + v; ui.pid = null; scrollTop = true; }
     else if (a === "members") { enterSub(); ui.view = "members"; ui.pid = null; scrollTop = true; }
     else if (a === "tool") { enterSub(); ui.view = "tool:" + v; ui.pid = null; scrollTop = true; }
+    else if (a === "plan") { enterSub(); ui.view = "plan:" + v; ui.pid = null; scrollTop = true; }
     else if (a === "back") {
       if (inSub) { history.back(); return; }
       ui.pid = null; ui.view = null; scrollTop = true;
