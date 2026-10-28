@@ -1,6 +1,6 @@
 /* TPB Ensemble: Seiten kommen frisch aus dem Netz, damit Updates sofort ankommen;
    ohne Netz springt der Cache ein. Für eine neue Version VERSION hochzählen. */
-const VERSION = "tpb-ensemble-v7";
+const VERSION = "tpb-ensemble-v8";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest?v=3", "apple-touch-icon.png?v=3", "icon-192.png?v=3", "icon-512.png?v=3", "icon-maskable-512.png?v=3"];
 
 self.addEventListener("install", (e) => {
@@ -15,6 +15,10 @@ self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
   if (req.mode === "navigate") {
+    /* Nur die App-Seite selbst zwischenspeichern; andere Seiten im Ordner (z. B. beta/) nicht anfassen */
+    const scopePath = new URL(self.registration.scope).pathname;
+    const path = new URL(req.url).pathname;
+    if (path !== scopePath && path !== scopePath + "index.html") return;
     e.respondWith(
       fetch(req).then((res) => {
         const copy = res.clone();
