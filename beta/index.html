@@ -385,6 +385,10 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
 @keyframes tpb-load { from { background-position: -50% 0; } to { background-position: 150% 0; } }
 
 .seat-form { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.rr-list { display: grid; gap: 10px; max-height: 260px; overflow-y: auto; padding: 4px 2px; }
+.rr-pick .filters { margin-bottom: 4px; }
+.toast { pointer-events: none; }
+.fld .rr-list label.check { color: var(--text); font: 400 var(--step-0)/1.35 var(--font-ui); letter-spacing: normal; text-transform: none; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
@@ -404,7 +408,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var SB_URL = "https://vibrpjzjwpzifpljjukp.supabase.co";
   var SB_KEY = "sb_publishable_lVHKTlObiihOnrm-724Wdg_oPmVxItB";
   var UI_KEY = "tpb-beta-ui";
-  var VERSION_LABEL = "Beta 3 · Stand 28.10.2026";
+  var VERSION_LABEL = "Beta 4 · Stand 29.10.2026";
 
   var $ = function (s) { return document.querySelector(s); };
   function esc(s) {
@@ -479,6 +483,10 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var projects = [];
   var documents = [];
   var stagePlans = [];
+  var readReqs = [];
+  var pendingHash = location.hash || "";
+  var APP_ART = /\/beta\//.test(location.pathname) ? "beta" : "haupt";
+  var pushOn = false;
   var members = [];
   var emails = {};
   var lastLoad = 0;
@@ -534,11 +542,14 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
         sb.from("documents").select("id,sparte,stage,title,kind,url,storage_path,file_type,file_size,project_id,created_by,created_at").order("created_at", { ascending: false }),
         sb.from("members").select("id,name,register,seat,is_leitung,sparte,active,user_id").order("name"),
         isLead() ? sb.from("member_emails").select("member_id,email") : Promise.resolve({ data: [] }),
-        sb.from("stage_plans").select("id,title,project_id,updated_at").order("updated_at", { ascending: false })
+        sb.from("stage_plans").select("id,title,project_id,updated_at").order("updated_at", { ascending: false }),
+        sb.from("read_requests").select("document_id,member_id,requested_by,requested_at,read_at,reminded_at")
       ]);
       res.slice(0, 5).forEach(chk);
       /* Bühnenpläne: fehlt die Ablage (noch nicht eingerichtet), läuft die App ohne sie weiter */
       stagePlans = res[5] && !res[5].error ? (res[5].data || []) : [];
+      /* Leseaufforderungen (F-025): fehlt die Tabelle, läuft die App ohne sie weiter */
+      readReqs = res[6] && !res[6].error ? (res[6].data || []) : [];
       SEATS = res[0].data.map(function (s) { return { id: s.id, reg: s.register, label: s.label }; });
       SEAT = {}; SEAT_IDX = {};
       SEATS.forEach(function (s, i) { SEAT[s.id] = s; SEAT_IDX[s.id] = i; });
@@ -551,7 +562,9 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       lastLoad = Date.now();
       loadErr = "";
       phase = "app";
+      if (pendingHash) { applyHash(pendingHash); pendingHash = ""; }
       render();
+      checkPush();
     } catch (e) {
       console.error(e);
       loadErr = errText(e);
@@ -774,6 +787,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     var counts = { zugesagt: 0, planung: 0, idee: 0 };
     projects.forEach(function (p) { counts[p.status]++; });
     var html = installHint() + '<p class="banner">Beta mit echten Daten. Erinnerungen werden in der Beta noch nicht per E-Mail verschickt.</p>';
+    html += readSection();
     var open = myOpen();
     if (isLead()) {
       var alerts = up.filter(function (p) { return p.status === "zugesagt" && staffing(p).state !== "gruen"; });
@@ -889,9 +903,171 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     var meta = [dmy(d.created_at)];
     if (withSparte) meta.push(SPARTE_TITLE[d.sparte] || d.sparte);
     if (d.file_size) meta.push(sizeLabel(d.file_size));
+    if (isLead() && readSummary(d.id)) meta.push(readSummary(d.id));
     return '<button type="button" class="file" data-action="doc" data-v="' + d.id + '"><span class="ftype">' + typeTag(d) + "</span><span><b>" + esc(d.title) + '</b><span class="sub">' + esc(meta.join(" · ")) + "</span></span></button>";
   }
   function docById(id) { return documents.filter(function (d) { return d.id === id; })[0]; }
+
+  /* ---------- Leseaufforderungen (F-025) ---------- */
+  function myReadOpen() {
+    if (!me) return [];
+    return readReqs.filter(function (r) { return r.member_id === me.id && !r.read_at; })
+      .map(function (r) { return { r: r, d: docById(r.document_id) }; }).filter(function (x) { return x.d; });
+  }
+  function readRows(docId) { return readReqs.filter(function (r) { return r.document_id === docId; }); }
+  function readSummary(docId) {
+    var rows = readRows(docId);
+    if (!rows.length) return "";
+    var done = rows.filter(function (r) { return r.read_at; }).length;
+    return done + " von " + rows.length + " gelesen";
+  }
+  function notify(body) {
+    try {
+      body.app = APP_ART;
+      var pr = sb.functions.invoke("tpb-push", { body: body });
+      if (pr && pr.catch) pr.catch(function () { /* Nachricht ist Zusatz, App läuft weiter */ });
+    } catch (e) { /* ohne Nachricht weiter */ }
+  }
+  function recipientPicker(already) {
+    already = already || {};
+    var list = members.filter(function (m) { return m.active && (!me || m.id !== me.id); })
+      .sort(function (a, b) { return (a.seat ? SEAT_IDX[a.seat] : 99) - (b.seat ? SEAT_IDX[b.seat] : 99) || a.name.localeCompare(b.name); });
+    var regs = REGS.filter(function (reg) { return list.some(function (m) { return m.register === reg; }); });
+    var quick = [["alle", "Alle"], ["leitung", "Leitung"]].concat(regs.map(function (reg) { return ["reg:" + reg, reg]; }));
+    return '<div class="fld rr-pick"><label>Lesen bitte (optional)</label>' +
+      '<div class="filters" role="group" aria-label="Schnellauswahl">' + quick.map(function (q) {
+        return '<button type="button" class="fchip" data-action="rr-pick" data-v="' + esc(q[0]) + '">' + esc(q[1]) + "</button>";
+      }).join("") + "</div>" +
+      '<div class="rr-list">' + list.map(function (m) {
+        var was = already[m.id];
+        return '<label class="check"><input type="checkbox" name="rr" value="' + m.id + '" data-reg="' + esc(m.register || "") + '" data-lead="' + (m.is_leitung ? 1 : 0) + '"' + (was ? " checked disabled" : "") + "> " +
+          esc(m.name) + (m.seat && SEAT[m.seat] ? " · " + esc(SEAT[m.seat].label) : "") + (was ? (was.read_at ? " · gelesen" : " · schon gebeten") : "") + "</label>";
+      }).join("") + "</div>" +
+      '<p class="note">Die Ausgewählten sehen die Datei auch, wenn sie nur für die Leitung freigegeben ist, und bekommen eine Nachricht aufs Handy.</p></div>';
+  }
+  function pickedIds(form) {
+    return Array.prototype.slice.call(form.querySelectorAll("input[name=rr]:checked:not(:disabled)")).map(function (i) { return i.value; });
+  }
+  async function addReadRequests(docId, ids) {
+    if (!ids.length) return;
+    await sb.from("read_requests").upsert(ids.map(function (id) { return { document_id: docId, member_id: id }; }), { onConflict: "document_id,member_id", ignoreDuplicates: true }).then(chk);
+    notify({ art: "lesen", document_id: docId, member_ids: ids });
+  }
+  function markRead(docId) {
+    if (!me) return;
+    var r = readReqs.filter(function (x) { return x.document_id === docId && x.member_id === me.id && !x.read_at; })[0];
+    if (!r) return;
+    r.read_at = new Date().toISOString();
+    sb.from("read_requests").update({ read_at: r.read_at }).eq("document_id", docId).eq("member_id", me.id)
+      .then(function () { render(); }, function () { /* nächstes Laden zeigt den Stand */ });
+  }
+  function readSheet(d) {
+    var already = {};
+    readRows(d.id).forEach(function (r) { already[r.member_id] = r; });
+    openSheet('<h2 id="sheet-title">Leseaufforderung</h2><p class="note">' + esc(d.title) + "</p>" +
+      '<form id="f-read" novalidate>' + recipientPicker(already) +
+      '<p class="form-error" id="f-read-err" role="alert" hidden></p>' +
+      '<div class="btns"><button type="submit" class="btn primary">Senden</button><button type="button" class="btn" data-action="close">Abbrechen</button></div></form>', { docId: d.id });
+  }
+  async function submitRead(form) {
+    var docId = sheetCtx && sheetCtx.docId;
+    var ids = pickedIds(form);
+    if (!ids.length) return formError("f-read-err", "Bitte mindestens eine Person auswählen.");
+    closeSheet();
+    await run(function () { return addReadRequests(docId, ids); }, ids.length === 1 ? "Leseaufforderung gesendet." : "Leseaufforderung an " + ids.length + " Personen gesendet.");
+  }
+  function readSection() {
+    var open = myReadOpen();
+    if (!open.length) return "";
+    return '<section class="sec" id="lesen"><h2 class="sec-h">Bitte lesen<span>' + open.length + "</span></h2>" + open.map(function (x) {
+      var from = x.r.requested_by ? memberById(x.r.requested_by) : null;
+      return '<div class="rrow"><div class="rrow-h"><span><b>' + esc(x.d.title) + "</b><span>" + esc([from ? "von " + from.name : "", dmy(x.r.requested_at)].filter(Boolean).join(" · ")) + "</span></span></div>" +
+        '<div class="btns"><button type="button" class="btn primary" data-action="doc-open" data-v="' + x.d.id + '">Öffnen</button>' +
+        '<button type="button" class="btn" data-action="rr-done" data-v="' + x.d.id + '">Gelesen</button></div></div>';
+    }).join("") + "</section>";
+  }
+
+  /* ---------- Push-Nachrichten ---------- */
+  function pushSupported() { return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window; }
+  function b64ToBytes(s) {
+    var pad = "=".repeat((4 - s.length % 4) % 4);
+    var raw = atob((s + pad).replace(/-/g, "+").replace(/_/g, "/"));
+    var out = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+  function swScope() { return APP_ART === "beta" ? "../" : "./"; }
+  async function checkPush() {
+    try {
+      if (!pushSupported() || Notification.permission !== "granted") { pushOn = false; return; }
+      var reg = await navigator.serviceWorker.getRegistration(swScope());
+      var sub = reg && await reg.pushManager.getSubscription();
+      var was = pushOn;
+      pushOn = !!sub;
+      if (was !== pushOn && ui.tab === "infos") render();
+    } catch (e) { pushOn = false; }
+  }
+  async function enablePush() {
+    if (!pushSupported()) return;
+    var perm = await Notification.requestPermission();
+    if (perm !== "granted") { toast("Benachrichtigungen sind nicht erlaubt. Das lässt sich in den Einstellungen des Telefons ändern."); render(); return; }
+    setBusy(true);
+    try {
+      var reg = await navigator.serviceWorker.register(swScope() + "sw.js", { scope: swScope() });
+      await navigator.serviceWorker.ready;
+      var k = await sb.functions.invoke("tpb-push", { method: "GET" });
+      if (k.error || !k.data || !k.data.publicKey) throw (k.error || new Error("kein Schlüssel"));
+      var sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(k.data.publicKey) });
+      var j = sub.toJSON();
+      await sb.from("push_subscriptions").delete().eq("endpoint", j.endpoint);
+      await sb.from("push_subscriptions").insert({ endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth }).then(chk);
+      pushOn = true;
+      notify({ art: "test" });
+      toast("Benachrichtigungen sind eingeschaltet.");
+    } catch (e) {
+      console.error(e);
+      toast("Benachrichtigungen konnten nicht eingeschaltet werden. Bitte später noch einmal versuchen.");
+    } finally {
+      setBusy(false);
+      render();
+    }
+  }
+  async function disablePush() {
+    setBusy(true);
+    try {
+      var reg = await navigator.serviceWorker.getRegistration(swScope());
+      var sub = reg && await reg.pushManager.getSubscription();
+      if (sub) {
+        await sb.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
+        await sub.unsubscribe();
+      }
+      pushOn = false;
+      toast("Benachrichtigungen auf diesem Gerät ausgeschaltet.");
+    } catch (e) { toast("Das hat nicht geklappt. Bitte noch einmal versuchen."); }
+    finally { setBusy(false); render(); }
+  }
+  function pushSection() {
+    var body;
+    if (isIOS() && !isStandalone()) {
+      body = '<p class="note">Auf dem iPhone kommen Nachrichten, sobald die App auf dem Home-Bildschirm liegt: in Safari unten Teilen tippen, „Zum Home-Bildschirm“ wählen, die App von dort öffnen und hier einschalten.</p>';
+    } else if (!pushSupported()) {
+      body = '<p class="note">Dieser Browser kann keine Nachrichten empfangen. Auf Android bitte Chrome verwenden, auf dem iPhone die App vom Home-Bildschirm öffnen.</p>';
+    } else if (Notification.permission === "denied") {
+      body = '<p class="note">Nachrichten sind für diese App gesperrt. Freigeben lassen sie sich in den Einstellungen des Telefons (Mitteilungen bzw. Website-Einstellungen).</p>';
+    } else if (pushOn) {
+      body = '<p class="note">Eingeschaltet für dieses Gerät: Leseaufforderungen, neue Projekte und bestätigte Termine.</p><div class="btns"><button type="button" class="btn" data-action="push-off">Auf diesem Gerät ausschalten</button></div>';
+    } else {
+      body = '<p class="note">Bekomme eine Nachricht aufs Handy bei Leseaufforderungen, neuen Projekten und bestätigten Terminen.</p><div class="btns"><button type="button" class="btn primary" data-action="push-on">Benachrichtigungen einschalten</button></div>';
+    }
+    return '<section class="sec"><h2 class="sec-h">Benachrichtigungen</h2>' + body + "</section>";
+  }
+  function applyHash(h) {
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* egal */ }
+    if (h === "#lesen") { ui.tab = "start"; ui.pid = null; ui.view = null; }
+    else if (h === "#infos") { ui.tab = "infos"; ui.pid = null; ui.view = null; }
+    else if (/^#p=/.test(h)) { var pid = h.slice(3); if (byId(pid)) { enterSub(); ui.pid = pid; ui.view = null; } }
+  }
 
   function screenLeitung() {
     var html = '<p class="note">Die Leitung sieht alle Sparten und kann überall ablegen. Jede Ablage hat zwei Stufen: intern für die Leitung und freigegeben fürs Ensemble.</p>';
@@ -975,6 +1151,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
 
   function screenInfos() {
     var shared = documents.filter(function (d) { return d.stage === "ensemble"; });
+    var forMe = isLead() ? [] : documents.filter(function (d) { return d.stage !== "ensemble" && readReqs.some(function (r) { return r.document_id === d.id && r.member_id === me.id; }); });
     var fsSec = '<section class="sec"><h2 class="sec-h">Schriftgröße</h2><div class="filters fsbtns" role="group" aria-label="Schriftgröße">' +
       FS.map(function (f) {
         return '<button type="button" class="fchip" data-action="fs" data-v="' + f[0] + '" aria-pressed="' + (ui.fs === f[0]) + '"><span style="font-size:' + f[2] + '">A</span>' + f[1] + "</button>";
@@ -985,7 +1162,9 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       '<p class="note">' + esc(userEmail) + "<br>" + (mySeat() ? esc(SEAT[mySeat()].label) : "Noch kein Platz zugeordnet") + (isLead() ? " · Leitung" + (me.sparte ? " (" + esc(SPARTE_TITLE[me.sparte]) + ")" : "") : "") + "</p>" +
       '<div class="btns"><button type="button" class="btn" data-action="logout">Abmelden</button></div></div></section>';
     var dress = '<section class="sec"><h2 class="sec-h">Kleiderordnung</h2><div class="panel"><p>Herren im Frack, Frauen dementsprechend schwarz.</p></div></section>';
-    return fsSec + dress + plansSection() + docs + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
+    var mine = forMe.length ? '<section class="sec"><h2 class="sec-h">Für dich freigegeben<span>' + forMe.length + "</span></h2>" +
+      '<div class="files">' + forMe.map(function (d) { return docRow(d, true); }).join("") + "</div></section>" : "";
+    return fsSec + pushSection() + dress + plansSection() + docs + mine + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
       TOOLS.map(function (t) {
         return '<button type="button" class="row" data-action="tool" data-v="' + t.id + '"><span><b>' + esc(t.title) + "</b><span>" + esc(t.sub) + "</span></span></button>";
       }).join("") + "</div></section>" + acc +
@@ -1266,8 +1445,9 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       console.error(e);
       toast(errText(e));
     } finally {
-      setBusy(false);
+      /* erst nach dem Neuladen wieder freigeben, damit niemand auf veraltete Knöpfe tippt */
       await loadAll(true);
+      setBusy(false);
     }
   }
 
@@ -1365,6 +1545,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
 
   /* Ablage: öffnen, hochladen, verlinken, freigeben, löschen */
   function openDoc(d) {
+    markRead(d.id);
     if (d.kind === "link") { window.open(d.url, "_blank", "noopener"); return; }
     var w = null;
     try { w = window.open("", "_blank"); } catch (e) { w = null; }
@@ -1377,9 +1558,19 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     var lead = isLead();
     var meta = [SPARTE_TITLE[d.sparte], STAGE_LABEL[d.stage], dmy(d.created_at)];
     if (d.file_size) meta.push(sizeLabel(d.file_size));
-    openSheet('<h2 id="sheet-title">' + esc(d.title) + '</h2><p class="note">' + esc(meta.join(" · ")) + "</p>" +
+    var rows = readRows(d.id);
+    var open = rows.filter(function (r) { return !r.read_at; });
+    var rinfo = "";
+    if (lead && rows.length) {
+      var namen = function (list) { return list.map(function (r) { var m = memberById(r.member_id); return m ? m.name : "?"; }).join(", "); };
+      rinfo = '<div class="panel"><p><b>' + readSummary(d.id) + "</b></p>" +
+        (open.length ? '<p class="note">Noch nicht gelesen: ' + esc(namen(open)) + "</p>" : '<p class="note">Alle haben gelesen.</p>') + "</div>";
+    }
+    openSheet('<h2 id="sheet-title">' + esc(d.title) + '</h2><p class="note">' + esc(meta.join(" · ")) + "</p>" + rinfo +
       '<div class="btns"><button type="button" class="btn primary" data-action="doc-open" data-v="' + d.id + '">Öffnen</button>' +
-      (lead ? '<button type="button" class="btn" data-action="doc-stage" data-v="' + d.id + '">' + (d.stage === "intern" ? "Fürs Ensemble freigeben" : "Nur noch intern") + "</button>" +
+      (lead ? '<button type="button" class="btn" data-action="rr-sheet" data-v="' + d.id + '">Leseaufforderung senden</button>' +
+        (open.length ? '<button type="button" class="btn" data-action="rr-remind" data-v="' + d.id + '">Ungelesene erinnern</button>' : "") +
+        '<button type="button" class="btn" data-action="doc-stage" data-v="' + d.id + '">' + (d.stage === "intern" ? "Fürs Ensemble freigeben" : "Nur noch intern") + "</button>" +
         '<button type="button" class="btn no" data-action="doc-del" data-v="' + d.id + '">Löschen</button>' : "") +
       '<button type="button" class="btn" data-action="close">Abbrechen</button></div>');
   }
@@ -1414,7 +1605,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     openSheet('<h2 id="sheet-title">Datei hochladen</h2><p class="note">' + esc(SPARTE_TITLE[sparte]) + " · PDF, Bilder oder Office-Dateien bis 25 MB</p>" +
       '<form id="f-upload" novalidate><div class="fld"><label for="f-file">Datei</label><input id="f-file" name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" required></div>' +
       '<div class="fld"><label for="f-title">Titel</label><input id="f-title" name="title" type="text" maxlength="120" autocomplete="off" placeholder="z. B. Tourplan mit Hoteldaten"></div>' +
-      stageRadios("intern") + projectSelect() +
+      stageRadios("intern") + projectSelect() + recipientPicker() +
       '<p class="form-error" id="f-upload-err" role="alert" hidden></p>' +
       '<div class="btns"><button type="submit" class="btn primary">Hochladen</button><button type="button" class="btn" data-action="close">Abbrechen</button></div></form>', { sparte: sparte });
   }
@@ -1439,13 +1630,17 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     var stage = (form.querySelector("input[name=stage]:checked") || {}).value || "intern";
     var project = form.project ? form.project.value || null : null;
     var path = sparte + "/" + uuid() + "-" + safeName(file.name);
+    var ids = pickedIds(form);
     closeSheet();
     await run(async function () {
       var up = await sb.storage.from("dokumente").upload(path, file, { contentType: type, upsert: false });
       if (up.error) throw up.error;
-      var ins = await sb.from("documents").insert({ sparte: sparte, stage: stage, title: title.slice(0, 120), kind: "datei", storage_path: path, file_type: type, file_size: file.size, project_id: project });
+      var ins = await sb.from("documents").insert({ sparte: sparte, stage: stage, title: title.slice(0, 120), kind: "datei", storage_path: path, file_type: type, file_size: file.size, project_id: project }).select("id").single();
       if (ins.error) { await sb.storage.from("dokumente").remove([path]); throw ins.error; }
-    }, stage === "ensemble" ? "Hochgeladen und fürs Ensemble freigegeben." : "Hochgeladen, nur für die Leitung sichtbar.");
+      if (ids.length) await addReadRequests(ins.data.id, ids);
+      if (stage === "ensemble") notify({ art: "dokument", document_id: ins.data.id, ohne: ids });
+    }, (stage === "ensemble" ? "Hochgeladen und fürs Ensemble freigegeben." : "Hochgeladen, nur für die Leitung sichtbar.") +
+      (ids.length ? " Leseaufforderung an " + (ids.length === 1 ? "1 Person" : ids.length + " Personen") + " gesendet." : ""));
   }
   async function submitLink(form) {
     var title = (form.title.value || "").trim();
@@ -1593,7 +1788,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       return;
     }
     else if (a === "confirmproject" && p && isLead()) {
-      run(function () { return sb.from("projects").update({ status: "zugesagt" }).eq("id", p.id).then(chk); }, "Projekt zugesagt. Die Besetzung ist jetzt offen für Rückmeldungen.");
+      run(async function () { await sb.from("projects").update({ status: "zugesagt" }).eq("id", p.id).then(chk); notify({ art: "projekt", project_id: p.id }); }, "Projekt zugesagt. Die Besetzung ist jetzt offen für Rückmeldungen.");
       return;
     }
     else if (a === "toplan" && p && isLead()) {
@@ -1613,7 +1808,8 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       var dayId = sheetCtx.dayId;
       var ort = ($("#f-ort").value || "").trim();
       closeSheet();
-      run(function () { return sb.from("project_days").update({ confirmed: true, place: ort || null }).eq("id", dayId).then(chk); }, "Termin bestätigt und freigegeben.");
+      var dp = projects.filter(function (x) { return x.days.some(function (dd) { return dd.id === dayId; }); })[0];
+      run(async function () { await sb.from("project_days").update({ confirmed: true, place: ort || null }).eq("id", dayId).then(chk); if (dp && dp.status === "zugesagt") notify({ art: "termin", project_id: dp.id, day_id: dayId }); }, "Termin bestätigt und freigegeben.");
       return;
     }
     else if (a === "doc") {
@@ -1626,7 +1822,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     else if (a === "doc-stage" && isLead()) {
       var d2 = docById(v);
       closeSheet();
-      if (d2) run(function () { return sb.from("documents").update({ stage: d2.stage === "intern" ? "ensemble" : "intern" }).eq("id", d2.id).then(chk); },
+      if (d2) run(async function () { var to = d2.stage === "intern" ? "ensemble" : "intern"; await sb.from("documents").update({ stage: to }).eq("id", d2.id).then(chk); if (to === "ensemble") notify({ art: "dokument", document_id: d2.id }); },
         d2.stage === "intern" ? "Fürs Ensemble freigegeben." : "Nur noch für die Leitung sichtbar.");
       return;
     }
@@ -1641,6 +1837,26 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       return;
     }
     else if (a === "doc-upload" && isLead()) { uploadSheet(v); return; }
+    else if (a === "rr-sheet" && isLead()) { var d4 = docById(v); if (d4) readSheet(d4); return; }
+    else if (a === "rr-remind" && isLead()) {
+      var ids4 = readRows(v).filter(function (r) { return !r.read_at; }).map(function (r) { return r.member_id; });
+      closeSheet();
+      if (ids4.length) { notify({ art: "lesen", document_id: v, member_ids: ids4 }); toast("Erinnerung an " + (ids4.length === 1 ? "1 Person" : ids4.length + " Personen") + " gesendet."); }
+      return;
+    }
+    else if (a === "rr-done") { markRead(v); toast("Als gelesen markiert."); return; }
+    else if (a === "rr-pick") {
+      var form = el.closest("form");
+      if (!form) return;
+      var boxes = Array.prototype.slice.call(form.querySelectorAll("input[name=rr]:not(:disabled)")).filter(function (i) {
+        return v === "alle" || (v === "leitung" && i.getAttribute("data-lead") === "1") || (v.indexOf("reg:") === 0 && i.getAttribute("data-reg") === v.slice(4));
+      });
+      var allOn = boxes.length && boxes.every(function (i) { return i.checked; });
+      boxes.forEach(function (i) { i.checked = !allOn; });
+      return;
+    }
+    else if (a === "push-on") { enablePush(); return; }
+    else if (a === "push-off") { disablePush(); return; }
     else if (a === "doc-link" && isLead()) { linkSheet(v); return; }
     else if (a === "invite" && isLead()) { inviteSheet(); return; }
     else if (a === "member" && isLead()) { var m0 = memberById(v); if (m0) memberSheet(m0); return; }
@@ -1675,6 +1891,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     else if (f.id === "f-upload") submitUpload(f);
     else if (f.id === "f-link") submitLink(f);
     else if (f.id === "f-invite") submitInvite(f);
+    else if (f.id === "f-read") submitRead(f);
     else if (f.id === "f-player") submitPlayer(f);
     else if (f.id === "f-subname") submitSubName(f);
   });
@@ -1699,6 +1916,12 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     if (document.hidden) return;
     applyFont();
     if (phase === "app" && Date.now() - lastLoad > 30000 && !busy) loadAll(true);
+  });
+
+  window.addEventListener("hashchange", function () {
+    if (!location.hash) return;
+    if (phase === "app") { applyHash(location.hash); render(); window.scrollTo(0, 0); }
+    else pendingHash = location.hash;
   });
 
   sb.auth.onAuthStateChange(function (event) {

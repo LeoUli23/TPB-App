@@ -1,6 +1,6 @@
 /* TPB Ensemble: Seiten kommen frisch aus dem Netz, damit Updates sofort ankommen;
    ohne Netz springt der Cache ein. Für eine neue Version VERSION hochzählen. */
-const VERSION = "tpb-ensemble-v9";
+const VERSION = "tpb-ensemble-v10";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest?v=3", "apple-touch-icon.png?v=3", "icon-192.png?v=3", "icon-512.png?v=3", "icon-maskable-512.png?v=3"];
 
 self.addEventListener("install", (e) => {
@@ -29,4 +29,27 @@ self.addEventListener("fetch", (e) => {
     return;
   }
   e.respondWith(caches.match(req).then((hit) => hit || fetch(req)));
+});
+
+/* Push-Nachrichten (F-025): anzeigen und beim Antippen die App an der passenden Stelle öffnen */
+self.addEventListener("push", (e) => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (x) { d = { body: e.data ? e.data.text() : "" }; }
+  e.waitUntil(self.registration.showNotification(d.title || "TPB Ensemble", {
+    body: d.body || "",
+    icon: "icon-192.png?v=3",
+    badge: "icon-192.png?v=3",
+    tag: d.tag || undefined,
+    data: { url: d.url || "./" }
+  }));
+});
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const url = new URL((e.notification.data && e.notification.data.url) || "./", self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+    const base = url.split("#")[0];
+    const hit = list.find((c) => c.url.split("#")[0] === base);
+    if (hit) return hit.navigate(url).then((c) => (c || hit).focus()).catch(() => hit.focus());
+    return self.clients.openWindow(url);
+  }));
 });
