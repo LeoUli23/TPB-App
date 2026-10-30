@@ -407,7 +407,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var SB_URL = "https://vibrpjzjwpzifpljjukp.supabase.co";
   var SB_KEY = "sb_publishable_lVHKTlObiihOnrm-724Wdg_oPmVxItB";
   var UI_KEY = "tpb-beta-ui";
-  var VERSION_LABEL = "Beta 5 · Stand 30.10.2026";
+  var VERSION_LABEL = "Beta 6 · Stand 30.10.2026";
 
   var $ = function (s) { return document.querySelector(s); };
   function esc(s) {
@@ -620,6 +620,19 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     var t = new Date();
     return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
   }
+  /* Löschregel (F-031): 3 Tage nach Projektende sind Zusagen, Besetzung und Unterlagen gelöscht;
+     das Projekt bleibt als Eintrag. Ende = Enddatum, sonst letzter Termin, sonst Start. */
+  function projEnd(p) {
+    if (p.end) return p.end;
+    var last = null;
+    p.days.forEach(function (d) { var x = d.e || d.d; if (x && (!last || x > last)) last = x; });
+    return last || p.start || null;
+  }
+  function plusDays(iso, n) {
+    var d = new Date(iso + "T12:00:00"); d.setDate(d.getDate() + n);
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function archived(p) { var e = projEnd(p); return !!e && plusDays(e, 3) <= todayIso(); }
   var STATUS_LABEL = { zugesagt: "Zugesagt", planung: "In Planung", idee: "Idee" };
   var TYPE_LABEL = { reise: "Reise", probe: "Probe", konzert: "Konzert", aufnahme: "Aufnahme" };
   function byId(id) { return projects.filter(function (p) { return p.id === id; })[0]; }
@@ -720,12 +733,12 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   function card(p) {
     var st = staffing(p);
     var k = klaerCount(p);
-    var side = p.status === "zugesagt"
+    var side = archived(p) ? '<span class="lock">Abge&shy;schlossen</span>' : p.status === "zugesagt"
       ? housing(st.state) + "<span>" + st.filled + "/" + st.total + "</span>"
       : '<span class="lock">' + LOCK + "Besetzung<br>gesperrt</span>";
     var mine = "";
     var s = mySeatIn(p);
-    if (s && p.status === "zugesagt") {
+    if (s && p.status === "zugesagt" && !archived(p)) {
       var r = resp(p, s);
       mine = r.r === "ja" ? '<span class="pill ja">Du: Zusage</span>' : r.r === "nein" ? '<span class="pill nein">Du: Absage</span>' : '<span class="pill offen">Du: offen</span>';
     }
@@ -1188,7 +1201,10 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     var s = mySeatIn(p);
     var html = '<p class="meta"><span class="chip ' + p.status + '">' + STATUS_LABEL[p.status] + "</span><span>" + esc(range(p)) + "</span>" + (p.conductor ? "<span>" + esc(p.conductor) + "</span>" : "") + "</p>";
     if (p.hint) html += '<p class="note">' + esc(p.hint) + "</p>";
-    if (p.status === "zugesagt") {
+    if (archived(p)) {
+      html += '<div class="panel locked"><p><span class="lock">' + LOCK + "Projekt abgeschlossen</span></p>" +
+        "<p>Zusagen, Besetzung und Unterlagen zu diesem Projekt werden 3 Tage nach Projektende gelöscht. Das Projekt bleibt mit seinen Terminen als Eintrag.</p></div>";
+    } else if (p.status === "zugesagt") {
       html += '<div class="panel"><div class="staff">' + housing(st.state, true) + "<span><b>" + st.label + "</b><span>" + st.filled + " von " + st.total + " Plätzen besetzt · " + regSummary(p.seats) + "</span></span></div>";
       if (s) {
         var r = resp(p, s);
@@ -1222,7 +1238,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     if (pdocs.length) {
       html += '<section class="sec"><h2 class="sec-h">Unterlagen</h2><div class="files">' + pdocs.map(function (d) { return docRow(d, true); }).join("") + "</div></section>";
     }
-    if (p.status === "zugesagt") {
+    if (p.status === "zugesagt" && !archived(p)) {
       html += '<section class="sec"><h2 class="sec-h">Besetzung Platz für Platz</h2>';
       REGS.forEach(function (reg) {
         var ids = p.seats.filter(function (sid) { return SEAT[sid].reg === reg; });
