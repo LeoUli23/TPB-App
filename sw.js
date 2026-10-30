@@ -1,7 +1,9 @@
 /* TPB Ensemble: Seiten kommen frisch aus dem Netz, damit Updates sofort ankommen;
    ohne Netz springt der Cache ein. Für eine neue Version VERSION hochzählen. */
-const VERSION = "tpb-ensemble-v10";
-const SHELL = ["./", "./index.html", "./manifest.webmanifest?v=3", "apple-touch-icon.png?v=3", "icon-192.png?v=3", "icon-512.png?v=3", "icon-maskable-512.png?v=3"];
+const VERSION = "tpb-ensemble-v11";
+const SHELL = ["./", "./index.html", "./manifest.webmanifest?v=3", "apple-touch-icon.png?v=3", "icon-192.png?v=3", "icon-512.png?v=3", "icon-maskable-512.png?v=3",
+  "assets/schrift/schrift.css?v=1", "assets/schrift/bodoni-moda-latin-opsz-normal.woff2", "assets/schrift/bodoni-moda-latin-opsz-italic.woff2",
+  "assets/schrift/instrument-sans-latin-wght-normal.woff2", "assets/schrift/ibm-plex-mono-latin-500-normal.woff2"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
