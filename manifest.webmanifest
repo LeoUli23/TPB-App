@@ -2,7 +2,7 @@
   "id": "./",
   "name": "TPB Ensemble",
   "short_name": "TPB",
-  "description": "Termine, Besetzung und Rückmeldungen für The Philharmonic Brass (Prototyp)",
+  "description": "Termine, Besetzung, Zusagen und Unterlagen für The Philharmonic Brass",
   "lang": "de",
   "start_url": "./",
   "scope": "./",

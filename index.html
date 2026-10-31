@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TPB">
 <link rel="manifest" href="manifest.webmanifest?v=3">
+<meta name="robots" content="noindex">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3">
 <link rel="apple-touch-icon-precomposed" sizes="180x180" href="apple-touch-icon.png?v=3">
@@ -18,6 +19,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preload" href="assets/schrift/bodoni-moda-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/schrift/schrift.css?v=1">
+<link rel="preconnect" href="https://vibrpjzjwpzifpljjukp.supabase.co" crossorigin>
 </head>
 <body>
 <style>
@@ -352,6 +354,42 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
 .fsbtns .fchip { flex: 1 1 0; text-align: center; padding-inline: 8px; }
 .fsbtns .fchip span { display: block; font-family: var(--font-display); line-height: 1; margin-bottom: 4px; color: var(--gold); }
 
+
+/* ---------- Beta: Anmeldung, Formulare, Ablage ---------- */
+.login { min-height: calc(100dvh - 48px - env(safe-area-inset-top, 0px)); display: grid; align-content: center; gap: 18px; padding-block: 24px; max-width: 26rem; margin-inline: auto; }
+.login-logo { width: 84px; height: 84px; border-radius: 20px; box-shadow: var(--lift); }
+.login h1 { margin: 4px 0 0; font-family: var(--font-display); font-weight: 500; font-size: var(--step-3); line-height: 1.1; }
+.login form { display: grid; gap: 14px; }
+.login .btn { width: 100%; }
+.login .btns { justify-content: space-between; }
+.fld input[type=email], .fld input[type=url], .fld input[type=file], .fld select { width: 100%; box-sizing: border-box; border: 1px solid var(--rule); border-radius: 10px; background: var(--ink); color: var(--text); font: 400 1rem/1.4 var(--font-ui); padding: 11px 12px; }
+.fld select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--gold) 50%), linear-gradient(135deg, var(--gold) 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 34px; }
+.fld input:focus, .fld select:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+.code-input { font: 600 1.6rem/1.2 var(--font-data) !important; letter-spacing: 0.35em; text-align: center; }
+.form-error { margin: 0; color: #ff8a80; font-size: var(--step--1); }
+.form-ok { margin: 0; color: var(--st-gruen); font-size: var(--step--1); }
+.linklike { appearance: none; border: 0; background: none; color: var(--gold); font: 600 var(--step--1)/1.3 var(--font-ui); padding: 10px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.check { display: flex; align-items: center; gap: 10px; color: var(--text); font-size: var(--step-0); }
+.check input { width: 22px; height: 22px; accent-color: var(--gold); }
+.radio-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.radio-row label { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--tap-edge); border-radius: 10px; background: linear-gradient(180deg, var(--tap-hi), var(--tap)); color: var(--text); font: 500 var(--step--1)/1.2 var(--font-ui); letter-spacing: 0; text-transform: none; cursor: pointer; }
+.radio-row input { width: 18px; height: 18px; accent-color: var(--gold); margin: 0; }
+button.file { appearance: none; width: 100%; border: 0; text-align: left; color: inherit; font: inherit; cursor: pointer; grid-template-columns: auto minmax(0, 1fr) 8px; background: linear-gradient(180deg, color-mix(in srgb, var(--tap-hi) 70%, transparent), transparent); }
+button.file::after { content: ""; width: 8px; height: 14px; justify-self: end; align-self: center; background: var(--gold); -webkit-mask: var(--chev) center / contain no-repeat; mask: var(--chev) center / contain no-repeat; }
+button.file:active { background: var(--tap); box-shadow: var(--press); }
+.files { display: grid; }
+.chip.beta { color: var(--gold); border-color: color-mix(in srgb, var(--gold) 50%, var(--rule)); }
+.busy main { opacity: 0.8; }
+.busy::after { content: ""; position: fixed; z-index: 40; left: 0; right: 0; top: env(safe-area-inset-top, 0px); height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%); background-size: 50% 100%; background-repeat: no-repeat; animation: tpb-load 1.1s linear infinite; }
+@keyframes tpb-load { from { background-position: -50% 0; } to { background-position: 150% 0; } }
+
+.seat-form { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.rr-list { display: grid; gap: 10px; max-height: 260px; overflow-y: auto; padding: 4px 2px; }
+.rr-pick .filters { margin-bottom: 4px; }
+.toast { pointer-events: none; }
+.fld .rr-list label.check { color: var(--text); font: 400 var(--step-0)/1.35 var(--font-ui); letter-spacing: normal; text-transform: none; }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
@@ -361,37 +399,43 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden><div class="sheet-inner" id="sheet-inner"></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+<script src="assets/js/supabase-2.117.3.js" integrity="sha384-BWcjm9OdFth9TbhCxZPdm+gAOUMAzQy9nmTs12ioXdCcbVnJaPMn+fMUoQCLt60R"></script>
 <script>
 (function () {
   "use strict";
 
-  var KEY = "tpb-prototyp-1";
+  /* ---------- Verbindung zu Supabase (öffentliche Adresse und öffentlicher Schlüssel; geschützt durch die Rechte in der Datenbank) ---------- */
+  var SB_URL = "https://vibrpjzjwpzifpljjukp.supabase.co";
+  var SB_KEY = "sb_publishable_lVHKTlObiihOnrm-724Wdg_oPmVxItB";
+  var UI_KEY = "tpb-beta-ui";
+  var VERSION_LABEL = "Version 11 · Stand 31.10.2026";
 
-  /* ---------- Besetzung: bis zu 20 Plätze ---------- */
-  var SEATS = [];
-  function addSeats(reg, n, prefix) {
-    if (!n) { SEATS.push({ id: prefix, reg: reg, label: reg }); return; }
-    for (var i = 1; i <= n; i++) SEATS.push({ id: prefix + i, reg: reg, label: reg + " " + i });
+  var $ = function (s) { return document.querySelector(s); };
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
   }
-  addSeats("Trompete", 6, "trp");
-  addSeats("Horn", 4, "hr");
-  addSeats("Posaune", 3, "pos");
-  addSeats("Tenorhorn", 0, "thr");
-  addSeats("Tuba", 2, "tb");
-  addSeats("Pauke", 0, "pk");
-  addSeats("Schlagzeug", 3, "sz");
-  var SEAT = {};
-  SEATS.forEach(function (s) { SEAT[s.id] = s; });
-  var ALL = SEATS.map(function (s) { return s.id; });
+
+  if (!window.supabase || !window.supabase.createClient) {
+    document.getElementById("app").innerHTML = '<main class="screen"><p class="banner">Die App konnte nicht geladen werden. Bitte Verbindung prüfen und die App neu öffnen.</p></main>';
+    return;
+  }
+  var sb = window.supabase.createClient(SB_URL, SB_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: "tpb-auth" }
+  });
+
+  /* ---------- Register, Plätze ---------- */
   var REGS = ["Trompete", "Horn", "Posaune", "Tenorhorn", "Tuba", "Pauke", "Schlagzeug"];
   var REG_SHORT = { Trompete: "Trp", Horn: "Hr", Posaune: "Pos", Tenorhorn: "Thr", Tuba: "Tb", Pauke: "Pk", Schlagzeug: "Schlgz." };
+  var SEATS = [];
+  var SEAT = {};
+  var SEAT_IDX = {};
 
-  /* ---------- F-001/F-002: Werkzeuge, öffnen sich in der App ----------
-     Adresse eintragen, sobald sie feststeht (z. B. "https://leouli23.github.io/<Repository>/"). */
+  /* ---------- Werkzeuge (öffnen in der App) ---------- */
   var TOOLS = [
     { id: "buehne", title: "Bühnenplaner", sub: "Bühnenpläne je Programm", url: "https://leouli23.github.io/TPB-B-hnenplan/" },
     { id: "instr", title: "Instrumentenübersicht", sub: "Schlagwerk-Disposition je Stück, wächst mit dem Notenarchiv", url: "https://leouli23.github.io/Untertitel-Studio/",
-      /* F-012: Nach dem Umbenennen des Repositorys gilt automatisch die neue Adresse */
       urls: ["https://leouli23.github.io/TPB-Schlagwerk-Disposition/", "https://leouli23.github.io/Untertitel-Studio/"] }
   ];
   function resolveTools() {
@@ -407,162 +451,272 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
   }
   function toolById(id) { return TOOLS.filter(function (t) { return t.id === id; })[0]; }
 
-  /* ---------- F-007: Leitung mit fünf Sparten ----------
-     Stufe "intern" sieht nur die Leitung, Stufe "ensemble" sehen alle Musiker.
-     Die Einträge sind Beispiele; Hochladen und Freigeben kommen mit dem Login (Supabase). */
+  /* ---------- Sparten der Leitung ---------- */
   var SPARTEN = [
-    { id: "vorstand", title: "Vorstand", sub: "Verein, Verträge, Grundsatzentscheidungen",
-      icon: '<path d="M12 3l8 4H4z M5 9h14M6 9v8M10 9v8M14 9v8M18 9v8M4 20h16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
-      files: [
-        { t: "PDF", n: "Protokolle der Leitungssitzungen", s: "intern" },
-        { t: "DOK", n: "Verträge und Vereinbarungen", s: "intern" },
-        { t: "PDF", n: "Ensemble-Regeln und Ansprechpartner", s: "ensemble" }
-      ] },
+    { id: "vorstand", title: "Vorstand", sub: "Verträge, Grundsatzentscheidungen",
+      icon: '<path d="M12 3l8 4H4z M5 9h14M6 9v8M10 9v8M14 9v8M18 9v8M4 20h16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>' },
     { id: "medien", title: "Medien & Social Media", sub: "Online-Präsenz, Presse, Fotos und Videos",
-      icon: '<rect x="3" y="6" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 6l1.5-2h5L16 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
-      files: [
-        { t: "DOK", n: "Redaktionsplan Social Media", s: "intern" },
-        { t: "LINK", n: "Pressefotos, Originale", s: "intern" },
-        { t: "LINK", n: "Fotos und Videos zum Teilen", s: "ensemble" },
-        { t: "PDF", n: "Leitfaden: Posten für TPB", s: "ensemble" }
-      ] },
+      icon: '<rect x="3" y="6" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 6l1.5-2h5L16 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>' },
     { id: "finanzen", title: "Finanzen", sub: "Budget, Gagen, Abrechnungen",
-      icon: '<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6 9.5v5M18 9.5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
-      files: [
-        { t: "DOK", n: "Budget je Projekt", s: "intern" },
-        { t: "DOK", n: "Gagenübersicht", s: "intern" },
-        { t: "PDF", n: "Reisekosten: Formular und Fristen", s: "ensemble" }
-      ] },
+      icon: '<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6 9.5v5M18 9.5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' },
     { id: "reise", title: "Reiseleitung & Tourneeplanung", sub: "Reisen, Hotels, Abfahrten, Tourpläne",
-      icon: '<path d="M3 14l18-7-6 13-3-5z M12 15l9-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
-      files: [
-        { t: "DOK", n: "Hotel- und Reiseangebote", s: "intern" },
-        { t: "PDF", n: "Tourplan mit Abfahrts- und Hoteldaten", s: "ensemble" },
-        { t: "PDF", n: "Treffpunkte und Abfahrtszeiten", s: "ensemble" }
-      ] },
+      icon: '<path d="M3 14l18-7-6 13-3-5z M12 15l9-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>' },
     { id: "musik", title: "Musikalische Leitung", sub: "Programm, Besetzung, Proben",
-      icon: '<path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><ellipse cx="7" cy="18" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="17" cy="16" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.6"/>',
-      files: [
-        { t: "DOK", n: "Programmplanung und Besetzungswünsche", s: "intern" },
-        { t: "PDF", n: "Probenpläne", s: "ensemble" },
-        { t: "PDF", n: "Hinweise zu Programm und Stücken", s: "ensemble" }
-      ] }
+      icon: '<path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><ellipse cx="7" cy="18" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="17" cy="16" rx="2.5" ry="2" fill="none" stroke="currentColor" stroke-width="1.6"/>' }
   ];
   function sparteById(id) { return SPARTEN.filter(function (s) { return s.id === id; })[0]; }
+  var SPARTE_TITLE = {};
+  SPARTEN.forEach(function (s) { SPARTE_TITLE[s.id] = s.title; });
 
-  function respAll(seats, over) {
-    var r = {};
-    seats.forEach(function (id) { r[id] = { r: "ja" }; });
-    Object.keys(over || {}).forEach(function (id) { r[id] = over[id]; });
-    return r;
+  /* ---------- Zustand der Oberfläche (nur dieses Gerät) ---------- */
+  var ui = { tab: "start", pid: null, view: null, filter: "alle", fs: "1" };
+  try {
+    var savedUi = JSON.parse(localStorage.getItem(UI_KEY) || "null");
+    if (savedUi) { ui.tab = savedUi.tab || "start"; ui.filter = savedUi.filter || "alle"; ui.fs = savedUi.fs || "1"; }
+  } catch (e) { /* ohne Speicher */ }
+  function saveUi() { try { localStorage.setItem(UI_KEY, JSON.stringify({ tab: ui.tab, filter: ui.filter, fs: ui.fs })); } catch (e) { /* ohne Speicher */ } }
+
+  /* ---------- Daten ---------- */
+  var phase = "boot"; /* boot · login · noaccess · error · app */
+  var me = null;
+  var userEmail = "";
+  var projects = [];
+  var documents = [];
+  var stagePlans = [];
+  var readReqs = [];
+  var pendingHash = location.hash || "";
+  var APP_ART = /\/beta\//.test(location.pathname) ? "beta" : "haupt";
+  var pushOn = false;
+  var members = [];
+  var emails = {};
+  var lastLoad = 0;
+  var loadErr = "";
+  var login = { step: "email", email: "", error: "", info: "", cooldownUntil: 0 };
+
+  /* ---------- Offline (F-034): letzter Stand und Dateien auf dem Gerät ---------- */
+  var OFF_KEY = "tpb-offline-stand";
+  var MANUAL_KEY = "tpb-offline-manuell";
+  var DATEI_CACHE = "tpb-dateien-v1";
+  var offline = false;      /* letzter Ladeversuch ohne Netz: Anzeige aus dem gespeicherten Stand */
+  var standIso = "";        /* Zeitpunkt des angezeigten Stands */
+  var offlineIds = {};      /* Dateien, die auf diesem Gerät gespeichert sind */
+  function readSnap() { try { return JSON.parse(localStorage.getItem(OFF_KEY) || "null"); } catch (e) { return null; } }
+  function writeSnap(raw) { try { localStorage.setItem(OFF_KEY, JSON.stringify(raw)); } catch (e) { /* Speicher voll oder gesperrt */ } }
+  function manualList() { try { return JSON.parse(localStorage.getItem(MANUAL_KEY) || "[]"); } catch (e) { return []; } }
+  function setManual(list) { try { localStorage.setItem(MANUAL_KEY, JSON.stringify(list)); } catch (e) { /* ohne Speicher */ } }
+  function isNetErr(e) {
+    var m = (e && (e.message || e.msg || e.name)) || String(e || "");
+    return !navigator.onLine || /fetch|network|Load failed|NetworkError|AuthRetryableFetchError|timeout/i.test(m);
   }
-  function without(list, ids) { return list.filter(function (x) { return ids.indexOf(x) < 0; }); }
+  function standText(iso) {
+    try {
+      var d = new Date(iso);
+      return String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + ". " +
+        String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+    } catch (e) { return ""; }
+  }
+  function fileUrl(id) { return new URL(swScope() + "datei/" + encodeURIComponent(id), location.href).href; }
 
-  /* ---------- Termine laut Übersicht vom 28.09.26 ---------- */
-  function seed() {
-    var p2seats = without(ALL, ["trp6", "sz3"]);
-    return [
-      { id: "p1", title: "Aufnahme in Berlin", status: "zugesagt", start: "2026-11-30", end: "2026-12-02", conductor: "mit Tugan Sokhiev", seats: ALL.slice(),
-        resp: respAll(ALL, { hr3: { r: "nein", sub: "zugesagt" }, pos2: { r: "offen" }, sz3: { r: "offen" } }),
-        days: [
-          { d: "2026-11-30", e: "2026-12-01", type: "reise", text: "Anreise nach Berlin" },
-          { d: "2026-11-30", t: "ab 18 Uhr", type: "aufnahme", text: "Aufnahmen, nur Trompeten", place: "Teldex Studio Berlin" },
-          { d: "2026-12-01", t: "ab 10 Uhr", type: "aufnahme", text: "Aufnahmen mit Tugan Sokhiev, open End", place: "Teldex Studio Berlin" },
-          { d: "2026-12-02", type: "reise", text: "Rückreise ab Berlin" }
-        ] },
-      { id: "p2", title: "Konzert im Wiener Konzerthaus", status: "zugesagt", start: "2027-02-10", end: "2027-02-12", conductor: "ohne Dirigent", seats: p2seats,
-        resp: respAll(p2seats, { trp4: { r: "nein", sub: "angefragt" }, tb2: { r: "nein" }, hr2: { r: "offen" }, thr: { r: "offen" }, sz2: { r: "offen" } }),
-        days: [
-          { d: "2027-02-10", type: "reise", text: "Anreise nach Wien" },
-          { d: "2027-02-10", t: "ab 13 Uhr", type: "probe", text: "Probe", place: "Wien" },
-          { d: "2027-02-11", t: "vormittags", type: "probe", text: "Probe", place: "Wien" },
-          { d: "2027-02-11", t: "18–19 Uhr", type: "probe", text: "Anspielprobe", place: "Wiener Konzerthaus" },
-          { d: "2027-02-11", t: "19:30 Uhr", type: "konzert", text: "Konzert", place: "Wiener Konzerthaus" },
-          { d: "2027-02-12", type: "reise", text: "Rückreise ab Wien" }
-        ] },
-      { id: "p3", title: "Konzertreise Mai 2027", status: "zugesagt", start: "2027-05-10", end: "2027-05-23", rangeLabel: "10.–12.05. und 15.–23.05.2027", conductor: "mit Tugan Sokhiev", seats: ALL.slice(),
-        resp: respAll(ALL, { sz1: { r: "offen" }, trp2: { r: "offen" }, pk: { r: "nein", sub: "angefragt" } }),
-        days: [
-          { d: "2027-05-10", type: "reise", text: "Anreise nach Berlin" },
-          { d: "2027-05-10", t: "ab 14 Uhr", type: "probe", text: "Probe", place: "Berlin" },
-          { d: "2027-05-11", t: "ab 16 Uhr", type: "probe", text: "Probe", place: "Berlin" },
-          { d: "2027-05-12", type: "reise", text: "Rückreise ab Berlin" },
-          { d: "2027-05-15", type: "reise", text: "Anreise nach Klausenburg" },
-          { d: "2027-05-16", type: "konzert", text: "Konzert", place: "Klausenburg" },
-          { d: "2027-05-17", type: "reise", text: "Reise nach Wien" },
-          { d: "2027-05-18", type: "konzert", text: "Konzert", place: "Graz" },
-          { d: "2027-05-19", type: "konzert", text: "Konzert", place: "Madrid" },
-          { d: "2027-05-20", type: "konzert", text: "Konzert", place: "Wien, Musikverein" },
-          { d: "2027-05-21", type: "konzert", text: "Konzert", confirmed: false },
-          { d: "2027-05-22", type: "konzert", text: "Konzert", place: "München" },
-          { d: "2027-05-23", type: "reise", text: "Abreise ab München" }
-        ] },
-      { id: "p4", title: "Sommertour August 2027", status: "planung", start: "2027-08-12", end: "2027-08-22", conductor: "ohne Dirigent", seats: ALL.slice(), resp: {},
-        days: [
-          { d: "2027-08-12", type: "probe", text: "Proben" },
-          { d: "2027-08-13", type: "konzert", text: "Konzert", place: "Reichenau an der Rax" },
-          { d: "2027-08-14", type: "konzert", text: "Konzert", place: "Attergauer Kultursommer" },
-          { d: "2027-08-15", type: "konzert", text: "Konzert", place: "Theater im Park" },
-          { d: "2027-08-16", e: "2027-08-22", type: "konzert", text: "Konzerte", confirmed: false }
-        ] },
-      { id: "p5", title: "Herbsttour September 2027", status: "planung", start: "2027-09-14", end: "2027-09-27", conductor: "Dirigent offen", seats: ALL.slice(), resp: {},
-        hint: "In der Übersicht steht über diesem Block noch „Sommertour August 2027“. China laut Liste 14.09.–26.09., hier vorerst 20.–26.09.",
-        days: [
-          { d: "2027-09-14", e: "2027-09-15", type: "probe", text: "Proben", confirmed: false },
-          { d: "2027-09-16", type: "konzert", text: "Konzert", confirmed: false },
-          { d: "2027-09-17", type: "konzert", text: "Konzert", place: "Turin" },
-          { d: "2027-09-18", type: "konzert", text: "Konzert", place: "Mailand" },
-          { d: "2027-09-19", type: "reise", text: "Flug nach China" },
-          { d: "2027-09-20", e: "2027-09-26", type: "konzert", text: "Konzerte", place: "China" },
-          { d: "2027-09-27", type: "reise", text: "Rückreise aus China" }
-        ] },
-      { id: "p6", title: "Japantour 2028", status: "planung", start: "2028-01-27", end: "2028-02-07", conductor: "ohne Dirigent", seats: ALL.slice(), resp: {},
-        days: [
-          { d: "2028-01-27", e: "2028-01-28", type: "probe", text: "Proben", place: "Berlin" },
-          { d: "2028-01-29", type: "reise", text: "Flug nach Japan" },
-          { d: "2028-01-30", e: "2028-02-06", type: "konzert", text: "Konzerte", place: "Japan" },
-          { d: "2028-02-07", type: "reise", text: "Rückreise aus Japan" }
-        ] },
-      { id: "p7", title: "Konzertreise April 2028", status: "planung", start: "2028-04-16", end: "2028-04-24", conductor: "Dirigent in Klärung", seats: ALL.slice(), resp: {},
-        days: [
-          { d: "2028-04-16", e: "2028-04-17", type: "probe", text: "Proben" },
-          { d: "2028-04-18", e: "2028-04-23", type: "konzert", text: "Weitere Konzerte", confirmed: false },
-          { d: "2028-04-19", type: "konzert", text: "Konzert", place: "Aix-en-Provence" },
-          { d: "2028-04-24", type: "reise", text: "Rückreise" }
-        ] },
-      { id: "p8", title: "Konzertreise Taiwan und Singapur", status: "planung", start: "2028-05-04", end: "2028-05-15", conductor: "Dirigent in Klärung", seats: ALL.slice(), resp: {},
-        days: [
-          { d: "2028-05-04", e: "2028-05-05", type: "probe", text: "Proben" },
-          { d: "2028-05-06", e: "2028-05-14", type: "konzert", text: "Konzerte", place: "Taiwan und Singapur" },
-          { d: "2028-05-15", type: "reise", text: "Rückreise" }
-        ] },
-      { id: "p9", title: "Konzertreise Juni 2028", status: "planung", start: "2028-06-24", end: "2028-07-01", conductor: "Dirigent in Klärung", seats: ALL.slice(), resp: {},
-        hint: "Die Übersicht nennt den 31.06. als Ende; hier gilt der 30.06. als letzter Konzerttag.",
-        days: [
-          { d: "2028-06-24", type: "probe", text: "Proben" },
-          { d: "2028-06-25", e: "2028-06-30", type: "konzert", text: "Konzerte", confirmed: false },
-          { d: "2028-07-01", type: "reise", text: "Rückreise" }
-        ] },
-      { id: "p10", title: "Residenz mit Workshops", status: "idee", start: null, end: null, conductor: "", seats: ALL.slice(), resp: {},
-        hint: "Mehrtägiges Format mit Konzert und Workshops für junge Bläser; Ort und Zeitraum in Klärung.",
-        days: [] }
-    ];
+  function isLead() { return !!(me && me.is_leitung); }
+  /* Bühnenpläne speichern dürfen Leitung, Pauke und Schlagzeug (wie in der Datenbank, 008) */
+  function canEditStage() { return !!(me && (me.is_leitung || me.register === "Pauke" || me.register === "Schlagzeug")); }
+  function mySeat() { return me ? me.seat : null; }
+  function one(x) { return Array.isArray(x) ? (x[0] || null) : (x || null); }
+  function chk(res) { if (res && res.error) throw res.error; return res; }
+
+  function mapProject(p) {
+    var resp = {};
+    var players = {};
+    var seats = (p.project_seats || []).map(function (ps) {
+      var r = one(ps.responses);
+      var s = one(ps.substitutes);
+      var o = { r: r ? r.answer : "offen" };
+      if (r && r.reminded_at) o.reminded = true;
+      if (s) { o.sub = s.status; if (s.name) o.subName = s.name; }
+      if (ps.member_id) players[ps.seat] = ps.member_id;
+      resp[ps.seat] = o;
+      return ps.seat;
+    }).filter(function (sid) { return SEAT[sid]; }).sort(function (a, b) { return SEAT_IDX[a] - SEAT_IDX[b]; });
+    var days = (p.project_days || []).slice().sort(function (a, b) {
+      return a.day < b.day ? -1 : a.day > b.day ? 1 : (a.sort - b.sort);
+    }).map(function (d) {
+      return { id: d.id, d: d.day, e: d.day_end, t: d.time_text, type: d.type, text: d.text, place: d.place, confirmed: d.confirmed };
+    });
+    return { id: p.id, slug: p.slug, title: p.title, status: p.status, start: p.start_date, end: p.end_date,
+      rangeLabel: p.range_label, conductor: p.conductor, hint: p.hint, seats: seats, days: days, resp: resp, players: players };
   }
 
-  /* ---------- State ---------- */
-  function fresh() { return { role: "leitung", me: "sz1", tab: "start", pid: null, view: null, filter: "alle", fs: "1", projects: seed() }; }
-  var state;
-  try { state = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { state = null; }
-  if (!state || !Array.isArray(state.projects)) state = fresh();
-  if (!state.fs) state.fs = "1";
-  /* Beim Start immer auf der Übersicht des Tabs beginnen */
-  state.pid = null;
-  state.view = null;
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* nur in diesem Fenster */ } }
+  async function loadAll(silent) {
+    if (!silent) {
+      var first = phase === "boot" && readSnap();
+      if (first) {
+        /* sofort mit dem letzten Stand öffnen, im Hintergrund frisch laden (F-034) */
+        applyRaw(first); phase = "app"; render(); refreshOfflineIds();
+      } else { phase = "boot"; render(); }
+    }
+    try {
+      var u = await sb.auth.getUser();
+      if (u.error || !u.data || !u.data.user) {
+        if (u.error && isNetErr(u.error)) throw u.error;
+        clearOffline();
+        phase = "login"; me = null; render(); return;
+      }
+      userEmail = u.data.user.email || "";
+      var r1 = chk(await sb.from("members").select("id,name,register,seat,is_leitung,sparte,active,user_id").eq("user_id", u.data.user.id).maybeSingle());
+      me = r1.data;
+      if (!me || !me.active) { clearOffline(); phase = "noaccess"; render(); return; }
+      var res = await Promise.all([
+        sb.from("seats").select("id,register,label,sort").order("sort"),
+        sb.from("projects").select("id,slug,title,status,start_date,end_date,range_label,conductor,hint," +
+          "project_days(id,day,day_end,time_text,type,text,place,confirmed,sort)," +
+          "project_seats(seat,member_id,responses(answer,reminded_at,answered_by,updated_at),substitutes(status,note,name))"),
+        sb.from("documents").select("id,sparte,stage,title,kind,url,storage_path,file_type,file_size,project_id,created_by,created_at").order("created_at", { ascending: false }),
+        sb.from("members").select("id,name,register,seat,is_leitung,sparte,active,user_id").order("name"),
+        isLead() ? sb.from("member_emails").select("member_id,email") : Promise.resolve({ data: [] }),
+        sb.from("stage_plans").select("id,title,project_id,updated_at").order("updated_at", { ascending: false }),
+        sb.from("read_requests").select("document_id,member_id,requested_by,requested_at,read_at,reminded_at")
+      ]);
+      res.slice(0, 5).forEach(chk);
+      var raw = {
+        uid: u.data.user.id, email: userEmail, me: me, stand: new Date().toISOString(),
+        seats: res[0].data, projects: res[1].data, documents: res[2].data || [], members: res[3].data || [],
+        emails: res[4].data || [],
+        /* Bühnenpläne und Leseaufforderungen: fehlt die Tabelle, läuft die App ohne sie weiter */
+        stagePlans: res[5] && !res[5].error ? (res[5].data || []) : [],
+        readReqs: res[6] && !res[6].error ? (res[6].data || []) : []
+      };
+      applyRaw(raw);
+      offline = false;
+      writeSnap(raw);
+      lastLoad = Date.now();
+      loadErr = "";
+      phase = "app";
+      if (pendingHash) { applyHash(pendingHash); pendingHash = ""; }
+      render();
+      checkPush();
+      syncFiles();
+    } catch (e) {
+      console.error(e);
+      if (isNetErr(e) && showOffline()) return;
+      loadErr = errText(e);
+      if (phase !== "app") { phase = "error"; }
+      render();
+      if (phase === "app") toast(loadErr);
+    }
+  }
+  /* ohne Netz: letzter gespeicherter Stand (F-034) */
+  function showOffline() {
+    var snap = readSnap();
+    if (!snap) return false;
+    applyRaw(snap);
+    offline = true;
+    phase = "app";
+    if (pendingHash) { applyHash(pendingHash); pendingHash = ""; }
+    render();
+    refreshOfflineIds();
+    return true;
+  }
+  function applyRaw(raw) {
+    me = raw.me; userEmail = raw.email || "";
+    standIso = raw.stand || "";
+    stagePlans = raw.stagePlans || [];
+    readReqs = raw.readReqs || [];
+    SEATS = (raw.seats || []).map(function (s) { return { id: s.id, reg: s.register, label: s.label }; });
+    SEAT = {}; SEAT_IDX = {};
+    SEATS.forEach(function (s, i) { SEAT[s.id] = s; SEAT_IDX[s.id] = i; });
+    projects = (raw.projects || []).map(mapProject);
+    documents = raw.documents || [];
+    members = raw.members || [];
+    emails = {};
+    (raw.emails || []).forEach(function (e) { emails[e.member_id] = e.email; });
+    if (!isLead() && (ui.tab === "leitung")) ui.tab = "start";
+  }
 
-  /* ---------- F-014: Schriftgröße ----------
-     Grundlage ist die Textgröße aus den iPhone-Einstellungen (wo verfügbar),
-     darauf kommt die Stufe aus der App. */
+  /* Dateien für unterwegs: automatisch alles fürs Ensemble, alles mit Leseaufforderung an mich,
+     alles zu Projekten der nächsten 30 Tage; dazu, was jemand von Hand offline speichert */
+  function projectSoon(pid) {
+    var p = pid && byId(pid);
+    if (!p || !p.start || archived(p)) return false;
+    return p.start <= plusDays(todayIso(), 30) && (projEnd(p) || p.start) >= todayIso();
+  }
+  function wantOffline(d) {
+    if (!d || !d.storage_path) return false;
+    if (manualList().indexOf(d.id) >= 0) return true;
+    if (d.stage === "ensemble") return true;
+    if (me && readReqs.some(function (r) { return r.document_id === d.id && r.member_id === me.id; })) return true;
+    return projectSoon(d.project_id);
+  }
+  function autoOffline(d) {
+    return !!(d && d.storage_path && (d.stage === "ensemble" || projectSoon(d.project_id) ||
+      (me && readReqs.some(function (r) { return r.document_id === d.id && r.member_id === me.id; }))));
+  }
+  async function refreshOfflineIds() {
+    var next = {};
+    try {
+      if ("caches" in window) {
+        var c = await caches.open(DATEI_CACHE);
+        (await c.keys()).forEach(function (rq) { var m = /\/datei\/([^/?#]+)/.exec(rq.url); if (m) next[decodeURIComponent(m[1])] = true; });
+      }
+    } catch (e) { /* ohne Speicher */ }
+    var changed = Object.keys(next).sort().join() !== Object.keys(offlineIds).sort().join();
+    offlineIds = next;
+    if (changed && phase === "app") render();
+  }
+  var syncing = false, syncAgain = false;
+  async function syncFiles() {
+    if (offline || !("caches" in window) || !me) return;
+    if (syncing) { syncAgain = true; return; }
+    syncing = true;
+    syncAgain = false;
+    try {
+      var c = await caches.open(DATEI_CACHE);
+      var keys = await c.keys();
+      var have = {};
+      for (var i = 0; i < keys.length; i++) {
+        var m = /\/datei\/([^/?#]+)/.exec(keys[i].url);
+        var id = m ? decodeURIComponent(m[1]) : null;
+        var d = id ? docById(id) : null;
+        if (!d || !wantOffline(d)) await c.delete(keys[i]);
+        else have[id] = true;
+      }
+      var todo = documents.filter(function (d) { return wantOffline(d) && !have[d.id]; });
+      for (var j = 0; j < todo.length; j++) {
+        var doc = todo[j];
+        try {
+          var s = await sb.storage.from("dokumente").createSignedUrl(doc.storage_path, 600);
+          if (s.error || !s.data) continue;
+          var r = await fetch(s.data.signedUrl);
+          if (!r.ok) continue;
+          var blob = await r.blob();
+          await c.put(fileUrl(doc.id), new Response(blob, { headers: { "content-type": doc.file_type || blob.type || "application/octet-stream" } }));
+        } catch (e) { if (isNetErr(e)) break; }
+      }
+    } catch (e) { console.error(e); }
+    finally { syncing = false; }
+    refreshOfflineIds();
+    if (syncAgain) syncFiles();
+  }
+  async function clearOffline() {
+    try { localStorage.removeItem(OFF_KEY); localStorage.removeItem(MANUAL_KEY); } catch (e) { /* egal */ }
+    try { if ("caches" in window) await caches.delete(DATEI_CACHE); } catch (e) { /* egal */ }
+    offlineIds = {}; standIso = ""; offline = false;
+  }
+  window.addEventListener("online", function () { if (phase === "app" && offline) loadAll(true); });
+  window.addEventListener("offline", function () { if (phase === "app") { offline = true; render(); } });
+
+  function errText(e) {
+    if (e && e.tpbText) return e.tpbText;
+    var m = (e && (e.message || e.msg || e.error_description)) || String(e || "");
+    if (/Mindestens eine Person/.test(m)) return "Mindestens eine Person muss zur Leitung gehören.";
+    if (/duplicate key|already exists|unique/i.test(m)) return "Diese Adresse oder dieser Platz ist schon vergeben.";
+    if (/row-level security|permission denied|42501/i.test(m)) return "Dafür fehlen die Rechte.";
+    if (/exceeded the maximum allowed size|Payload too large|413/i.test(m)) return "Die Datei ist zu groß (höchstens 25 MB).";
+    if (/mime type|not supported/i.test(m)) return "Dieser Dateityp wird nicht unterstützt (PDF, Bilder, Office-Dateien).";
+    if (/fetch|network|Load failed/i.test(m)) return "Keine Verbindung. Bitte später noch einmal versuchen.";
+    return "Das hat nicht geklappt. Bitte noch einmal versuchen.";
+  }
+
+  /* ---------- Schriftgröße (F-014) ---------- */
   var FS = [["1", "Normal", "1rem"], ["1.15", "Größer", "1.2rem"], ["1.3", "Groß", "1.4rem"]];
   function systemBase() {
     var base = 16;
@@ -573,26 +727,21 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
         document.body.appendChild(d);
         var v = parseFloat(getComputedStyle(d).fontSize);
         d.parentNode.removeChild(d);
-        if (v > 0) base = v * 16 / 17; /* iPhone-Standard 17 px entspricht 16 px */
+        if (v > 0) base = v * 16 / 17;
       }
     } catch (e) { /* ohne Systemwert bleibt 16 px */ }
     return base;
   }
   function applyFont() {
-    var px = Math.min(systemBase() * (parseFloat(state.fs) || 1), 26);
+    var px = Math.min(systemBase() * (parseFloat(ui.fs) || 1), 26);
     document.documentElement.style.fontSize = (Math.round(px * 100) / 100) + "px";
   }
 
-  /* ---------- Helpers ---------- */
-  var $ = function (s) { return document.querySelector(s); };
-  function esc(s) {
-    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
-  }
+  /* ---------- Hilfen ---------- */
   var WD = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
   function toDate(iso) { var p = iso.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
   function dm(iso) { var p = iso.split("-"); return p[2] + "." + p[1] + "."; }
+  function dmy(ts) { var d = new Date(ts); return String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + d.getFullYear(); }
   function dayLabel(x) { return WD[toDate(x.d).getDay()] + " " + dm(x.d) + (x.e ? "–" + dm(x.e) : ""); }
   function range(p) {
     if (p.rangeLabel) return p.rangeLabel;
@@ -603,11 +752,24 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     var t = new Date();
     return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
   }
+  /* Löschregel (F-031): 3 Tage nach Projektende sind Zusagen, Besetzung und Unterlagen gelöscht;
+     das Projekt bleibt als Eintrag. Ende = Enddatum, sonst letzter Termin, sonst Start. */
+  function projEnd(p) {
+    if (p.end) return p.end;
+    var last = null;
+    p.days.forEach(function (d) { var x = d.e || d.d; if (x && (!last || x > last)) last = x; });
+    return last || p.start || null;
+  }
+  function plusDays(iso, n) {
+    var d = new Date(iso + "T12:00:00"); d.setDate(d.getDate() + n);
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function archived(p) { var e = projEnd(p); return !!e && plusDays(e, 3) <= todayIso(); }
   var STATUS_LABEL = { zugesagt: "Zugesagt", planung: "In Planung", idee: "Idee" };
   var TYPE_LABEL = { reise: "Reise", probe: "Probe", konzert: "Konzert", aufnahme: "Aufnahme" };
-  function byId(id) { return state.projects.filter(function (p) { return p.id === id; })[0]; }
+  function byId(id) { return projects.filter(function (p) { return p.id === id; })[0]; }
   function sorted() {
-    return state.projects.slice().sort(function (a, b) {
+    return projects.slice().sort(function (a, b) {
       if (!a.start) return 1;
       if (!b.start) return -1;
       return a.start < b.start ? -1 : a.start > b.start ? 1 : 0;
@@ -634,6 +796,13 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     });
     c.total = p.seats.length;
     c.filled = c.ja + c.zu;
+    if (!isLead()) {
+      /* Musiker sehen den Aushilfen-Status nicht: neutral zählen, ohne Alarmfarbe */
+      c.state = (c.offen || c.nein) ? "gelb" : "gruen";
+      c.label = c.offen ? (c.offen === 1 ? "1 Rückmeldung offen" : c.offen + " Rückmeldungen offen")
+        : c.nein ? (c.nein === 1 ? "1 Absage" : c.nein + " Absagen") : "Besetzung vollständig";
+      return c;
+    }
     c.state = c.gaps ? "rot" : (c.offen || c.ang) ? "gelb" : "gruen";
     c.label = c.gaps ? (c.gaps === 1 ? "1 Lücke ohne Aushilfe" : c.gaps + " Lücken ohne Aushilfe")
       : c.offen ? (c.offen === 1 ? "1 Rückmeldung offen" : c.offen + " Rückmeldungen offen")
@@ -655,12 +824,12 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
   }
   function regSummary(seats) {
     return REGS.map(function (reg) {
-      var n = seats.filter(function (sid) { return SEAT[sid].reg === reg; }).length;
+      var n = seats.filter(function (sid) { return SEAT[sid] && SEAT[sid].reg === reg; }).length;
       return n ? n + " " + REG_SHORT[reg] : "";
     }).filter(Boolean).join(" · ");
   }
   function myOpen() {
-    return upcoming().filter(function (p) { return p.status === "zugesagt" && p.seats.indexOf(state.me) >= 0 && resp(p, state.me).r === "offen"; });
+    return upcoming().filter(function (p) { var s = mySeatIn(p); return p.status === "zugesagt" && s && resp(p, s).r === "offen"; });
   }
   function openSeatsTotal() {
     var n = 0;
@@ -670,20 +839,39 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     });
     return n;
   }
+  function memberOnSeat(sid) { return members.filter(function (m) { return m.seat === sid && m.active; })[0]; }
+  /* Platztausch je Projekt (F-021): gesetzter Spieler vor Stammspieler; wer woanders gesetzt ist, spielt seinen Stammplatz in diesem Projekt nicht */
+  function seatOfMemberIn(p, mid) {
+    for (var k in (p.players || {})) { if (p.players[k] === mid) return k; }
+    return null;
+  }
+  function playerOf(p, sid) {
+    if (p.players && p.players[sid]) return memberById(p.players[sid]) || null;
+    var m = memberOnSeat(sid);
+    if (m && seatOfMemberIn(p, m.id)) return null;
+    return m || null;
+  }
+  function mySeatIn(p) {
+    if (!me) return null;
+    var k = seatOfMemberIn(p, me.id);
+    if (k) return p.seats.indexOf(k) >= 0 ? k : null;
+    var s = me.seat;
+    if (s && p.seats.indexOf(s) >= 0 && !(p.players && p.players[s])) return s;
+    return null;
+  }
+  function firstName(n) { return String(n || "").trim().split(/\s+/)[0] || ""; }
 
-  /* ---------- Pieces ---------- */
+  /* ---------- Bausteine ---------- */
   function card(p) {
     var st = staffing(p);
     var k = klaerCount(p);
-    var side;
-    if (p.status === "zugesagt") {
-      side = housing(st.state) + "<span>" + st.filled + "/" + st.total + "</span>";
-    } else {
-      side = '<span class="lock">' + LOCK + "Besetzung<br>gesperrt</span>";
-    }
+    var side = archived(p) ? '<span class="lock">Abge&shy;schlossen</span>' : p.status === "zugesagt"
+      ? housing(st.state) + "<span>" + st.filled + "/" + st.total + "</span>"
+      : '<span class="lock">' + LOCK + "Besetzung<br>gesperrt</span>";
     var mine = "";
-    if (p.status === "zugesagt" && p.seats.indexOf(state.me) >= 0) {
-      var r = resp(p, state.me);
+    var s = mySeatIn(p);
+    if (s && p.status === "zugesagt" && !archived(p)) {
+      var r = resp(p, s);
       mine = r.r === "ja" ? '<span class="pill ja">Du: Zusage</span>' : r.r === "nein" ? '<span class="pill nein">Du: Absage</span>' : '<span class="pill offen">Du: offen</span>';
     }
     return '<button type="button" class="pcard s-' + p.status + '" data-action="open" data-pid="' + p.id + '">' +
@@ -705,7 +893,7 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     "</ul>";
   }
 
-  /* ---------- F-003: Hinweis zum Installieren, solange die App im Browser läuft ---------- */
+  /* ---------- Hinweis zum Installieren (F-003) ---------- */
   var HINT_KEY = "tpb-install-hint";
   var deferredPrompt = null;
   function isStandalone() {
@@ -733,18 +921,19 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
   window.addEventListener("beforeinstallprompt", function (e) {
     e.preventDefault();
     deferredPrompt = e;
-    try { render(); } catch (err) { /* noch nicht bereit */ }
+    if (phase === "app") render();
   });
 
-  /* ---------- Screens ---------- */
+  /* ---------- Bildschirme ---------- */
   function screenStart() {
     var up = upcoming();
     var next = up.filter(function (p) { return p.status !== "idee"; }).slice(0, 3);
     var counts = { zugesagt: 0, planung: 0, idee: 0 };
-    state.projects.forEach(function (p) { counts[p.status]++; });
-    var html = installHint() + '<p class="banner">Klick-Prototyp: Termine laut eurer Übersicht vom 28.09.26, Rückmeldungen sind Beispiele. Änderungen bleiben nur auf diesem Gerät.</p>';
-
-    if (state.role === "leitung") {
+    projects.forEach(function (p) { counts[p.status]++; });
+    var html = installHint() + '<p class="banner">Beta mit echten Daten. Erinnerungen werden in der Beta noch nicht per E-Mail verschickt.</p>';
+    html += readSection();
+    var open = myOpen();
+    if (isLead()) {
       var alerts = up.filter(function (p) { return p.status === "zugesagt" && staffing(p).state !== "gruen"; });
       html += '<section class="sec"><h2 class="sec-h">Braucht Aufmerksamkeit</h2>';
       html += alerts.length ? '<div class="list">' + alerts.map(function (p) {
@@ -753,25 +942,23 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
           "<span><b>" + esc(p.title) + "</b><span>" + st.label + "</span></span></button>";
       }).join("") + "</div>" : '<p class="note">Alle zugesagten Projekte sind vollständig besetzt.</p>';
       html += "</section>";
-      /* F-015: Die Leitung spielt selbst mit und sagt eigene Termine zu */
-      var ownOpen = myOpen();
-      if (ownOpen.length) {
-        html += '<section class="sec"><h2 class="sec-h">Deine offenen Rückmeldungen<span>' + ownOpen.length + "</span></h2>" + ownOpen.map(respRow).join("") + "</section>";
+      if (open.length) {
+        html += '<section class="sec"><h2 class="sec-h">Deine offenen Rückmeldungen<span>' + open.length + "</span></h2>" + open.map(respRow).join("") + "</section>";
       }
-    } else {
-      var open = myOpen();
+    } else if (mySeat() || projects.some(function (p) { return mySeatIn(p); })) {
       html += '<section class="sec"><h2 class="sec-h">Deine offenen Rückmeldungen<span>' + open.length + "</span></h2>";
       html += open.length ? open.map(respRow).join("") : '<p class="note">Du hast auf alles geantwortet.</p>';
       html += "</section>";
+    } else {
+      html += '<p class="note">Dir ist noch kein Platz zugeordnet. Die Leitung trägt ihn ein, dann kannst du hier zusagen.</p>';
     }
-
     html += '<section class="sec"><h2 class="sec-h">Als Nächstes</h2><div class="list">' + next.map(card).join("") + "</div></section>";
     html += '<p class="tally"><span><b>' + counts.zugesagt + "</b> zugesagt</span><span><b>" + counts.planung + "</b> in Planung</span><span><b>" + counts.idee + "</b> Idee</span></p>";
     return html;
   }
 
   function screenKalender() {
-    var f = state.filter;
+    var f = ui.filter;
     var list = sorted().filter(function (p) { return f === "alle" || p.status === f; });
     var html = '<div class="filters" role="group" aria-label="Filter">' +
       [["alle", "Alle"], ["zugesagt", "Zugesagt"], ["planung", "In Planung"], ["idee", "Idee"]].map(function (x) {
@@ -792,9 +979,11 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
   }
 
   function respRow(p) {
-    var r = resp(p, state.me);
+    var s = mySeatIn(p);
+    var r = resp(p, s);
     var k = klaerCount(p);
-    return '<div class="rrow"><div class="rrow-h"><span><b>' + esc(p.title) + "</b><span>" + esc(range(p)) + "</span></span>" +
+    var als = s && s !== mySeat() ? " · als " + SEAT[s].label : "";
+    return '<div class="rrow"><div class="rrow-h"><span><b>' + esc(p.title) + "</b><span>" + esc(range(p)) + als + "</span></span>" +
       '<button type="button" class="link" data-action="open" data-pid="' + p.id + '">Details</button></div>' +
       (k ? '<p class="note">' + k + (k === 1 ? " Termin ist" : " Termine sind") + " noch in Klärung und zählen erst nach der Bestätigung.</p>" : "") +
       '<div class="btns"><button type="button" class="btn yes" data-action="respond" data-pid="' + p.id + '" data-v="ja" aria-pressed="' + (r.r === "ja") + '">Zusage</button>' +
@@ -803,8 +992,8 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
 
   function screenMeine() {
     var up = upcoming();
-    if (state.role === "musiker") {
-      var mine = up.filter(function (p) { return p.status === "zugesagt" && p.seats.indexOf(state.me) >= 0; });
+    if (!isLead()) {
+      var mine = up.filter(function (p) { return p.status === "zugesagt" && mySeatIn(p); });
       var planned = up.filter(function (p) { return p.status === "planung"; });
       var html = '<section class="sec"><h2 class="sec-h">Zugesagte Projekte</h2>' + (mine.length ? mine.map(respRow).join("") : '<p class="note">Für deinen Platz steht nichts an.</p>') + "</section>";
       html += '<section class="sec"><h2 class="sec-h">In Planung</h2><p class="note">Hier öffnet sich die Rückmeldung, sobald die Leitung ein Projekt zusagt.</p><div class="list">' + planned.map(card).join("") + "</div></section>";
@@ -818,10 +1007,9 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
       var all = ids.every(function (sid) { return resp(p, sid).reminded; });
       return '<div class="rrow"><div class="rrow-h"><span><b>' + esc(p.title) + "</b><span>" + ids.map(function (s) { return SEAT[s].label; }).join(", ") + "</span></span>" +
         '<button type="button" class="link" data-action="open" data-pid="' + p.id + '">Details</button></div>' +
-        '<div class="btns"><button type="button" class="btn' + (all ? "" : " primary") + '" data-action="remindall" data-pid="' + p.id + '">' + (all ? "Alle erinnert" : "Alle " + ids.length + " erinnern") + "</button></div></div>";
+        '<div class="btns"><button type="button" class="btn' + (all ? "" : " primary") + '" data-action="remindall" data-pid="' + p.id + '">' + (all ? "Alle vorgemerkt" : "Alle " + ids.length + " zum Erinnern vormerken") + "</button></div></div>";
     }).join("") : '<p class="note">Alle haben sich eingetragen.</p>';
     html2 += "</section>";
-
     var gaps = [];
     up.forEach(function (p) {
       if (p.status !== "zugesagt") return;
@@ -829,104 +1017,340 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     });
     html2 += '<section class="sec"><h2 class="sec-h">Lücken ohne Aushilfe</h2>';
     html2 += gaps.length ? gaps.map(function (g) {
-      return '<div class="rrow"><div class="rrow-h"><span><b>' + SEAT[g[1]].label + "</b><span>" + esc(g[0].title) + "</span></span></div>" +
-        '<div class="btns"><button type="button" class="btn primary" data-action="seatact" data-pid="' + g[0].id + '" data-sid="' + g[1] + '" data-v="sub-ask">Aushilfe anfragen</button></div></div>';
+      var pl = playerOf(g[0], g[1]);
+      return '<div class="rrow"><div class="rrow-h"><span><b>' + SEAT[g[1]].label + "</b><span>" + esc(g[0].title) + (pl ? " · " + esc(pl.name) + " hat abgesagt" : "") + "</span></span>" +
+        '<button type="button" class="link" data-action="seat" data-pid="' + g[0].id + '" data-sid="' + g[1] + '">Platz</button></div>' +
+        '<div class="btns"><button type="button" class="btn primary" data-action="seatact" data-pid="' + g[0].id + '" data-sid="' + g[1] + '" data-v="sub-ask">Aushilfe als angefragt markieren</button></div></div>';
     }).join("") : '<p class="note">Keine offenen Lücken.</p>';
     html2 += "</section>";
     return html2;
   }
 
+  /* Ablage */
   var STAGE_LABEL = { intern: "Intern · nur Leitung", ensemble: "Fürs Ensemble freigegeben" };
-  function fileRow(f, extra) {
-    return '<li class="file"><span class="ftype">' + f.t + "</span><span><b>" + esc(f.n) + '</b><span class="sub">Beispiel' + (extra ? " · " + esc(extra) : "") + "</span></span></li>";
+  function typeTag(d) {
+    if (d.kind === "link") return "LINK";
+    var t = d.file_type || "";
+    if (/pdf/.test(t)) return "PDF";
+    if (/^image\//.test(t)) return "BILD";
+    if (/word|msword/.test(t)) return "DOK";
+    if (/sheet|excel/.test(t)) return "TAB";
+    if (/presentation|powerpoint/.test(t)) return "FOL";
+    return "DATEI";
   }
-  var UPLOAD_LOCKED = '<div class="panel locked"><p><span class="lock">' + LOCK + 'Hochladen kommt mit dem Login</span></p>' +
-    "<p>Dann kann jede Sparte PDFs, Dokumente und Links ablegen und je Eintrag wählen: intern für die Leitung oder freigegeben fürs Ensemble.</p></div>";
+  function sizeLabel(b) {
+    if (!b) return "";
+    if (b < 1024 * 1024) return Math.max(1, Math.round(b / 1024)) + " KB";
+    return (b / 1024 / 1024).toFixed(1).replace(".", ",") + " MB";
+  }
+  function docRow(d, withSparte) {
+    var meta = [dmy(d.created_at)];
+    if (withSparte) meta.push(SPARTE_TITLE[d.sparte] || d.sparte);
+    if (d.file_size) meta.push(sizeLabel(d.file_size));
+    if (isLead() && readSummary(d.id)) meta.push(readSummary(d.id));
+    if (offlineIds[d.id]) meta.push("offline gespeichert");
+    return '<button type="button" class="file" data-action="doc" data-v="' + d.id + '"><span class="ftype">' + typeTag(d) + "</span><span><b>" + esc(d.title) + '</b><span class="sub">' + esc(meta.join(" · ")) + "</span></span></button>";
+  }
+  function docById(id) { return documents.filter(function (d) { return d.id === id; })[0]; }
+
+  /* ---------- Leseaufforderungen (F-025) ---------- */
+  function myReadOpen() {
+    if (!me) return [];
+    return readReqs.filter(function (r) { return r.member_id === me.id && !r.read_at; })
+      .map(function (r) { return { r: r, d: docById(r.document_id) }; }).filter(function (x) { return x.d; });
+  }
+  function readRows(docId) { return readReqs.filter(function (r) { return r.document_id === docId; }); }
+  function readSummary(docId) {
+    var rows = readRows(docId);
+    if (!rows.length) return "";
+    var done = rows.filter(function (r) { return r.read_at; }).length;
+    return done + " von " + rows.length + " gelesen";
+  }
+  function notify(body) {
+    try {
+      body.app = APP_ART;
+      var pr = sb.functions.invoke("tpb-push", { body: body });
+      if (pr && pr.catch) pr.catch(function () { /* Nachricht ist Zusatz, App läuft weiter */ });
+    } catch (e) { /* ohne Nachricht weiter */ }
+  }
+  function recipientPicker(already) {
+    already = already || {};
+    var list = members.filter(function (m) { return m.active && (!me || m.id !== me.id); })
+      .sort(function (a, b) { return (a.seat ? SEAT_IDX[a.seat] : 99) - (b.seat ? SEAT_IDX[b.seat] : 99) || a.name.localeCompare(b.name); });
+    var regs = REGS.filter(function (reg) { return list.some(function (m) { return m.register === reg; }); });
+    var quick = [["alle", "Alle"], ["leitung", "Leitung"]].concat(regs.map(function (reg) { return ["reg:" + reg, reg]; }));
+    return '<div class="fld rr-pick"><label>Lesen bitte (optional)</label>' +
+      '<div class="filters" role="group" aria-label="Schnellauswahl">' + quick.map(function (q) {
+        return '<button type="button" class="fchip" data-action="rr-pick" data-v="' + esc(q[0]) + '">' + esc(q[1]) + "</button>";
+      }).join("") + "</div>" +
+      '<div class="rr-list">' + list.map(function (m) {
+        var was = already[m.id];
+        return '<label class="check"><input type="checkbox" name="rr" value="' + m.id + '" data-reg="' + esc(m.register || "") + '" data-lead="' + (m.is_leitung ? 1 : 0) + '"' + (was ? " checked disabled" : "") + "> " +
+          esc(m.name) + (m.seat && SEAT[m.seat] ? " · " + esc(SEAT[m.seat].label) : "") + (was ? (was.read_at ? " · gelesen" : " · schon gebeten") : "") + "</label>";
+      }).join("") + "</div>" +
+      '<p class="note">Die Ausgewählten sehen die Datei auch, wenn sie nur für die Leitung freigegeben ist, und bekommen eine Nachricht aufs Handy.</p></div>';
+  }
+  function pickedIds(form) {
+    return Array.prototype.slice.call(form.querySelectorAll("input[name=rr]:checked:not(:disabled)")).map(function (i) { return i.value; });
+  }
+  async function addReadRequests(docId, ids) {
+    if (!ids.length) return;
+    await sb.from("read_requests").upsert(ids.map(function (id) { return { document_id: docId, member_id: id }; }), { onConflict: "document_id,member_id", ignoreDuplicates: true }).then(chk);
+    notify({ art: "lesen", document_id: docId, member_ids: ids });
+  }
+  function markRead(docId) {
+    if (!me) return;
+    var r = readReqs.filter(function (x) { return x.document_id === docId && x.member_id === me.id && !x.read_at; })[0];
+    if (!r) return;
+    r.read_at = new Date().toISOString();
+    sb.from("read_requests").update({ read_at: r.read_at }).eq("document_id", docId).eq("member_id", me.id)
+      .then(function () { render(); }, function () { /* nächstes Laden zeigt den Stand */ });
+  }
+  function readSheet(d) {
+    var already = {};
+    readRows(d.id).forEach(function (r) { already[r.member_id] = r; });
+    openSheet('<h2 id="sheet-title">Leseaufforderung</h2><p class="note">' + esc(d.title) + "</p>" +
+      '<form id="f-read" novalidate>' + recipientPicker(already) +
+      '<p class="form-error" id="f-read-err" role="alert" hidden></p>' +
+      '<div class="btns"><button type="submit" class="btn primary">Senden</button><button type="button" class="btn" data-action="close">Abbrechen</button></div></form>', { docId: d.id });
+  }
+  async function submitRead(form) {
+    var docId = sheetCtx && sheetCtx.docId;
+    var ids = pickedIds(form);
+    if (!ids.length) return formError("f-read-err", "Bitte mindestens eine Person auswählen.");
+    closeSheet();
+    await run(function () { return addReadRequests(docId, ids); }, ids.length === 1 ? "Leseaufforderung gesendet." : "Leseaufforderung an " + ids.length + " Personen gesendet.");
+  }
+  function readSection() {
+    var open = myReadOpen();
+    if (!open.length) return "";
+    return '<section class="sec" id="lesen"><h2 class="sec-h">Bitte lesen<span>' + open.length + "</span></h2>" + open.map(function (x) {
+      var from = x.r.requested_by ? memberById(x.r.requested_by) : null;
+      return '<div class="rrow"><div class="rrow-h"><span><b>' + esc(x.d.title) + "</b><span>" + esc([from ? "von " + from.name : "", dmy(x.r.requested_at)].filter(Boolean).join(" · ")) + "</span></span></div>" +
+        '<div class="btns"><button type="button" class="btn primary" data-action="doc-open" data-v="' + x.d.id + '">Öffnen</button>' +
+        '<button type="button" class="btn" data-action="rr-done" data-v="' + x.d.id + '">Gelesen</button></div></div>';
+    }).join("") + "</section>";
+  }
+
+  /* ---------- Push-Nachrichten ---------- */
+  function pushSupported() { return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window; }
+  function b64ToBytes(s) {
+    var pad = "=".repeat((4 - s.length % 4) % 4);
+    var raw = atob((s + pad).replace(/-/g, "+").replace(/_/g, "/"));
+    var out = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+  function swScope() { return APP_ART === "beta" ? "../" : "./"; }
+  async function checkPush() {
+    try {
+      if (!pushSupported() || Notification.permission !== "granted") { pushOn = false; return; }
+      var reg = await navigator.serviceWorker.getRegistration(swScope());
+      var sub = reg && await reg.pushManager.getSubscription();
+      var was = pushOn;
+      pushOn = !!sub;
+      if (was !== pushOn && ui.tab === "infos") render();
+    } catch (e) { pushOn = false; }
+  }
+  async function enablePush() {
+    if (!pushSupported()) return;
+    var perm = await Notification.requestPermission();
+    if (perm !== "granted") { toast("Benachrichtigungen sind nicht erlaubt. Das lässt sich in den Einstellungen des Telefons ändern."); render(); return; }
+    setBusy(true);
+    try {
+      var reg = await navigator.serviceWorker.register(swScope() + "sw.js", { scope: swScope() });
+      await navigator.serviceWorker.ready;
+      var k = await sb.functions.invoke("tpb-push", { method: "GET" });
+      if (k.error || !k.data || !k.data.publicKey) throw (k.error || new Error("kein Schlüssel"));
+      var sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(k.data.publicKey) });
+      var j = sub.toJSON();
+      await sb.from("push_subscriptions").delete().eq("endpoint", j.endpoint);
+      await sb.from("push_subscriptions").insert({ endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth }).then(chk);
+      pushOn = true;
+      notify({ art: "test" });
+      toast("Benachrichtigungen sind eingeschaltet.");
+    } catch (e) {
+      console.error(e);
+      toast("Benachrichtigungen konnten nicht eingeschaltet werden. Bitte später noch einmal versuchen.");
+    } finally {
+      setBusy(false);
+      render();
+    }
+  }
+  async function disablePush() {
+    setBusy(true);
+    try {
+      var reg = await navigator.serviceWorker.getRegistration(swScope());
+      var sub = reg && await reg.pushManager.getSubscription();
+      if (sub) {
+        await sb.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
+        await sub.unsubscribe();
+      }
+      pushOn = false;
+      toast("Benachrichtigungen auf diesem Gerät ausgeschaltet.");
+    } catch (e) { toast("Das hat nicht geklappt. Bitte noch einmal versuchen."); }
+    finally { setBusy(false); render(); }
+  }
+  function pushSection() {
+    var body;
+    if (isIOS() && !isStandalone()) {
+      body = '<p class="note">Auf dem iPhone kommen Nachrichten, sobald die App auf dem Home-Bildschirm liegt: in Safari unten Teilen tippen, „Zum Home-Bildschirm“ wählen, die App von dort öffnen und hier einschalten.</p>';
+    } else if (!pushSupported()) {
+      body = '<p class="note">Dieser Browser kann keine Nachrichten empfangen. Auf Android bitte Chrome verwenden, auf dem iPhone die App vom Home-Bildschirm öffnen.</p>';
+    } else if (Notification.permission === "denied") {
+      body = '<p class="note">Nachrichten sind für diese App gesperrt. Freigeben lassen sie sich in den Einstellungen des Telefons (Mitteilungen bzw. Website-Einstellungen).</p>';
+    } else if (pushOn) {
+      body = '<p class="note">Eingeschaltet für dieses Gerät: Leseaufforderungen, neue Projekte und bestätigte Termine.</p><div class="btns"><button type="button" class="btn" data-action="push-off">Auf diesem Gerät ausschalten</button></div>';
+    } else {
+      body = '<p class="note">Bekomme eine Nachricht aufs Handy bei Leseaufforderungen, neuen Projekten und bestätigten Terminen.</p><div class="btns"><button type="button" class="btn primary" data-action="push-on">Benachrichtigungen einschalten</button></div>';
+    }
+    return '<section class="sec"><h2 class="sec-h">Benachrichtigungen</h2>' + body + "</section>";
+  }
+  function applyHash(h) {
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* egal */ }
+    if (h === "#lesen") { ui.tab = "start"; ui.pid = null; ui.view = null; }
+    else if (h === "#infos") { ui.tab = "infos"; ui.pid = null; ui.view = null; }
+    else if (/^#p=/.test(h)) { var pid = h.slice(3); if (byId(pid)) { enterSub(); ui.pid = pid; ui.view = null; } }
+  }
 
   function screenLeitung() {
-    var html = '<p class="note">Alle in der Leitung sehen alle fünf Sparten. Jede Sparte hat eine eigene Ablage mit zwei Stufen: intern für die Leitung und freigegeben fürs Ensemble.</p>';
+    var html = '<p class="note">Die Leitung sieht alle Sparten und kann überall ablegen. Jede Ablage hat zwei Stufen: intern für die Leitung und freigegeben fürs Ensemble.</p>';
     html += '<section class="sec"><h2 class="sec-h">Sparten</h2><div class="tiles">' + SPARTEN.map(function (s) {
-      var i = s.files.filter(function (f) { return f.s === "intern"; }).length;
-      var e = s.files.length - i;
+      var list = documents.filter(function (d) { return d.sparte === s.id; });
+      var i = list.filter(function (d) { return d.stage === "intern"; }).length;
       return '<button type="button" class="tile" data-action="sparte" data-v="' + s.id + '">' +
         '<span class="tile-ico"><svg viewBox="0 0 24 24" aria-hidden="true">' + s.icon + "</svg></span>" +
-        "<span><b>" + esc(s.title) + '</b><span class="tile-sub">' + esc(s.sub) + '</span><span class="tile-count">' + i + " intern · " + e + " fürs Ensemble</span></span>" +
+        "<span><b>" + esc(s.title) + '</b><span class="tile-sub">' + esc(s.sub) + '</span><span class="tile-count">' + i + " intern · " + (list.length - i) + " fürs Ensemble</span></span>" +
         "</button>";
     }).join("") + "</div></section>";
-    html += '<p class="banner">Die Einträge in den Sparten sind Beispiele. Hochladen und Freigeben kommen mit Login und Datenbank.</p>';
+    var act = members.filter(function (m) { return m.active; });
+    var notYet = act.filter(function (m) { return !m.user_id; }).length;
+    html += '<section class="sec"><h2 class="sec-h">Ensemble</h2><div class="tiles"><button type="button" class="tile" data-action="members">' +
+      '<span class="tile-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 19c.6-3.4 3-5.2 6-5.2s5.4 1.8 6 5.2M16 5.5a3 3 0 0 1 0 5.6M18 13.8c1.7.7 2.8 2.4 3.1 5.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>' +
+      '<span><b>Mitglieder & Einladungen</b><span class="tile-sub">Wer die App nutzen darf, mit Platz und Rolle</span><span class="tile-count">' + act.length + " aktiv · " + notYet + " noch nicht angemeldet</span></span></button></div></section>";
     return html;
   }
 
   function screenSparte(s) {
     var html = '<p class="note">' + esc(s.sub) + "</p>";
+    html += '<div class="btns"><button type="button" class="btn primary" data-action="doc-upload" data-v="' + s.id + '">Datei hochladen</button><button type="button" class="btn" data-action="doc-link" data-v="' + s.id + '">Link hinzufügen</button></div>';
     ["intern", "ensemble"].forEach(function (st) {
-      var list = s.files.filter(function (f) { return f.s === st; });
+      var list = documents.filter(function (d) { return d.sparte === s.id && d.stage === st; });
       html += '<section class="sec"><h2 class="sec-h"><span class="stage ' + st + '">' + STAGE_LABEL[st] + "</span><span>" + list.length + "</span></h2>" +
-        (list.length ? '<ul class="files">' + list.map(function (f) { return fileRow(f); }).join("") + "</ul>" : '<p class="note">Noch nichts abgelegt.</p>') + "</section>";
+        (list.length ? '<div class="files">' + list.map(function (d) { return docRow(d); }).join("") + "</div>" : '<p class="note">Noch nichts abgelegt.</p>') + "</section>";
     });
-    html += UPLOAD_LOCKED;
+    return html;
+  }
+
+  function screenMembers() {
+    var html = '<div class="btns"><button type="button" class="btn primary" data-action="invite">Person einladen</button></div>' +
+      '<p class="note">Eingeladene melden sich mit ihrer E-Mail-Adresse und einem Code an. Eine Einladungs-E-Mail verschickt die Beta noch nicht; bitte Bescheid geben und den Link zur App schicken.</p>';
+    REGS.concat(["ohne"]).forEach(function (reg) {
+      var list = members.filter(function (m) { return reg === "ohne" ? REGS.indexOf(m.register) < 0 : m.register === reg; })
+        .sort(function (a, b) { return (a.seat ? SEAT_IDX[a.seat] : 99) - (b.seat ? SEAT_IDX[b.seat] : 99) || a.name.localeCompare(b.name); });
+      if (!list.length) return;
+      html += '<div class="reg"><p class="reg-h"><span>' + esc(reg) + "</span><span>" + list.length + "</span></p>" + list.map(function (m) {
+        var sub = [m.seat ? SEAT[m.seat].label : "ohne festen Platz"];
+        if (m.is_leitung) sub.push("Leitung" + (m.sparte ? " · " + SPARTE_TITLE[m.sparte] : ""));
+        if (emails[m.id]) sub.push(emails[m.id]);
+        var pill = !m.active ? '<span class="pill nein">inaktiv</span>' : m.user_id ? '<span class="pill ja">angemeldet</span>' : '<span class="pill offen">eingeladen</span>';
+        return '<button type="button" class="seat" data-action="member" data-v="' + m.id + '"><span><span class="seat-name">' + esc(m.name) + '</span><span class="seat-sub">' + esc(sub.join(" · ")) + "</span></span>" + pill + "</button>";
+      }).join("") + "</div>";
+    });
     return html;
   }
 
   function screenTool(t) {
-    if (t.url) {
-      return '<iframe class="toolframe" src="' + esc(t.url) + '" title="' + esc(t.title) + '" loading="lazy"></iframe>' +
-        '<p class="note"><a href="' + esc(t.url) + '" target="_blank" rel="noopener">Im Browser öffnen</a></p>';
+    if (offline) return offlineNote();
+    return '<iframe class="toolframe" src="' + esc(t.url) + '" title="' + esc(t.title) + '" loading="lazy"></iframe>' +
+      '<p class="note"><a href="' + esc(t.url) + '" target="_blank" rel="noopener">Im Browser öffnen</a></p>';
+  }
+
+  function screenDatei(d) {
+    var u = fileUrl(d.id);
+    return '<p class="note">Auf dem Gerät gespeichert · ' + esc(dmy(d.created_at)) + "</p>" +
+      '<iframe class="toolframe" src="' + esc(u) + '" title="' + esc(d.title) + '"></iframe>' +
+      '<p class="note"><a href="' + esc(u) + '" target="_blank" rel="noopener">In eigenem Fenster öffnen</a></p>';
+  }
+  function offlineNote() { return '<p class="note">Ohne Netz nicht verfügbar. Bitte wieder öffnen, sobald Netz da ist.</p>'; }
+  function planById(id) { return stagePlans.filter(function (x) { return x.id === id; })[0]; }
+  function planDate(s) { try { return new Date(s).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }); } catch (e) { return ""; } }
+  function planRows(list, withProject) {
+    return '<div class="links">' + list.map(function (x) {
+      var pr = withProject && x.project_id ? byId(x.project_id) : null;
+      var sub = [pr ? pr.title : "", "Stand " + planDate(x.updated_at)].filter(Boolean).join(" · ");
+      return '<button type="button" class="row" data-action="plan" data-v="' + x.id + '"><span><b>' + esc(x.title) + "</b><span>" + esc(sub) + "</span></span></button>";
+    }).join("") + "</div>";
+  }
+  function plansSection() {
+    var t = toolById("buehne");
+    var html = '<section class="sec"><h2 class="sec-h">Bühnenpläne<span>' + stagePlans.length + "</span></h2>";
+    html += stagePlans.length ? planRows(stagePlans, true) : '<p class="note">Noch keine Aufstellung gespeichert.</p>';
+    if (canEditStage() && t) {
+      html += '<p class="note">Neue Aufstellungen im Bühnenplaner entwerfen und dort über „TPB-App“ speichern.</p>' +
+        '<div class="btns"><button type="button" class="btn" data-action="tool" data-v="buehne">Bühnenplaner öffnen</button></div>';
     }
-    return '<div class="panel locked"><p><span class="lock">' + LOCK + "Adresse fehlt noch</span></p>" +
-      "<p>Sobald die Adresse eingetragen ist, öffnet sich der " + esc(t.title) + " hier direkt in der App, mit Zurück-Taste zur Übersicht.</p></div>";
+    return html + "</section>";
+  }
+  function screenPlan(x) {
+    if (offline) return offlineNote();
+    var t = toolById("buehne");
+    var url = t.url + "?plan=" + encodeURIComponent(x.id);
+    var pr = x.project_id ? byId(x.project_id) : null;
+    return '<p class="note">' + (pr ? esc(pr.title) + " · " : "") + "Stand " + planDate(x.updated_at) + ". PDF über die Taste „PDF“ im Plan.</p>" +
+      '<iframe class="toolframe" src="' + esc(url) + '" title="' + esc(x.title) + '" loading="lazy"></iframe>' +
+      '<p class="note"><a href="' + esc(url) + '" target="_blank" rel="noopener">Im Browser öffnen</a></p>';
   }
 
   function screenInfos() {
-    var lead = state.role === "leitung";
-    var shared = "";
-    if (!lead) {
-      shared = '<section class="sec"><h2 class="sec-h">Von der Leitung freigegeben</h2><ul class="files">' +
-        SPARTEN.map(function (s) {
-          return s.files.filter(function (f) { return f.s === "ensemble"; }).map(function (f) { return fileRow(f, s.title); }).join("");
-        }).join("") + '</ul><p class="note">Beispiele. Hier erscheint, was eine Sparte fürs Ensemble freigibt.</p></section>';
-    }
+    var shared = documents.filter(function (d) { return d.stage === "ensemble"; });
+    var forMe = isLead() ? [] : documents.filter(function (d) { return d.stage !== "ensemble" && readReqs.some(function (r) { return r.document_id === d.id && r.member_id === me.id; }); });
     var fsSec = '<section class="sec"><h2 class="sec-h">Schriftgröße</h2><div class="filters fsbtns" role="group" aria-label="Schriftgröße">' +
       FS.map(function (f) {
-        return '<button type="button" class="fchip" data-action="fs" data-v="' + f[0] + '" aria-pressed="' + (state.fs === f[0]) + '"><span style="font-size:' + f[2] + '">A</span>' + f[1] + "</button>";
+        return '<button type="button" class="fchip" data-action="fs" data-v="' + f[0] + '" aria-pressed="' + (ui.fs === f[0]) + '"><span style="font-size:' + f[2] + '">A</span>' + f[1] + "</button>";
       }).join("") + '</div><p class="note">Gilt für dieses Gerät. Zusätzlich übernimmt die App die Textgröße aus den iPhone-Einstellungen (Anzeige &amp; Helligkeit → Textgröße).</p></section>';
+    var docs = '<section class="sec"><h2 class="sec-h">Von der Leitung freigegeben<span>' + shared.length + "</span></h2>" +
+      (shared.length ? '<div class="files">' + shared.map(function (d) { return docRow(d, true); }).join("") + "</div>" : '<p class="note">Noch nichts freigegeben.</p>') + "</section>";
+    var acc = '<section class="sec"><h2 class="sec-h">Dein Konto</h2><div class="panel"><p><b>' + esc(me.name) + "</b></p>" +
+      '<p class="note">' + esc(userEmail) + "<br>" + (mySeat() ? esc(SEAT[mySeat()].label) : "Noch kein Platz zugeordnet") + (isLead() ? " · Leitung" + (me.sparte ? " (" + esc(SPARTE_TITLE[me.sparte]) + ")" : "") : "") + "</p>" +
+      '<div class="btns"><button type="button" class="btn" data-action="logout">Abmelden</button></div></div></section>';
     var dress = '<section class="sec"><h2 class="sec-h">Kleiderordnung</h2><div class="panel"><p>Herren im Frack, Frauen dementsprechend schwarz.</p></div></section>';
-    return fsSec + dress + shared + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
+    var mine = forMe.length ? '<section class="sec"><h2 class="sec-h">Für dich freigegeben<span>' + forMe.length + "</span></h2>" +
+      '<div class="files">' + forMe.map(function (d) { return docRow(d, true); }).join("") + "</div></section>" : "";
+    return fsSec + pushSection() + dress + plansSection() + docs + mine + '<section class="sec"><h2 class="sec-h">Infos & Links</h2><div class="links">' +
       TOOLS.map(function (t) {
         return '<button type="button" class="row" data-action="tool" data-v="' + t.id + '"><span><b>' + esc(t.title) + "</b><span>" + esc(t.sub) + "</span></span></button>";
-      }).join("") +
-      "<div><b>Technik-Rider</b><span>Beispiel: kommt mit dem Ausbau</span></div>" +
-      "<div><b>Dresscode</b><span>Beispiel: pflegt die Leitung je Projekt</span></div>" +
-      "<div><b>Planungstabellen je Projekt</b><span>Hotel, Reise, Programm; in der echten App hinter dem Login</span></div>" +
-      "</div></section>" +
+      }).join("") + "</div></section>" + acc +
       '<section class="sec"><h2 class="sec-h">Als App installieren</h2><ol class="steps">' +
-      "<li>iPhone: Seite in Safari öffnen (Link aus WhatsApp oder Mail erst mit „In Safari öffnen“), unten Teilen tippen, „Zum Home-Bildschirm“ wählen. Dann erscheint das TPB-Logo als App-Symbol.</li>" +
-      "<li>Android: Seite in Chrome öffnen, im Menü „App installieren“ wählen.</li>" +
-      "<li>Neue Versionen kommen automatisch beim nächsten Öffnen.</li></ol></section>" +
-      '<section class="sec"><h2 class="sec-h">Prototyp</h2><p class="note">Version 10 · Stand 30.10.2026 · Termine laut Übersicht vom 28.09.26. Unbestätigte Orte stehen hier bewusst nicht drin.</p>' +
-      '<div class="btns"><button type="button" class="btn" id="reset" data-action="reset">Beispieldaten zurücksetzen</button></div></section>';
+      "<li>iPhone: Seite in Safari öffnen (Link aus WhatsApp oder Mail erst mit „In Safari öffnen“), unten Teilen tippen, „Zum Home-Bildschirm“ wählen.</li>" +
+      "<li>Android: Seite in Chrome öffnen, im Menü „App installieren“ wählen.</li></ol></section>" +
+      '<section class="sec"><h2 class="sec-h">Version</h2><p class="note">' + VERSION_LABEL + " · Daten liegen bei Supabase in Frankfurt.</p></section>";
   }
 
   function screenNoten() {
     var rows = [1, 2, 3].map(function (n) {
-      return '<div class="score"><span><b>Beispiel-Arrangement ' + n + '</b><br><span class="note">Partitur · Stimmen je Platz · Bühnenplan</span></span><span class="chip">Stufe 2</span></div>';
+      return '<div class="score"><span><b>Beispiel-Arrangement ' + n + '</b><br><span class="note">Partitur · Stimmen je Register · Bühnenplan</span></span><span class="chip">Stufe 2</span></div>';
     }).join("");
     return '<section class="sec"><h2 class="sec-h">Ausbaustufe 2</h2>' +
-      '<p class="note">Hier liegen später eure eigenen Arrangements: je Stück Partitur und Stimmen für jeden Platz, nur für die Stammbesetzung. Dieselben Stammdaten speisen die Instrumentenübersicht und später den Vertrieb über Vienna Signature Scores.</p>' +
+      '<p class="note">Hier liegen später eure eigenen Arrangements: je Stück Partitur und die Stimmen des eigenen Registers.</p>' +
       '<div class="links">' + rows + "</div></section>";
   }
 
   function screenDetail(p) {
     var st = staffing(p);
-    var lead = state.role === "leitung";
+    var lead = isLead();
+    var s = mySeatIn(p);
     var html = '<p class="meta"><span class="chip ' + p.status + '">' + STATUS_LABEL[p.status] + "</span><span>" + esc(range(p)) + "</span>" + (p.conductor ? "<span>" + esc(p.conductor) + "</span>" : "") + "</p>";
     if (p.hint) html += '<p class="note">' + esc(p.hint) + "</p>";
-
-    if (p.status === "zugesagt") {
+    if (archived(p)) {
+      html += '<div class="panel locked"><p><span class="lock">' + LOCK + "Projekt abgeschlossen</span></p>" +
+        "<p>Zusagen, Besetzung und Unterlagen zu diesem Projekt werden 3 Tage nach Projektende gelöscht. Das Projekt bleibt mit seinen Terminen als Eintrag.</p></div>";
+    } else if (p.status === "zugesagt") {
       html += '<div class="panel"><div class="staff">' + housing(st.state, true) + "<span><b>" + st.label + "</b><span>" + st.filled + " von " + st.total + " Plätzen besetzt · " + regSummary(p.seats) + "</span></span></div>";
-      if (p.seats.indexOf(state.me) >= 0) {
-        var r = resp(p, state.me);
-        html += '<p class="note">Deine Rückmeldung als ' + SEAT[state.me].label + "</p>" + '<div class="btns"><button type="button" class="btn yes" data-action="respond" data-pid="' + p.id + '" data-v="ja" aria-pressed="' + (r.r === "ja") + '">Zusage</button>' +
+      if (s) {
+        var r = resp(p, s);
+        html += '<p class="note">Deine Rückmeldung als ' + esc(SEAT[s].label) + '</p><div class="btns"><button type="button" class="btn yes" data-action="respond" data-pid="' + p.id + '" data-v="ja" aria-pressed="' + (r.r === "ja") + '">Zusage</button>' +
           '<button type="button" class="btn no" data-action="respond" data-pid="' + p.id + '" data-v="nein" aria-pressed="' + (r.r === "nein") + '">Absage</button></div>';
       }
       html += "</div>";
@@ -937,7 +1361,6 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
         (lead && p.status === "idee" ? '<div class="btns"><button type="button" class="btn" data-action="toplan" data-pid="' + p.id + '">In Planung nehmen</button></div>' : "") +
         "</div>";
     }
-
     if (p.days.length) {
       html += '<section class="sec"><h2 class="sec-h">Ablaufplan</h2><ul class="days">' + p.days.map(function (d, i) {
         var kl = d.confirmed === false;
@@ -949,8 +1372,15 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
           "</span></li>";
       }).join("") + "</ul></section>";
     }
-
-    if (p.status === "zugesagt") {
+    var pplans = stagePlans.filter(function (x) { return x.project_id === p.id; });
+    if (pplans.length) {
+      html += '<section class="sec"><h2 class="sec-h">Bühnenplan<span>' + pplans.length + "</span></h2>" + planRows(pplans, false) + "</section>";
+    }
+    var pdocs = documents.filter(function (d) { return d.project_id === p.id; });
+    if (pdocs.length) {
+      html += '<section class="sec"><h2 class="sec-h">Unterlagen</h2><div class="files">' + pdocs.map(function (d) { return docRow(d, true); }).join("") + "</div></section>";
+    }
+    if (p.status === "zugesagt" && !archived(p)) {
       html += '<section class="sec"><h2 class="sec-h">Besetzung Platz für Platz</h2>';
       REGS.forEach(function (reg) {
         var ids = p.seats.filter(function (sid) { return SEAT[sid].reg === reg; });
@@ -958,10 +1388,16 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
         var filled = ids.filter(function (sid) { var r = resp(p, sid); return r.r === "ja" || r.sub === "zugesagt"; }).length;
         html += '<div class="reg"><p class="reg-h"><span>' + reg + "</span><span>" + filled + "/" + ids.length + "</span></p>" + ids.map(function (sid) {
           var r = resp(p, sid);
+          var m = playerOf(p, sid);
+          var home = memberOnSeat(sid);
           var tag = lead ? "button" : "div";
           var attrs = lead ? ' type="button" data-action="seat" data-pid="' + p.id + '" data-sid="' + sid + '"' : "";
-          var sub = r.r === "nein" && r.sub === "zugesagt" ? "Stammspieler abgesagt, Aushilfe spielt" : r.r === "nein" && r.sub === "angefragt" ? "Stammspieler abgesagt" : r.r === "nein" ? "Stammspieler abgesagt" : "";
-          return "<" + tag + ' class="seat' + (sid === state.me ? " mine" : "") + '"' + attrs + "><span><span class=\"seat-name\">" + SEAT[sid].label + (sid === state.me ? " · du" : "") + '</span>' + (sub ? '<span class="seat-sub">' + sub + "</span>" : "") + "</span>" + seatPill(r) + "</" + tag + ">";
+          var subWho = r.subName ? ": " + esc(r.subName) : "";
+          var sub = r.r === "nein" && r.sub === "zugesagt" ? "abgesagt, Aushilfe" + subWho + " spielt" : r.r === "nein" && r.sub === "angefragt" ? "abgesagt, Aushilfe" + subWho + " angefragt" : r.r === "nein" ? "abgesagt" : "";
+          var moved = home && !m ? seatOfMemberIn(p, home.id) : null;
+          var who = m ? esc(m.name) + (p.players[sid] ? " · nur in diesem Projekt" : "")
+            : moved ? "frei · " + esc(home.name) + " spielt " + esc(SEAT[moved] ? SEAT[moved].label : "einen anderen Platz") : "noch niemand eingetragen";
+          return "<" + tag + ' class="seat' + (sid === s ? " mine" : "") + '"' + attrs + '><span><span class="seat-name">' + SEAT[sid].label + (sid === s ? " · du" : "") + '</span><span class="seat-sub">' + who + (sub ? " · " + sub : "") + "</span></span>" + seatPill(r) + "</" + tag + ">";
         }).join("") + "</div>";
       });
       html += "</section>";
@@ -969,7 +1405,99 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     return html;
   }
 
-  /* ---------- Render ---------- */
+  /* ---------- Anmeldung ---------- */
+  function renderLogin() {
+    var err = login.error ? '<p class="form-error" role="alert">' + esc(login.error) + "</p>" : "";
+    var info = login.info ? '<p class="form-ok" role="status">' + esc(login.info) + "</p>" : "";
+    var h = '<div class="login"><img class="login-logo" src="../apple-touch-icon.png?v=3" alt="" width="84" height="84">' +
+      '<div><p class="eyebrow">The Philharmonic Brass</p><h1>Ensemble-App</h1></div>';
+    if (login.step === "email") {
+      h += '<p class="note">Melde dich mit der E-Mail-Adresse an, unter der dich die Leitung eingetragen hat. Du bekommst einen Code per E-Mail, ein Passwort brauchst du nicht.</p>' +
+        '<form id="f-login" novalidate><div class="fld"><label for="f-email">E-Mail-Adresse</label>' +
+        '<input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" required value="' + esc(login.email) + '"></div>' +
+        err + info + '<button type="submit" class="btn primary">Code anfordern</button></form>';
+    } else {
+      h += '<p class="note">Wir haben einen Code an <b>' + esc(login.email) + "</b> geschickt. Er kommt meist innerhalb einer Minute, sonst bitte im Spam-Ordner nachsehen.</p>" +
+        '<form id="f-code" novalidate><div class="fld"><label for="f-code-in">Code aus der E-Mail</label>' +
+        '<input id="f-code-in" name="code" class="code-input" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="10" required></div>' +
+        err + info + '<button type="submit" class="btn primary">Anmelden</button></form>' +
+        '<div class="btns"><button type="button" class="linklike" data-action="login-resend">Neuen Code anfordern</button><button type="button" class="linklike" data-action="login-back">Andere Adresse</button></div>';
+    }
+    h += "</div>";
+    $("#app").innerHTML = h;
+    var f = $(login.step === "email" ? "#f-email" : "#f-code-in");
+    if (f && !login.email) setTimeout(function () { try { f.focus(); } catch (e) { /* egal */ } }, 50);
+    if (f && login.step === "code") setTimeout(function () { try { f.focus(); } catch (e) { /* egal */ } }, 50);
+  }
+
+  async function requestCode(email) {
+    email = String(email || "").trim().toLowerCase();
+    login.email = email;
+    login.error = ""; login.info = "";
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { login.error = "Bitte eine gültige E-Mail-Adresse eingeben."; render(); return; }
+    if (Date.now() < login.cooldownUntil) {
+      login.info = "Bitte noch " + Math.ceil((login.cooldownUntil - Date.now()) / 1000) + " Sekunden warten, dann kannst du einen neuen Code anfordern.";
+      render(); return;
+    }
+    setBusy(true);
+    try {
+      var r = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } });
+      if (r.error) throw r.error;
+      login.step = "code";
+      login.cooldownUntil = Date.now() + 60000;
+      login.info = "";
+    } catch (e) {
+      var m = (e && (e.message || "")) + " " + (e && e.status ? e.status : "");
+      if (/rate|429|seconds/i.test(m)) login.error = "Bitte warte eine Minute, bevor du einen neuen Code anforderst.";
+      else if (/freigeschaltet|Database error|not allowed|signups/i.test(m)) login.error = "Für diese Adresse ist kein Zugang freigeschaltet. Bitte prüfe die Schreibweise oder frag die Leitung.";
+      else if (/fetch|network|Load failed/i.test(m)) login.error = "Keine Verbindung. Bitte später noch einmal versuchen.";
+      else login.error = "Der Code konnte nicht verschickt werden. Bitte später noch einmal versuchen.";
+    } finally {
+      setBusy(false);
+      render();
+    }
+  }
+
+  async function verifyCode(code) {
+    code = String(code || "").replace(/\D/g, "");
+    login.error = ""; login.info = "";
+    if (code.length < 6) { login.error = "Bitte den Code aus der E-Mail eingeben."; render(); return; }
+    setBusy(true);
+    try {
+      var r = await sb.auth.verifyOtp({ email: login.email, token: code, type: "email" });
+      if (r.error) throw r.error;
+      login = { step: "email", email: "", error: "", info: "", cooldownUntil: 0 };
+      ui.tab = "start"; ui.pid = null; ui.view = null;
+      saveUi();
+      await loadAll();
+    } catch (e) {
+      var m = (e && e.message) || "";
+      login.error = /fetch|network|Load failed/i.test(m) ? "Keine Verbindung. Bitte später noch einmal versuchen." : "Der Code stimmt nicht oder ist abgelaufen. Bitte noch einmal versuchen oder einen neuen Code anfordern.";
+      render();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function renderSpecial() {
+    $("#tabbar").hidden = true;
+    if (phase === "login") { renderLogin(); return; }
+    var body;
+    if (phase === "noaccess") {
+      body = '<div class="login"><img class="login-logo" src="../apple-touch-icon.png?v=3" alt="" width="84" height="84"><div><p class="eyebrow">The Philharmonic Brass</p><h1>Kein Zugang</h1></div>' +
+        '<p class="note">Du bist angemeldet als <b>' + esc(userEmail) + "</b>, aber dieses Konto ist nicht (mehr) für die App freigeschaltet. Bitte wende dich an die Leitung.</p>" +
+        '<div class="btns"><button type="button" class="btn" data-action="logout">Abmelden</button></div></div>';
+    } else if (phase === "error") {
+      body = '<div class="login"><img class="login-logo" src="../apple-touch-icon.png?v=3" alt="" width="84" height="84"><div><p class="eyebrow">The Philharmonic Brass</p><h1>Gerade nicht erreichbar</h1></div>' +
+        '<p class="note">' + esc(loadErr || "Die Daten konnten nicht geladen werden.") + "</p>" +
+        '<div class="btns"><button type="button" class="btn primary" data-action="reload">Erneut versuchen</button><button type="button" class="btn" data-action="logout">Abmelden</button></div></div>';
+    } else {
+      body = '<div class="login"><img class="login-logo" src="../apple-touch-icon.png?v=3" alt="" width="84" height="84"><p class="note" role="status">Lädt …</p></div>';
+    }
+    $("#app").innerHTML = body;
+  }
+
+  /* ---------- Darstellung ---------- */
   var TABS = [
     ["start", "Start", '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>'],
     ["kalender", "Kalender", '<rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M9 3v4M15 3v4" fill="none" stroke="currentColor" stroke-width="1.7"/>'],
@@ -981,68 +1509,72 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
   var TITLES = { start: "", kalender: "Kalender", leitung: "Leitung", infos: "Infos & Links", noten: "Noten" };
   var BACK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-  /* Unterseite: Projekt, Sparte oder Werkzeug */
   function subView() {
-    if (state.pid) { var p = byId(state.pid); if (p) return { k: "projekt", p: p, title: p.title }; }
-    if (state.view) {
-      var parts = state.view.split(":");
-      if (parts[0] === "sparte") { var s = sparteById(parts[1]); if (s && state.role === "leitung") return { k: "sparte", s: s, title: s.title }; }
+    if (ui.pid) { var p = byId(ui.pid); if (p) return { k: "projekt", p: p, title: p.title }; }
+    if (ui.view) {
+      var parts = ui.view.split(":");
+      if (parts[0] === "sparte" && isLead()) { var s = sparteById(parts[1]); if (s) return { k: "sparte", s: s, title: s.title }; }
+      if (parts[0] === "members" && isLead()) return { k: "members", title: "Mitglieder" };
       if (parts[0] === "tool") { var t = toolById(parts[1]); if (t) return { k: "tool", t: t, title: t.title }; }
+      if (parts[0] === "plan") { var sp = planById(parts.slice(1).join(":")); if (sp) return { k: "plan", sp: sp, title: sp.title }; }
+      if (parts[0] === "datei") { var dv = docById(parts.slice(1).join(":")); if (dv) return { k: "datei", d: dv, title: dv.title }; }
     }
-    state.pid = null;
-    state.view = null;
+    ui.pid = null;
+    ui.view = null;
     return null;
   }
 
   function render() {
-    var lead = state.role === "leitung";
-    if (!lead && state.tab === "leitung") state.tab = "start";
+    if (phase !== "app") { renderSpecial(); return; }
+    var lead = isLead();
+    if (!lead && ui.tab === "leitung") ui.tab = "start";
     var sv = subView();
     var p = sv && sv.k === "projekt" ? sv.p : null;
     var title = sv ? sv.title
-      : state.tab === "start" ? (lead ? "Guten Tag, Leitung" : "Guten Tag, " + SEAT[state.me].label)
-      : state.tab === "meine" ? (lead ? "Erinnerungen" : "Meine Rückmeldung")
-      : TITLES[state.tab];
-    var top = '<header class="top"><div class="top-row"><p class="eyebrow">The Philharmonic Brass</p>' +
-      '<div class="roles" role="group" aria-label="Ansicht"><button type="button" data-action="role" data-v="leitung" aria-pressed="' + lead + '">Leitung</button>' +
-      '<button type="button" data-action="role" data-v="musiker" aria-pressed="' + !lead + '">Musiker</button></div></div>' +
+      : ui.tab === "start" ? "Guten Tag, " + firstName(me.name)
+      : ui.tab === "meine" ? (lead ? "Erinnerungen" : "Meine Rückmeldung")
+      : TITLES[ui.tab];
+    var top = '<header class="top"><div class="top-row"><p class="eyebrow">The Philharmonic Brass</p>' + (offline ? '<span class="chip beta">Offline</span>' : "") + "</div>" +
+      (offline ? '<p class="me">Ohne Netz · Stand ' + esc(standText(standIso)) + ". Zusagen und Änderungen gehen wieder, sobald Netz da ist.</p>" : "") +
       (sv ? '<button type="button" class="back" data-action="back">' + BACK_ICON + "Zurück</button>" : "") +
       "<h1>" + esc(title) + "</h1>" +
-      (!sv ? '<label class="me" for="me-seat">Ich spiele <select id="me-seat">' + SEATS.map(function (s) {
-        return '<option value="' + s.id + '"' + (s.id === state.me ? " selected" : "") + ">" + s.label + "</option>";
-      }).join("") + "</select></label>" : "") +
+      (!sv && ui.tab === "start" ? '<p class="me">' + (mySeat() ? "Dein Platz: " + esc(SEAT[mySeat()].label) : "Noch kein Platz zugeordnet") + (lead ? " · Leitung" : "") + "</p>" : "") +
       "</header>";
     var body = p ? screenDetail(p)
       : sv && sv.k === "sparte" ? screenSparte(sv.s)
+      : sv && sv.k === "members" ? screenMembers()
       : sv && sv.k === "tool" ? screenTool(sv.t)
-      : state.tab === "kalender" ? screenKalender()
-      : state.tab === "leitung" ? screenLeitung()
-      : state.tab === "meine" ? screenMeine()
-      : state.tab === "infos" ? screenInfos()
-      : state.tab === "noten" ? screenNoten()
+      : sv && sv.k === "plan" ? screenPlan(sv.sp)
+      : sv && sv.k === "datei" ? screenDatei(sv.d)
+      : ui.tab === "kalender" ? screenKalender()
+      : ui.tab === "leitung" ? screenLeitung()
+      : ui.tab === "meine" ? screenMeine()
+      : ui.tab === "infos" ? screenInfos()
+      : ui.tab === "noten" ? screenNoten()
       : screenStart();
     $("#app").innerHTML = top + '<main class="screen">' + body + "</main>";
-
     var badge = lead ? openSeatsTotal() : myOpen().length;
     var tabs = TABS.filter(function (t) { return lead || !t[3]; });
-    $("#tabbar").style.gridTemplateColumns = "repeat(" + tabs.length + ", minmax(0, 1fr))";
-    $("#tabbar").innerHTML = tabs.map(function (t) {
+    var bar = $("#tabbar");
+    bar.hidden = false;
+    bar.style.gridTemplateColumns = "repeat(" + tabs.length + ", minmax(0, 1fr))";
+    bar.innerHTML = tabs.map(function (t) {
       var label = t[0] === "meine" ? (lead ? "Erinnern" : "Zusagen") : t[1];
-      var cur = state.tab === t[0];
+      var cur = ui.tab === t[0];
       return '<button type="button" class="tab" data-action="tab" data-v="' + t[0] + '"' + (cur ? ' aria-current="page"' : "") + ">" +
         '<svg viewBox="0 0 24 24" aria-hidden="true">' + t[2] + "</svg>" + label +
         (t[0] === "meine" && badge ? '<span class="badge">' + badge + "</span>" : "") + "</button>";
     }).join("");
   }
 
-  /* ---------- Sheet & toast ---------- */
+  /* ---------- Blatt, Hinweis, Laden ---------- */
   var toastTimer = null;
   function toast(msg) {
     var t = $("#toast");
     t.textContent = msg;
     t.hidden = false;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.hidden = true; }, 2800);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 3200);
   }
   var sheetCtx = null;
   function openSheet(html, ctx) {
@@ -1050,69 +1582,329 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     $("#sheet-inner").innerHTML = html;
     $("#scrim").hidden = false;
     $("#sheet").hidden = false;
-    var f = $("#sheet-inner input, #sheet-inner button");
-    if (f) setTimeout(function () { f.focus(); }, 30);
+    var f = $("#sheet-inner input:not([type=file]):not([type=radio]):not([type=checkbox]), #sheet-inner button");
+    if (f) setTimeout(function () { try { f.focus(); } catch (e) { /* egal */ } }, 30);
   }
   function closeSheet() {
     $("#sheet").hidden = true;
     $("#scrim").hidden = true;
     sheetCtx = null;
   }
+  var busy = 0;
+  function setBusy(on) {
+    busy = Math.max(0, busy + (on ? 1 : -1));
+    document.body.classList.toggle("busy", busy > 0);
+  }
+  async function run(task, okMsg) {
+    if (busy) return;
+    if (offline || !navigator.onLine) { toast("Ohne Netz geht das nicht. Bitte noch einmal versuchen, sobald Netz da ist."); return; }
+    setBusy(true);
+    try {
+      await task();
+      if (okMsg) toast(okMsg);
+    } catch (e) {
+      console.error(e);
+      toast(errText(e));
+    } finally {
+      /* erst nach dem Neuladen wieder freigeben, damit niemand auf veraltete Knöpfe tippt */
+      await loadAll(true);
+      setBusy(false);
+    }
+  }
+
+  /* ---------- Schreiben in die Datenbank ---------- */
+  function upsertResp(pid, sid, fields) {
+    return sb.from("responses").upsert(Object.assign({ project_id: pid, seat: sid }, fields), { onConflict: "project_id,seat" }).then(chk);
+  }
+  function upsertSub(pid, sid, status) {
+    return sb.from("substitutes").upsert({ project_id: pid, seat: sid, status: status }, { onConflict: "project_id,seat" }).then(chk);
+  }
+  function deleteSub(pid, sid) {
+    return sb.from("substitutes").delete().eq("project_id", pid).eq("seat", sid).then(chk);
+  }
 
   function seatSheet(p, sid) {
     var r = resp(p, sid);
+    var m = playerOf(p, sid);
+    var home = memberOnSeat(sid);
     var acts = [];
-    if (r.r === "offen") { acts.push(["remind", "Erinnern", " primary"]); acts.push(["set-ja", "Als Zusage eintragen", ""]); acts.push(["set-nein", "Als Absage eintragen", ""]); }
+    if (r.r === "offen") { acts.push(["remind", r.reminded ? "Erinnerung erneut vormerken" : "Zum Erinnern vormerken", " primary"]); acts.push(["set-ja", "Als Zusage eintragen", ""]); acts.push(["set-nein", "Als Absage eintragen", ""]); }
     if (r.r === "ja") acts.push(["set-nein", "Als Absage eintragen", ""]);
-    if (r.r === "nein" && !r.sub) acts.push(["sub-ask", "Aushilfe anfragen", " primary"]);
+    if (r.r === "nein" && !r.sub) acts.push(["sub-ask", "Aushilfe als angefragt markieren", " primary"]);
     if (r.r === "nein" && r.sub === "angefragt") { acts.push(["sub-yes", "Aushilfe hat zugesagt", " primary"]); acts.push(["sub-no", "Aushilfe hat abgesagt", ""]); }
     if (r.r === "nein" && r.sub === "zugesagt") acts.push(["sub-no", "Aushilfe austragen", ""]);
     if (r.r !== "offen") acts.push(["reset", "Zurück auf offen", ""]);
-    var stateText = r.r === "ja" ? "Stammspieler hat zugesagt." : r.r === "offen" ? (r.reminded ? "Noch keine Rückmeldung, bereits erinnert." : "Noch keine Rückmeldung.")
-      : r.sub === "zugesagt" ? "Stammspieler hat abgesagt, die Aushilfe spielt." : r.sub === "angefragt" ? "Stammspieler hat abgesagt, Aushilfe ist angefragt." : "Stammspieler hat abgesagt, noch keine Aushilfe.";
-    openSheet('<h2 id="sheet-title">' + SEAT[sid].label + '</h2><p class="note">' + esc(p.title) + " · " + stateText + "</p>" +
+    var stateText = r.r === "ja" ? "Hat zugesagt." : r.r === "offen" ? (r.reminded ? "Noch keine Rückmeldung, zum Erinnern vorgemerkt." : "Noch keine Rückmeldung.")
+      : r.sub === "zugesagt" ? "Hat abgesagt, die Aushilfe spielt." : r.sub === "angefragt" ? "Hat abgesagt, Aushilfe ist angefragt." : "Hat abgesagt, noch keine Aushilfe.";
+    var cur = p.players[sid] || "";
+    var others = members.filter(function (x) { return x.active && (!home || x.id !== home.id); })
+      .sort(function (a, b) { return (a.seat ? SEAT_IDX[a.seat] : 99) - (b.seat ? SEAT_IDX[b.seat] : 99) || a.name.localeCompare(b.name); });
+    var playerForm = '<form id="f-player" class="seat-form" novalidate><div class="fld"><label for="f-pl">Wer spielt diesen Platz in diesem Projekt?</label><select id="f-pl" name="member">' +
+      '<option value="">' + (home ? "Stammspieler: " + esc(home.name) : "Stammplatz (noch frei)") + "</option>" +
+      others.map(function (x) { return '<option value="' + x.id + '"' + (x.id === cur ? " selected" : "") + ">" + esc(x.name) + " · " + (x.seat && SEAT[x.seat] ? esc(SEAT[x.seat].label) : "ohne festen Platz") + "</option>"; }).join("") +
+      '</select></div><div class="btns"><button type="submit" class="btn">Spieler übernehmen</button></div></form>';
+    var subForm = r.r === "nein" ? '<form id="f-subname" class="seat-form" novalidate><div class="fld"><label for="f-sn">Name der Aushilfe</label>' +
+      '<input id="f-sn" name="name" type="text" maxlength="80" autocomplete="off" placeholder="z. B. Vor- und Nachname" value="' + esc(r.subName || "") + '"></div>' +
+      '<p class="note">Nur die Leitung sieht Aushilfen und ihre Namen.</p><div class="btns"><button type="submit" class="btn">Name speichern</button></div></form>' : "";
+    openSheet('<h2 id="sheet-title">' + SEAT[sid].label + '</h2><p class="note">' + (m ? esc(m.name) + " · " : "") + esc(p.title) + " · " + stateText + (r.subName ? " Aushilfe: " + esc(r.subName) + "." : "") + "</p>" +
       '<div class="btns">' + acts.map(function (a) {
         return '<button type="button" class="btn' + a[2] + '" data-action="seatact" data-pid="' + p.id + '" data-sid="' + sid + '" data-v="' + a[0] + '">' + a[1] + "</button>";
-      }).join("") + '<button type="button" class="btn" data-action="close">Abbrechen</button></div>');
+      }).join("") + "</div>" + subForm + playerForm +
+      '<div class="btns"><button type="button" class="btn" data-action="close">Abbrechen</button></div>', { pid: p.id, sid: sid });
+  }
+
+  async function submitPlayer(form) {
+    var c = sheetCtx || {};
+    var p = byId(c.pid), sid = c.sid;
+    if (!p || !sid) return;
+    var mid = form.member.value || null;
+    var home = memberOnSeat(sid);
+    if (home && mid === home.id) mid = null;
+    if ((p.players[sid] || null) === mid) { closeSheet(); return; }
+    var who = mid ? memberById(mid) : home;
+    var label = SEAT[sid].label;
+    closeSheet();
+    await run(async function () {
+      if (mid) {
+        await sb.from("project_seats").update({ member_id: null }).eq("project_id", p.id).eq("member_id", mid).then(chk);
+        var hs = who && who.seat;
+        if (hs && hs !== sid && p.seats.indexOf(hs) >= 0 && !p.players[hs] && resp(p, hs).r !== "offen") {
+          if (resp(p, hs).sub) await deleteSub(p.id, hs);
+          await upsertResp(p.id, hs, { answer: "offen" });
+        }
+      }
+      await sb.from("project_seats").update({ member_id: mid }).eq("project_id", p.id).eq("seat", sid).then(chk);
+      if (resp(p, sid).sub) await deleteSub(p.id, sid);
+      await upsertResp(p.id, sid, { answer: "offen" });
+    }, (who ? who.name + " spielt " : "Stammbesetzung für ") + label + " in diesem Projekt. Die Rückmeldung steht wieder auf offen.");
+  }
+  async function submitSubName(form) {
+    var c = sheetCtx || {};
+    var p = byId(c.pid), sid = c.sid;
+    if (!p || !sid) return;
+    var name = (form.name.value || "").trim().replace(/\s+/g, " ").slice(0, 80);
+    var r = resp(p, sid);
+    if (!name && !r.sub) { closeSheet(); return; }
+    closeSheet();
+    await run(function () {
+      if (!name) return sb.from("substitutes").update({ name: null }).eq("project_id", p.id).eq("seat", sid).then(chk);
+      return sb.from("substitutes").upsert({ project_id: p.id, seat: sid, status: r.sub || "angefragt", name: name }, { onConflict: "project_id,seat" }).then(chk);
+    }, name ? "Aushilfe " + name + " für " + SEAT[sid].label + " eingetragen." : "Name der Aushilfe entfernt.");
   }
 
   function seatAct(p, sid, v) {
-    var r = Object.assign({}, resp(p, sid));
-    if (v === "remind") { r.reminded = true; toast("Erinnerung an " + SEAT[sid].label + " vorgemerkt. Im Prototyp geht nichts raus."); }
-    if (v === "set-ja") { r = { r: "ja" }; }
-    if (v === "set-nein") { r = { r: "nein" }; }
-    if (v === "sub-ask") { r.r = "nein"; r.sub = "angefragt"; toast("Aushilfe für " + SEAT[sid].label + " angefragt."); }
-    if (v === "sub-yes") { r.sub = "zugesagt"; toast("Aushilfe spielt. Platz ist besetzt."); }
-    if (v === "sub-no") { delete r.sub; }
-    if (v === "reset") { r = { r: "offen" }; }
-    p.resp[sid] = r;
+    var cur = resp(p, sid);
+    var label = SEAT[sid].label;
+    if (v === "remind") return run(function () { return upsertResp(p.id, sid, { answer: "offen", reminded_at: new Date().toISOString() }); }, label + " zum Erinnern vorgemerkt.");
+    if (v === "set-ja") return run(function () { return upsertResp(p.id, sid, { answer: "ja" }); }, "Zusage für " + label + " eingetragen.");
+    if (v === "set-nein") return run(function () { return upsertResp(p.id, sid, { answer: "nein" }); }, "Absage für " + label + " eingetragen.");
+    if (v === "sub-ask") return run(async function () { if (cur.r !== "nein") await upsertResp(p.id, sid, { answer: "nein" }); await upsertSub(p.id, sid, "angefragt"); }, "Aushilfe für " + label + " als angefragt markiert.");
+    if (v === "sub-yes") return run(function () { return upsertSub(p.id, sid, "zugesagt"); }, "Aushilfe spielt. Platz ist besetzt.");
+    if (v === "sub-no") return run(function () { return deleteSub(p.id, sid); }, "Aushilfe ausgetragen.");
+    if (v === "reset") return run(async function () { if (cur.sub) await deleteSub(p.id, sid); await upsertResp(p.id, sid, { answer: "offen" }); }, label + " steht wieder auf offen.");
   }
 
-  /* ---------- Zurück auch per Wischgeste und Android-Zurücktaste ---------- */
+  /* Ablage: öffnen, hochladen, verlinken, freigeben, löschen */
+  function openDoc(d) {
+    if (offline || !navigator.onLine) {
+      if (d.kind !== "link" && offlineIds[d.id]) { enterSub(); ui.view = "datei:" + d.id; ui.pid = null; render(); window.scrollTo(0, 0); return; }
+      toast(d.kind === "link" ? "Links gehen nur mit Netz." : "Diese Datei ist nicht auf dem Gerät gespeichert.");
+      return;
+    }
+    markRead(d.id);
+    if (d.kind === "link") { window.open(d.url, "_blank", "noopener"); return; }
+    var w = null;
+    try { w = window.open("", "_blank"); } catch (e) { w = null; }
+    sb.storage.from("dokumente").createSignedUrl(d.storage_path, 3600).then(function (r) {
+      if (r.error || !r.data) { if (w) w.close(); toast("Die Datei konnte nicht geöffnet werden."); return; }
+      if (w) w.location.href = r.data.signedUrl; else window.location.href = r.data.signedUrl;
+    }).catch(function () { if (w) w.close(); toast("Keine Verbindung. Bitte später noch einmal versuchen."); });
+  }
+  function docSheet(d) {
+    var lead = isLead();
+    var meta = [SPARTE_TITLE[d.sparte], STAGE_LABEL[d.stage], dmy(d.created_at)];
+    if (d.file_size) meta.push(sizeLabel(d.file_size));
+    var rows = readRows(d.id);
+    var open = rows.filter(function (r) { return !r.read_at; });
+    var rinfo = "";
+    if (lead && rows.length) {
+      var namen = function (list) { return list.map(function (r) { var m = memberById(r.member_id); return m ? m.name : "?"; }).join(", "); };
+      rinfo = '<div class="panel"><p><b>' + readSummary(d.id) + "</b></p>" +
+        (open.length ? '<p class="note">Noch nicht gelesen: ' + esc(namen(open)) + "</p>" : '<p class="note">Alle haben gelesen.</p>') + "</div>";
+    }
+    openSheet('<h2 id="sheet-title">' + esc(d.title) + '</h2><p class="note">' + esc(meta.join(" · ")) + "</p>" + rinfo +
+      (d.storage_path ? '<p class="note">' + (offlineIds[d.id] ? "Auf diesem Gerät offline gespeichert" + (autoOffline(d) ? " (automatisch)." : ".") : "Nicht offline gespeichert.") + "</p>" : "") +
+      '<div class="btns"><button type="button" class="btn primary" data-action="doc-open" data-v="' + d.id + '">Öffnen</button>' +
+      (d.storage_path && !autoOffline(d) ? '<button type="button" class="btn" data-action="doc-offline" data-v="' + d.id + '">' + (manualList().indexOf(d.id) >= 0 ? "Nicht mehr offline speichern" : "Offline speichern") + "</button>" : "") +
+      (lead ? '<button type="button" class="btn" data-action="rr-sheet" data-v="' + d.id + '">Leseaufforderung senden</button>' +
+        (open.length ? '<button type="button" class="btn" data-action="rr-remind" data-v="' + d.id + '">Ungelesene erinnern</button>' : "") +
+        '<button type="button" class="btn" data-action="doc-stage" data-v="' + d.id + '">' + (d.stage === "intern" ? "Fürs Ensemble freigeben" : "Nur noch intern") + "</button>" +
+        '<button type="button" class="btn no" data-action="doc-del" data-v="' + d.id + '">Löschen</button>' : "") +
+      '<button type="button" class="btn" data-action="close">Abbrechen</button></div>');
+  }
+  function stageRadios(def) {
+    return '<div class="fld"><label>Wer soll es sehen?</label><div class="radio-row">' +
+      '<label><input type="radio" name="stage" value="intern"' + (def !== "ensemble" ? " checked" : "") + "> Nur Leitung</label>" +
+      '<label><input type="radio" name="stage" value="ensemble"' + (def === "ensemble" ? " checked" : "") + "> Ganzes Ensemble</label></div></div>";
+  }
+  function projectSelect() {
+    var list = upcoming().filter(function (p) { return p.status !== "idee"; });
+    return '<div class="fld"><label for="f-proj">Zu einem Projekt (optional)</label><select id="f-proj" name="project"><option value="">Kein bestimmtes Projekt</option>' +
+      list.map(function (p) { return '<option value="' + p.id + '">' + esc(p.title) + "</option>"; }).join("") + "</select></div>";
+  }
+  var MAX_BYTES = 25 * 1024 * 1024;
+  var EXT_TYPES = { pdf: "application/pdf", jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", heic: "image/heic",
+    doc: "application/msword", docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    xls: "application/vnd.ms-excel", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ppt: "application/vnd.ms-powerpoint", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", txt: "text/plain" };
+  function fileType(file) {
+    var ext = (file.name.split(".").pop() || "").toLowerCase();
+    return EXT_TYPES[ext] || file.type || "";
+  }
+  function safeName(n) {
+    var base = String(n || "datei").normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^A-Za-z0-9._-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    return (base || "datei").slice(-80);
+  }
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+  function uploadSheet(sparte) {
+    openSheet('<h2 id="sheet-title">Datei hochladen</h2><p class="note">' + esc(SPARTE_TITLE[sparte]) + " · PDF, Bilder oder Office-Dateien bis 25 MB</p>" +
+      '<form id="f-upload" novalidate><div class="fld"><label for="f-file">Datei</label><input id="f-file" name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" required></div>' +
+      '<div class="fld"><label for="f-title">Titel</label><input id="f-title" name="title" type="text" maxlength="120" autocomplete="off" placeholder="z. B. Tourplan mit Hoteldaten"></div>' +
+      stageRadios("intern") + projectSelect() + recipientPicker() +
+      '<p class="form-error" id="f-upload-err" role="alert" hidden></p>' +
+      '<div class="btns"><button type="submit" class="btn primary">Hochladen</button><button type="button" class="btn" data-action="close">Abbrechen</button></div></form>', { sparte: sparte });
+  }
+  function linkSheet(sparte) {
+    openSheet('<h2 id="sheet-title">Link hinzufügen</h2><p class="note">' + esc(SPARTE_TITLE[sparte]) + "</p>" +
+      '<form id="f-link" novalidate><div class="fld"><label for="f-ltitle">Titel</label><input id="f-ltitle" name="title" type="text" maxlength="120" autocomplete="off" required placeholder="z. B. Fotos zum Teilen"></div>' +
+      '<div class="fld"><label for="f-url">Adresse</label><input id="f-url" name="url" type="url" inputmode="url" autocapitalize="none" spellcheck="false" required placeholder="https://"></div>' +
+      stageRadios("intern") + projectSelect() +
+      '<p class="form-error" id="f-link-err" role="alert" hidden></p>' +
+      '<div class="btns"><button type="submit" class="btn primary">Speichern</button><button type="button" class="btn" data-action="close">Abbrechen</button></div></form>', { sparte: sparte });
+  }
+  function formError(id, msg) { var el = document.getElementById(id); if (el) { el.textContent = msg; el.hidden = false; } }
+
+  async function submitUpload(form) {
+    var file = form.file.files && form.file.files[0];
+    if (!file) return formError("f-upload-err", "Bitte eine Datei wählen.");
+    if (file.size > MAX_BYTES) return formError("f-upload-err", "Die Datei ist zu groß (höchstens 25 MB).");
+    var type = fileType(file);
+    if (!type) return formError("f-upload-err", "Dieser Dateityp wird nicht unterstützt (PDF, Bilder, Office-Dateien).");
+    var sparte = sheetCtx && sheetCtx.sparte;
+    var title = (form.title.value || "").trim() || file.name.replace(/\.[^.]+$/, "");
+    var stage = (form.querySelector("input[name=stage]:checked") || {}).value || "intern";
+    var project = form.project ? form.project.value || null : null;
+    var path = sparte + "/" + uuid() + "-" + safeName(file.name);
+    var ids = pickedIds(form);
+    closeSheet();
+    await run(async function () {
+      var up = await sb.storage.from("dokumente").upload(path, file, { contentType: type, upsert: false });
+      if (up.error) throw up.error;
+      var ins = await sb.from("documents").insert({ sparte: sparte, stage: stage, title: title.slice(0, 120), kind: "datei", storage_path: path, file_type: type, file_size: file.size, project_id: project }).select("id").single();
+      if (ins.error) { await sb.storage.from("dokumente").remove([path]); throw ins.error; }
+      if (ids.length) await addReadRequests(ins.data.id, ids);
+      if (stage === "ensemble") notify({ art: "dokument", document_id: ins.data.id, ohne: ids });
+    }, (stage === "ensemble" ? "Hochgeladen und fürs Ensemble freigegeben." : "Hochgeladen, nur für die Leitung sichtbar.") +
+      (ids.length ? " Leseaufforderung an " + (ids.length === 1 ? "1 Person" : ids.length + " Personen") + " gesendet." : ""));
+  }
+  async function submitLink(form) {
+    var title = (form.title.value || "").trim();
+    var url = (form.url.value || "").trim();
+    if (!title) return formError("f-link-err", "Bitte einen Titel eingeben.");
+    if (!/^https:\/\/\S+\.\S+/.test(url)) return formError("f-link-err", "Bitte eine vollständige Adresse eingeben, die mit https:// beginnt.");
+    var sparte = sheetCtx && sheetCtx.sparte;
+    var stage = (form.querySelector("input[name=stage]:checked") || {}).value || "intern";
+    var project = form.project ? form.project.value || null : null;
+    closeSheet();
+    await run(function () {
+      return sb.from("documents").insert({ sparte: sparte, stage: stage, title: title.slice(0, 120), kind: "link", url: url, project_id: project }).then(chk);
+    }, "Link gespeichert.");
+  }
+
+  /* Mitglieder einladen und verwalten */
+  function inviteSheet() {
+    var taken = {};
+    members.forEach(function (m) { if (m.seat && m.active) taken[m.seat] = m.name; });
+    openSheet('<h2 id="sheet-title">Person einladen</h2><p class="note">Danach kann sich die Person mit dieser E-Mail-Adresse und einem Code anmelden.</p>' +
+      '<form id="f-invite" novalidate>' +
+      '<div class="fld"><label for="f-iname">Name</label><input id="f-iname" name="name" type="text" maxlength="80" autocomplete="off" required></div>' +
+      '<div class="fld"><label for="f-iemail">E-Mail-Adresse</label><input id="f-iemail" name="email" type="email" inputmode="email" autocapitalize="none" spellcheck="false" required></div>' +
+      '<div class="fld"><label for="f-iseat">Platz</label><select id="f-iseat" name="seat"><option value="">Ohne festen Platz</option>' +
+        SEATS.map(function (s) { return '<option value="' + s.id + '"' + (taken[s.id] ? " disabled" : "") + ">" + esc(s.label) + (taken[s.id] ? " · " + esc(taken[s.id]) : "") + "</option>"; }).join("") + "</select></div>" +
+      '<div class="fld"><label for="f-ireg">Register</label><select id="f-ireg" name="register">' + REGS.map(function (r) { return '<option value="' + r + '">' + r + "</option>"; }).join("") + "</select></div>" +
+      '<label class="check"><input type="checkbox" name="lead" id="f-ilead"> Gehört zur Leitung</label>' +
+      '<div class="fld" id="f-isparte-wrap" hidden><label for="f-isparte">Zuständig für</label><select id="f-isparte" name="sparte"><option value="">Keine bestimmte Sparte</option>' +
+        SPARTEN.map(function (s) { return '<option value="' + s.id + '">' + esc(s.title) + "</option>"; }).join("") + "</select></div>" +
+      '<p class="form-error" id="f-invite-err" role="alert" hidden></p>' +
+      '<div class="btns"><button type="submit" class="btn primary">Einladen</button><button type="button" class="btn" data-action="close">Abbrechen</button></div></form>');
+  }
+  async function submitInvite(form) {
+    var name = (form.name.value || "").trim();
+    var email = (form.email.value || "").trim().toLowerCase();
+    var seat = form.seat.value || null;
+    var register = seat ? SEAT[seat].reg : form.register.value;
+    var lead = form.lead.checked;
+    var sparte = lead ? (form.sparte.value || null) : null;
+    if (!name) return formError("f-invite-err", "Bitte einen Namen eingeben.");
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return formError("f-invite-err", "Bitte eine gültige E-Mail-Adresse eingeben.");
+    closeSheet();
+    await run(function () {
+      return sb.rpc("invite_member", { p_name: name, p_email: email, p_register: register, p_seat: seat, p_is_leitung: lead, p_sparte: sparte }).then(chk);
+    }, name + " ist eingeladen und kann sich jetzt anmelden.");
+  }
+  function memberSheet(m) {
+    openSheet('<h2 id="sheet-title">' + esc(m.name) + '</h2><p class="note">' + esc([m.seat ? SEAT[m.seat].label : "ohne festen Platz", emails[m.id] || "", m.user_id ? "hat sich schon angemeldet" : "hat sich noch nicht angemeldet"].filter(Boolean).join(" · ")) + "</p>" +
+      '<div class="btns">' +
+      '<button type="button" class="btn" data-action="member-lead" data-v="' + m.id + '">' + (m.is_leitung ? "Aus der Leitung nehmen" : "Zur Leitung machen") + "</button>" +
+      '<button type="button" class="btn' + (m.active ? " no" : "") + '" data-action="member-active" data-v="' + m.id + '">' + (m.active ? "Zugang sperren" : "Zugang wieder freigeben") + "</button>" +
+      (me && m.id !== me.id ? '<button type="button" class="btn no" data-action="member-delete-ask" data-v="' + m.id + '">Konto löschen</button>' : "") +
+      '<button type="button" class="btn" data-action="close">Abbrechen</button></div>');
+  }
+  /* Konto löschen (F-031): nur Leitung, mit Rückfrage „Wirklich löschen?“ Ja/Nein */
+  function memberDeleteAsk(m) {
+    openSheet('<h2 id="sheet-title">Wirklich löschen?</h2><p class="note">Das Konto von ' + esc(m.name) + " wird endgültig gelöscht: Anmeldung, E-Mail-Adresse, Benachrichtigungen und Leseaufforderungen. " +
+      "Das lässt sich nicht rückgängig machen. Zusagen und Besetzung bleiben beim Platz.</p>" +
+      '<div class="btns"><button type="button" class="btn no" data-action="member-delete" data-v="' + m.id + '">Ja</button>' +
+      '<button type="button" class="btn" data-action="close">Nein</button></div>');
+  }
+  async function memberDelete(m) {
+    var r = await sb.functions.invoke("tpb-konto-loeschen", { body: { member_id: m.id } });
+    if (r.error) {
+      var msg = "";
+      try { var j = await r.error.context.json(); msg = j && j.fehler; } catch (e) { /* ohne Text */ }
+      var err = new Error(msg || "Löschen hat nicht geklappt.");
+      err.tpbText = /Mindestens eine Person/.test(msg) ? "Mindestens eine Person muss zur Leitung gehören." : (msg || "Löschen hat nicht geklappt. Bitte noch einmal versuchen.");
+      throw err;
+    }
+  }
+  function memberById(id) { return members.filter(function (m) { return m.id === id; })[0]; }
+
+  /* ---------- Zurück per Wischgeste und Android-Zurücktaste ---------- */
   var inSub = false;
   function enterSub() {
     if (inSub) return;
     try { history.pushState({ tpbSub: 1 }, ""); inSub = true; } catch (e) { inSub = false; }
   }
   function leaveSub() {
-    state.pid = null;
-    state.view = null;
+    ui.pid = null;
+    ui.view = null;
     if (inSub) { inSub = false; try { history.back(); } catch (e) { /* ohne Verlauf */ } }
   }
   window.addEventListener("popstate", function () {
-    if (!inSub && !state.pid && !state.view) return;
+    if (!inSub && !ui.pid && !ui.view) return;
     inSub = false;
-    state.pid = null;
-    state.view = null;
+    ui.pid = null;
+    ui.view = null;
     closeSheet();
-    save();
     render();
     window.scrollTo(0, 0);
   });
-  /* iOS zeigt den Druckzustand nur mit einem Touch-Listener */
   document.addEventListener("touchstart", function () {}, { passive: true });
 
-  /* ---------- Actions ---------- */
+  /* ---------- Bedienung ---------- */
   document.addEventListener("click", function (e) {
     var el = e.target.closest("[data-action]");
     if (!el) return;
@@ -1121,92 +1913,246 @@ button.seat:active, .links > .row:active { background: var(--tap); box-shadow: v
     var v = el.getAttribute("data-v");
     var scrollTop = false;
 
-    if (a === "tab") { leaveSub(); state.tab = v; scrollTop = true; }
-    else if (a === "open" && p) { enterSub(); state.pid = p.id; state.view = null; scrollTop = true; }
-    else if (a === "sparte") { enterSub(); state.view = "sparte:" + v; state.pid = null; scrollTop = true; }
-    else if (a === "tool") { enterSub(); state.view = "tool:" + v; state.pid = null; scrollTop = true; }
+    if (a === "login-back") { login.step = "email"; login.error = ""; login.info = ""; render(); return; }
+    if (a === "login-resend") { requestCode(login.email); return; }
+    if (a === "logout") {
+      closeSheet();
+      clearTimeout(toastTimer);
+      $("#toast").hidden = true;
+      clearOffline();
+      sb.auth.signOut().finally(function () {
+        me = null; phase = "login";
+        login = { step: "email", email: "", error: "", info: "", cooldownUntil: 0 };
+        ui.tab = "start"; ui.pid = null; ui.view = null; inSub = false;
+        saveUi();
+        render();
+      });
+      return;
+    }
+    if (a === "reload") { loadAll(); return; }
+    if (a === "close") { closeSheet(); return; }
+    if (phase !== "app") return;
+    if (busy && ["tab", "open", "back", "sparte", "tool", "plan", "members", "filter", "fs", "doc", "doc-open"].indexOf(a) < 0) {
+      toast("Einen Moment bitte, es wird noch gespeichert …");
+      return;
+    }
+
+    if (a === "tab") { leaveSub(); ui.tab = v; scrollTop = true; }
+    else if (a === "open" && p) { enterSub(); ui.pid = p.id; ui.view = null; scrollTop = true; }
+    else if (a === "sparte") { enterSub(); ui.view = "sparte:" + v; ui.pid = null; scrollTop = true; }
+    else if (a === "members") { enterSub(); ui.view = "members"; ui.pid = null; scrollTop = true; }
+    else if (a === "tool") { enterSub(); ui.view = "tool:" + v; ui.pid = null; scrollTop = true; }
+    else if (a === "plan") { enterSub(); ui.view = "plan:" + v; ui.pid = null; scrollTop = true; }
     else if (a === "back") {
       if (inSub) { history.back(); return; }
-      state.pid = null; state.view = null; scrollTop = true;
+      ui.pid = null; ui.view = null; scrollTop = true;
     }
-    else if (a === "role") { state.role = v; }
-    else if (a === "filter") { state.filter = v; }
-    else if (a === "fs") { state.fs = v; applyFont(); }
+    else if (a === "filter") { ui.filter = v; }
+    else if (a === "fs") { ui.fs = v; applyFont(); }
     else if (a === "hint-off") { try { localStorage.setItem(HINT_KEY, "1"); } catch (err) { /* nur in diesem Fenster */ } }
     else if (a === "install" && deferredPrompt) {
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then(function () { deferredPrompt = null; render(); });
       return;
     }
-    else if (a === "respond" && p) {
-      var cur = resp(p, state.me);
-      p.resp[state.me] = cur.r === v ? { r: "offen" } : { r: v };
-      toast(p.resp[state.me].r === "ja" ? "Zusage gespeichert" : p.resp[state.me].r === "nein" ? "Absage gespeichert. Die Leitung sieht die Lücke sofort." : "Rückmeldung zurückgenommen");
+    else if (a === "respond" && p && mySeatIn(p)) {
+      var mys = mySeatIn(p);
+      var cur = resp(p, mys);
+      var ans = cur.r === v ? "offen" : v;
+      p.resp[mys] = Object.assign({}, cur, { r: ans });
+      render();
+      run(function () { return upsertResp(p.id, mys, { answer: ans }); },
+        ans === "ja" ? "Zusage gespeichert" : ans === "nein" ? "Absage gespeichert. Die Leitung sieht es sofort." : "Rückmeldung zurückgenommen");
+      return;
     }
-    else if (a === "seat" && p) { seatSheet(p, el.getAttribute("data-sid")); return; }
-    else if (a === "seatact" && p) { seatAct(p, el.getAttribute("data-sid"), v); closeSheet(); }
-    else if (a === "remindall" && p) {
-      p.seats.forEach(function (sid) { var r = resp(p, sid); if (r.r === "offen") p.resp[sid] = { r: "offen", reminded: true }; });
-      toast("Erinnerung vorgemerkt. Im Prototyp geht nichts raus.");
+    else if (a === "seat" && p && isLead()) { seatSheet(p, el.getAttribute("data-sid")); return; }
+    else if (a === "seatact" && p && isLead()) { closeSheet(); seatAct(p, el.getAttribute("data-sid"), v); return; }
+    else if (a === "remindall" && p && isLead()) {
+      var rows = p.seats.filter(function (sid) { return resp(p, sid).r === "offen"; }).map(function (sid) {
+        return { project_id: p.id, seat: sid, answer: "offen", reminded_at: new Date().toISOString() };
+      });
+      run(function () { return sb.from("responses").upsert(rows, { onConflict: "project_id,seat" }).then(chk); }, "Alle offenen Plätze zum Erinnern vorgemerkt.");
+      return;
     }
-    else if (a === "confirmproject" && p) {
-      p.status = "zugesagt";
-      p.resp = {};
-      toast("Projekt zugesagt. Alle " + p.seats.length + " Plätze bekommen eine Rückmelde-Anfrage.");
+    else if (a === "confirmproject" && p && isLead()) {
+      run(async function () { await sb.from("projects").update({ status: "zugesagt" }).eq("id", p.id).then(chk); notify({ art: "projekt", project_id: p.id }); }, "Projekt zugesagt. Die Besetzung ist jetzt offen für Rückmeldungen.");
+      return;
     }
-    else if (a === "toplan" && p) { p.status = "planung"; toast("Idee in Planung genommen."); }
-    else if (a === "confirmday" && p) {
+    else if (a === "toplan" && p && isLead()) {
+      run(function () { return sb.from("projects").update({ status: "planung" }).eq("id", p.id).then(chk); }, "Idee in Planung genommen.");
+      return;
+    }
+    else if (a === "confirmday" && p && isLead()) {
       var i = +el.getAttribute("data-i");
       var d = p.days[i];
       openSheet('<h2 id="sheet-title">Termin bestätigen</h2><p class="note">' + esc(p.title) + " · " + dayLabel(d) + " · " + TYPE_LABEL[d.type] + "</p>" +
         '<div class="fld"><label for="f-ort">Ort</label><input id="f-ort" type="text" autocomplete="off" maxlength="80" placeholder="z. B. Stadt und Saal"></div>' +
         '<p class="note">Danach ist der Termin bestätigt und für die Besetzung offen.</p>' +
-        '<div class="btns"><button type="button" class="btn primary" data-action="confirmday-save">Bestätigen und freigeben</button><button type="button" class="btn" data-action="close">Abbrechen</button></div>', { pid: p.id, i: i });
+        '<div class="btns"><button type="button" class="btn primary" data-action="confirmday-save">Bestätigen und freigeben</button><button type="button" class="btn" data-action="close">Abbrechen</button></div>', { dayId: d.id });
       return;
     }
-    else if (a === "confirmday-save" && sheetCtx) {
-      var pp = byId(sheetCtx.pid);
-      var dd = pp && pp.days[sheetCtx.i];
-      if (dd) {
-        var ort = ($("#f-ort").value || "").trim();
-        dd.confirmed = true;
-        dd.place = ort || "Ort bestätigt";
-        toast("Termin bestätigt und freigegeben.");
-      }
+    else if (a === "confirmday-save" && sheetCtx && sheetCtx.dayId) {
+      var dayId = sheetCtx.dayId;
+      var ort = ($("#f-ort").value || "").trim();
       closeSheet();
+      var dp = projects.filter(function (x) { return x.days.some(function (dd) { return dd.id === dayId; }); })[0];
+      run(async function () { await sb.from("project_days").update({ confirmed: true, place: ort || null }).eq("id", dayId).then(chk); if (dp && dp.status === "zugesagt") notify({ art: "termin", project_id: dp.id, day_id: dayId }); }, "Termin bestätigt und freigegeben.");
+      return;
     }
-    else if (a === "close") { closeSheet(); return; }
-    else if (a === "reset") {
-      if (el.getAttribute("data-armed") !== "1") { el.setAttribute("data-armed", "1"); el.textContent = "Wirklich zurücksetzen?"; return; }
-      var role = state.role, me = state.me, fs = state.fs;
-      state = fresh();
-      state.role = role; state.me = me; state.fs = fs; state.tab = "infos";
-      toast("Beispieldaten zurückgesetzt.");
+    else if (a === "doc") {
+      var dd = docById(v);
+      if (!dd) return;
+      if (isLead()) docSheet(dd); else openDoc(dd);
+      return;
+    }
+    else if (a === "doc-open") { var d1 = docById(v); closeSheet(); if (d1) openDoc(d1); return; }
+    else if (a === "doc-offline") {
+      var ml = manualList(), at = ml.indexOf(v);
+      if (at >= 0) ml.splice(at, 1); else ml.push(v);
+      setManual(ml);
+      closeSheet();
+      toast(at >= 0 ? "Wird nicht mehr offline gespeichert." : (offline ? "Wird gespeichert, sobald Netz da ist." : "Wird auf diesem Gerät gespeichert."));
+      syncFiles();
+      return;
+    }
+    else if (a === "doc-stage" && isLead()) {
+      var d2 = docById(v);
+      closeSheet();
+      if (d2) run(async function () { var to = d2.stage === "intern" ? "ensemble" : "intern"; await sb.from("documents").update({ stage: to }).eq("id", d2.id).then(chk); if (to === "ensemble") notify({ art: "dokument", document_id: d2.id }); },
+        d2.stage === "intern" ? "Fürs Ensemble freigegeben." : "Nur noch für die Leitung sichtbar.");
+      return;
+    }
+    else if (a === "doc-del" && isLead()) {
+      if (el.getAttribute("data-armed") !== "1") { el.setAttribute("data-armed", "1"); el.textContent = "Wirklich löschen?"; return; }
+      var d3 = docById(v);
+      closeSheet();
+      if (d3) run(async function () {
+        if (d3.storage_path) { var rm = await sb.storage.from("dokumente").remove([d3.storage_path]); if (rm.error) throw rm.error; }
+        await sb.from("documents").delete().eq("id", d3.id).then(chk);
+      }, "Gelöscht.");
+      return;
+    }
+    else if (a === "doc-upload" && isLead()) { uploadSheet(v); return; }
+    else if (a === "rr-sheet" && isLead()) { var d4 = docById(v); if (d4) readSheet(d4); return; }
+    else if (a === "rr-remind" && isLead()) {
+      var ids4 = readRows(v).filter(function (r) { return !r.read_at; }).map(function (r) { return r.member_id; });
+      closeSheet();
+      if (ids4.length) { notify({ art: "lesen", document_id: v, member_ids: ids4 }); toast("Erinnerung an " + (ids4.length === 1 ? "1 Person" : ids4.length + " Personen") + " gesendet."); }
+      return;
+    }
+    else if (a === "rr-done") { markRead(v); toast("Als gelesen markiert."); return; }
+    else if (a === "rr-pick") {
+      var form = el.closest("form");
+      if (!form) return;
+      var boxes = Array.prototype.slice.call(form.querySelectorAll("input[name=rr]:not(:disabled)")).filter(function (i) {
+        return v === "alle" || (v === "leitung" && i.getAttribute("data-lead") === "1") || (v.indexOf("reg:") === 0 && i.getAttribute("data-reg") === v.slice(4));
+      });
+      var allOn = boxes.length && boxes.every(function (i) { return i.checked; });
+      boxes.forEach(function (i) { i.checked = !allOn; });
+      return;
+    }
+    else if (a === "push-on") { enablePush(); return; }
+    else if (a === "push-off") { disablePush(); return; }
+    else if (a === "doc-link" && isLead()) { linkSheet(v); return; }
+    else if (a === "invite" && isLead()) { inviteSheet(); return; }
+    else if (a === "member" && isLead()) { var m0 = memberById(v); if (m0) memberSheet(m0); return; }
+    else if (a === "member-lead" && isLead()) {
+      var m1 = memberById(v);
+      closeSheet();
+      if (m1) run(function () { return sb.from("members").update({ is_leitung: !m1.is_leitung }).eq("id", m1.id).then(chk); },
+        m1.is_leitung ? m1.name + " gehört nicht mehr zur Leitung." : m1.name + " gehört jetzt zur Leitung.");
+      return;
+    }
+    else if (a === "member-delete-ask" && isLead()) {
+      var m3 = memberById(v);
+      if (m3) memberDeleteAsk(m3);
+      return;
+    }
+    else if (a === "member-delete" && isLead()) {
+      var m4 = memberById(v);
+      closeSheet();
+      if (m4) run(function () { return memberDelete(m4); }, "Konto von " + m4.name + " gelöscht.");
+      return;
+    }
+    else if (a === "member-active" && isLead()) {
+      var m2 = memberById(v);
+      if (m2 && m2.active && el.getAttribute("data-armed") !== "1") { el.setAttribute("data-armed", "1"); el.textContent = "Wirklich sperren?"; return; }
+      closeSheet();
+      if (m2) run(function () { return sb.from("members").update({ active: !m2.active }).eq("id", m2.id).then(chk); },
+        m2.active ? "Zugang von " + m2.name + " gesperrt." : "Zugang von " + m2.name + " wieder freigegeben.");
+      return;
     }
     else return;
 
-    save();
+    saveUi();
     render();
     if (scrollTop) window.scrollTo(0, 0);
   });
+
+  document.addEventListener("submit", function (e) {
+    var f = e.target;
+    e.preventDefault();
+    if (busy) { toast("Einen Moment bitte, es wird noch gespeichert …"); return; }
+    if (f.id === "f-login") requestCode(f.email.value);
+    else if (f.id === "f-code") verifyCode(f.code.value);
+    else if (f.id === "f-upload") submitUpload(f);
+    else if (f.id === "f-link") submitLink(f);
+    else if (f.id === "f-invite") submitInvite(f);
+    else if (f.id === "f-read") submitRead(f);
+    else if (f.id === "f-player") submitPlayer(f);
+    else if (f.id === "f-subname") submitSubName(f);
+  });
   document.addEventListener("change", function (e) {
-    if (e.target && e.target.id === "me-seat") { state.me = e.target.value; save(); render(); }
+    var t = e.target;
+    if (t.id === "f-file" && t.files && t.files[0]) {
+      var title = $("#f-title");
+      if (title && !title.value) title.value = t.files[0].name.replace(/\.[^.]+$/, "");
+    }
+    if (t.id === "f-iseat" && t.value && SEAT[t.value]) { var reg = $("#f-ireg"); if (reg) reg.value = SEAT[t.value].reg; }
+    if (t.id === "f-ilead") { var w = $("#f-isparte-wrap"); if (w) w.hidden = !t.checked; }
+  });
+  document.addEventListener("input", function (e) {
+    if (e.target.id === "f-code-in") {
+      var digits = e.target.value.replace(/\D/g, "");
+      if (digits !== e.target.value) e.target.value = digits;
+    }
   });
   $("#scrim").addEventListener("click", closeSheet);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("#sheet").hidden) closeSheet(); });
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) return;
+    applyFont();
+    if (phase === "app" && Date.now() - lastLoad > 30000 && !busy) loadAll(true);
+  });
 
+  window.addEventListener("hashchange", function () {
+    if (!location.hash) return;
+    if (phase === "app") { applyHash(location.hash); render(); window.scrollTo(0, 0); }
+    else pendingHash = location.hash;
+  });
+
+  sb.auth.onAuthStateChange(function (event) {
+    if (event === "SIGNED_OUT") {
+      clearOffline();
+      me = null;
+      phase = "login";
+      setTimeout(render, 0);
+    }
+  });
+
+  /* ---------- Start ---------- */
   applyFont();
   render();
   resolveTools();
-  /* Geänderte iPhone-Textgröße beim Zurückkehren in die App übernehmen */
-  document.addEventListener("visibilitychange", function () { if (!document.hidden) applyFont(); });
-
-  /* Als installierte Web-App: Offline-Cache und automatische Updates */
-  try {
-    if ("serviceWorker" in navigator && location.protocol === "https:" && window.top === window && document.querySelector('link[rel="manifest"]')) {
-      navigator.serviceWorker.register("sw.js").catch(function () {});
-    }
-  } catch (e) { /* in der Vorschau ohne Installation */ }
+  /* Service Worker gleich beim Start: App-Seite, Schriften und Dateien für unterwegs (F-034) */
+  if ("serviceWorker" in navigator) {
+    try { navigator.serviceWorker.register(swScope() + "sw.js", { scope: swScope() }).catch(function () { /* ohne Offline */ }); } catch (e) { /* ohne Offline */ }
+  }
+  sb.auth.getSession().then(function (r) {
+    if (r && r.data && r.data.session) loadAll();
+    else if ((!navigator.onLine || (r && r.error && isNetErr(r.error))) && showOffline()) return;
+    else { phase = "login"; render(); }
+  }).catch(function (e) { if (isNetErr(e) && showOffline()) return; phase = "login"; render(); });
 })();
 </script>
 
