@@ -407,7 +407,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var SB_URL = "https://vibrpjzjwpzifpljjukp.supabase.co";
   var SB_KEY = "sb_publishable_lVHKTlObiihOnrm-724Wdg_oPmVxItB";
   var UI_KEY = "tpb-beta-ui";
-  var VERSION_LABEL = "Beta 6 · Stand 30.10.2026";
+  var VERSION_LABEL = "Beta 7 · Stand 31.10.2026";
 
   var $ = function (s) { return document.querySelector(s); };
   function esc(s) {
@@ -574,6 +574,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   }
 
   function errText(e) {
+    if (e && e.tpbText) return e.tpbText;
     var m = (e && (e.message || e.msg || e.error_description)) || String(e || "");
     if (/Mindestens eine Person/.test(m)) return "Mindestens eine Person muss zur Leitung gehören.";
     if (/duplicate key|already exists|unique/i.test(m)) return "Diese Adresse oder dieser Platz ist schon vergeben.";
@@ -1707,7 +1708,25 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       '<div class="btns">' +
       '<button type="button" class="btn" data-action="member-lead" data-v="' + m.id + '">' + (m.is_leitung ? "Aus der Leitung nehmen" : "Zur Leitung machen") + "</button>" +
       '<button type="button" class="btn' + (m.active ? " no" : "") + '" data-action="member-active" data-v="' + m.id + '">' + (m.active ? "Zugang sperren" : "Zugang wieder freigeben") + "</button>" +
+      (me && m.id !== me.id ? '<button type="button" class="btn no" data-action="member-delete-ask" data-v="' + m.id + '">Konto löschen</button>' : "") +
       '<button type="button" class="btn" data-action="close">Abbrechen</button></div>');
+  }
+  /* Konto löschen (F-031): nur Leitung, mit Rückfrage „Wirklich löschen?“ Ja/Nein */
+  function memberDeleteAsk(m) {
+    openSheet('<h2 id="sheet-title">Wirklich löschen?</h2><p class="note">Das Konto von ' + esc(m.name) + " wird endgültig gelöscht: Anmeldung, E-Mail-Adresse, Benachrichtigungen und Leseaufforderungen. " +
+      "Das lässt sich nicht rückgängig machen. Zusagen und Besetzung bleiben beim Platz.</p>" +
+      '<div class="btns"><button type="button" class="btn no" data-action="member-delete" data-v="' + m.id + '">Ja</button>' +
+      '<button type="button" class="btn" data-action="close">Nein</button></div>');
+  }
+  async function memberDelete(m) {
+    var r = await sb.functions.invoke("tpb-konto-loeschen", { body: { member_id: m.id } });
+    if (r.error) {
+      var msg = "";
+      try { var j = await r.error.context.json(); msg = j && j.fehler; } catch (e) { /* ohne Text */ }
+      var err = new Error(msg || "Löschen hat nicht geklappt.");
+      err.tpbText = /Mindestens eine Person/.test(msg) ? "Mindestens eine Person muss zur Leitung gehören." : (msg || "Löschen hat nicht geklappt. Bitte noch einmal versuchen.");
+      throw err;
+    }
   }
   function memberById(id) { return members.filter(function (m) { return m.id === id; })[0]; }
 
@@ -1880,6 +1899,17 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       closeSheet();
       if (m1) run(function () { return sb.from("members").update({ is_leitung: !m1.is_leitung }).eq("id", m1.id).then(chk); },
         m1.is_leitung ? m1.name + " gehört nicht mehr zur Leitung." : m1.name + " gehört jetzt zur Leitung.");
+      return;
+    }
+    else if (a === "member-delete-ask" && isLead()) {
+      var m3 = memberById(v);
+      if (m3) memberDeleteAsk(m3);
+      return;
+    }
+    else if (a === "member-delete" && isLead()) {
+      var m4 = memberById(v);
+      closeSheet();
+      if (m4) run(function () { return memberDelete(m4); }, "Konto von " + m4.name + " gelöscht.");
       return;
     }
     else if (a === "member-active" && isLead()) {
