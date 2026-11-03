@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0c0b09">
+<title>Datenschutz · TPB Ensemble</title>
+<link rel="icon" href="../icon-192.png?v=3">
+<link rel="stylesheet" href="../assets/schrift/schrift.css?v=1">
+<style>
+/* Datenschutzerklärung der TPB-App (F-035, Version 12). Quelle: TPB-Backup/app-werkzeug/quelle/datenschutz.html,
+   wird von baue_app.py nach TPB-App/datenschutz/index.html kopiert. Lesbar ohne Anmeldung und ohne Netz. */
+:root {
+  color-scheme: dark;
+  --ink: #0c0b09; --band: #15130f; --rule: #2c281f;
+  --text: #fbf8f1; --muted: #c8bfab; --gold: #c9a95c; --gold-hi: #d8ae3d; --on-gold: #15110a;
+  --font-display: "Bodoni Moda", "Bodoni 72", Didot, Georgia, serif;
+  --font-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+html, body { background: var(--ink); }
+body { margin: 0; color: var(--text); font: 400 1rem/1.55 var(--font-ui); -webkit-text-size-adjust: 100%; }
+/* lange Wörter (z. B. „Datenschutzerklärung“) bei großer Schrift trennen statt seitlich scrollen */
+article { overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
+.wrap { max-width: 42rem; margin: 0 auto; padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(40px + env(safe-area-inset-bottom, 0px)); }
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.back { color: var(--gold); font: 600 0.875rem/1 var(--font-ui); padding: 10px 0; text-decoration: none; }
+.back:hover, .back:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.lang { display: flex; gap: 4px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; }
+.lang button { appearance: none; border: 0; background: none; color: var(--muted); font: 600 0.8125rem/1 var(--font-ui); padding: 8px 12px; border-radius: 999px; cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--gold); color: var(--on-gold); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.eyebrow { margin: 18px 0 0; font: 500 0.75rem/1.2 var(--font-data); letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+h1 { margin: 6px 0 4px; font: 500 2rem/1.1 var(--font-display); text-wrap: balance; }
+h2 { margin: 30px 0 8px; font: 500 1.375rem/1.2 var(--font-display); color: var(--text); }
+p { margin: 0 0 12px; }
+.stand { color: var(--muted); font-size: 0.875rem; }
+a { color: var(--gold-hi); text-underline-offset: 2px; overflow-wrap: anywhere; }
+address { font-style: normal; margin: 0 0 12px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 12px; background: var(--band); }
+.tab { margin: 6px 0 14px; border-top: 1px solid var(--rule); }
+.tab > div { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.tab b { display: block; color: var(--gold); font-weight: 600; }
+.tab span { display: block; }
+.tab .meta { color: var(--muted); font-size: 0.875rem; }
+.box { margin: 0 0 12px; padding: 12px 14px; border-left: 3px solid var(--gold); background: var(--band); border-radius: 0 12px 12px 0; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="bar">
+  <a class="back" href="../" data-de="← Zurück zur App" data-en="← Back to the app">← Zurück zur App</a>
+  <div class="lang" role="group" aria-label="Sprache / Language">
+    <button type="button" data-lang="de" aria-pressed="true">Deutsch</button>
+    <button type="button" data-lang="en" aria-pressed="false">English</button>
+  </div>
+</div>
+
+<article lang="de" id="text-de">
+<p class="eyebrow">The Philharmonic Brass</p>
+<h1>Datenschutzerklärung der TPB-App</h1>
+<p class="stand">Stand: 3. November 2026</p>
+
+<h2>1. Wer ist verantwortlich?</h2>
+<p>Verantwortlich für die Verarbeitung Ihrer Daten in der TPB-App ist:</p>
+<address>Die Philharmonischen Blechbläser/The Philharmonic Brass<br>Verein, ZVR-Zahl 1253759849<br>Kastanienallee 3, 3730 Eggenburg, Österreich<br>vertreten durch Paul Halwax, Obmann<br>E-Mail: <a href="mailto:office@thephilharmonicbrass.com">office@thephilharmonicbrass.com</a></address>
+<p>Fragen zum Datenschutz und Anfragen zu Ihren Rechten senden Sie bitte an diese Adresse. Einen Datenschutzbeauftragten hat der Verein nicht bestellt.</p>
+
+<h2>2. Welche Daten verarbeitet die App?</h2>
+<p>Die App dient der internen Organisation des Ensembles: Termine, Zusagen, Unterlagen und Nachrichten. Nutzen können sie nur Mitglieder, die die Leitung eingeladen hat.</p>
+<div class="tab">
+  <div><b>Konto</b><span>Name, E-Mail-Adresse, Register, Platz, Rolle (Leitung oder Musiker), Sparte der Leitung, aktiv oder nicht</span><span class="meta">Wer sieht sie: Name, Register und Platz alle Mitglieder; die E-Mail-Adresse nur die Leitung und Sie selbst</span></div>
+  <div><b>Anmeldung</b><span>Einmal-Code per E-Mail, Anmeldezeitpunkt, IP-Adresse und Browserkennung der Sitzung</span><span class="meta">Wer sieht sie: nur die Technik (Supabase), nicht die Mitglieder</span></div>
+  <div><b>Zusagen</b><span>Ihre Antwort je Projekt und Platz, Zeitpunkt, wer sie eingetragen hat, Erinnerungen</span><span class="meta">Wer sieht sie: alle Mitglieder; Aushilfen und deren Namen nur die Leitung</span></div>
+  <div><b>Besetzung</b><span>wer welchen Platz in welchem Projekt spielt (Platztausch)</span><span class="meta">Wer sieht sie: alle Mitglieder</span></div>
+  <div><b>Ablage</b><span>Dateien und Links der Leitung mit Titel, Größe und wer sie abgelegt hat</span><span class="meta">Wer sieht sie: Stufe „Ensemble“ alle Mitglieder; „intern“ die Leitung und wer eine Leseaufforderung dazu bekommen hat</span></div>
+  <div><b>Leseaufforderungen</b><span>wer gebeten wurde, wer gebeten hat, wann gelesen, wann erinnert</span><span class="meta">Wer sieht sie: die Leitung sowie Sie für Ihre eigenen</span></div>
+  <div><b>Bühnenpläne</b><span>Aufstellungen mit Projekt, wer sie gespeichert und geändert hat</span><span class="meta">Wer sieht sie: alle Mitglieder</span></div>
+  <div><b>Push-Geräte</b><span>Zustelladresse Ihres Geräts für Benachrichtigungen und die zugehörigen Schlüssel, nur wenn Sie Benachrichtigungen einschalten</span><span class="meta">Wer sieht sie: nur Sie und die Technik</span></div>
+</div>
+<p>Inhalte der Dateien in der Ablage können selbst Personendaten enthalten, zum Beispiel Reiselisten. Dafür gilt dieselbe Freigabe wie für die Datei.</p>
+
+<h2>3. Wozu und auf welcher Rechtsgrundlage?</h2>
+<div class="tab">
+  <div><b>Organisation der Proben, Konzerte und Reisen</b><span>Konto, Anmeldung, Termine, Zusagen, Besetzung, Ablage, Leseaufforderungen, Bühnenpläne</span><span class="meta">Art. 6 Abs. 1 lit. b DSGVO – Mitgliedschaft bzw. Mitwirkung im Ensemble</span></div>
+  <div><b>Push-Benachrichtigungen</b><span class="meta">Art. 6 Abs. 1 lit. a DSGVO – Ihre Einwilligung durch Einschalten; jederzeit unter Infos oder in den Geräte-Einstellungen widerrufbar</span></div>
+  <div><b>Erinnerung an ungelesene Leseaufforderungen nach 7 Tagen</b><span class="meta">Art. 6 Abs. 1 lit. a DSGVO (nur bei eingeschalteten Benachrichtigungen)</span></div>
+  <div><b>Sicherheit</b><span>Anmeldeprotokoll, Zugriffsrechte, wöchentliche Sicherung</span><span class="meta">Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse an einem sicheren, ausfallfreien Betrieb; Art. 32 DSGVO</span></div>
+  <div><b>Ausliefern der App-Seiten</b><span>IP-Adresse beim Abruf</span><span class="meta">Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse an der technischen Bereitstellung</span></div>
+</div>
+<p>Werbung, Profilbildung oder Auswertung des Nutzungsverhaltens gibt es in der App nicht.</p>
+
+<h2>4. Wer verarbeitet Daten für uns?</h2>
+<p>Wir geben Ihre Daten nicht an Dritte weiter und verkaufen sie nicht. Für den Betrieb der App nutzen wir diese Dienste. Mit Supabase besteht ein Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO), mit Kilmulis Design ist er in Vorbereitung. GitHub stellt die App-Seiten und die Sicherung nach seinen eigenen Nutzungs- und Datenschutzbedingungen bereit.</p>
+<div class="tab">
+  <div><b>Supabase Pte. Ltd.</b><span>65 Chulia Street #38-02/03, OCBC Centre, Singapur 049513</span><span>Anmeldung, Datenbank, Dateispeicher, Versand der Benachrichtigungen</span><span class="meta">Daten: alle in Abschnitt 2 genannten · Ort: Server in Frankfurt am Main (EU)</span></div>
+  <div><b>Kilmulis Design mit Hetzner Online GmbH</b><span>Industriestr. 25, 91710 Gunzenhausen</span><span>E-Mail-Postfach, über das die Anmelde-Codes verschickt werden</span><span class="meta">Daten: E-Mail-Adresse, Code · Ort: Deutschland</span></div>
+  <div><b>GitHub, Inc. (USA)</b><span>Ausliefern der App-Seiten, Schriften und Programmbibliotheken; wöchentliche Sicherung der Datenbank, verschlüsselt in einem privaten Repository</span><span class="meta">Daten: beim Abruf IP-Adresse und Browserkennung; die Sicherung kann GitHub nicht lesen · Ort: USA</span></div>
+</div>
+<p>Wenn Sie Benachrichtigungen einschalten, stellt der Push-Dienst Ihres Geräts bzw. Browsers (Apple, Google oder Mozilla) sie zu. Dieser Dienst arbeitet nicht in unserem Auftrag, sondern gehört zu Ihrem Gerät bzw. Browser; es gelten die Datenschutzbestimmungen des jeweiligen Anbieters. Er erhält die Zustelladresse Ihres Geräts, der Inhalt der Nachricht ist Ende-zu-Ende verschlüsselt. Der Dienst kann auch außerhalb der EU sitzen.</p>
+<p>Innerhalb des Ensembles sehen Mitglieder Daten nur im Umfang der Übersicht in Abschnitt 2.</p>
+
+<h2>5. Übermittlung in Länder außerhalb der EU</h2>
+<p>Die Datenbank liegt in Frankfurt am Main. Supabase hat seinen Sitz in Singapur; ein Zugriff von dort ist möglich. Dafür gelten die EU-Standardvertragsklauseln (Durchführungsbeschluss (EU) 2021/914, Modul 2) aus dem Vertrag zur Auftragsverarbeitung mit Supabase.</p>
+<p>Bei GitHub (USA) und den Push-Diensten gehen Daten in die USA. Grundlage ist der EU-US-Datenschutzrahmen (Angemessenheitsbeschluss der EU-Kommission) bzw. die Standardvertragsklauseln des jeweiligen Anbieters.</p>
+
+<h2>6. Wie lange werden Daten gespeichert?</h2>
+<div class="tab">
+  <div><b>Konto</b><span>solange Sie dem Verein angehören; mit dem Austritt wird das Konto gelöscht</span></div>
+  <div><b>Zusagen, Besetzung, Aushilfen, Leseaufforderungen und Dateien zu einem Projekt</b><span>gelöscht 3 Tage nach Projektende</span></div>
+  <div><b>Ablage und Bühnenpläne</b><span>bis die Leitung sie löscht (Dateien zu einem Projekt siehe oben); das Projekt selbst bleibt mit Titel und Terminen als Eintrag</span></div>
+  <div><b>Anmelde-Codes</b><span>nur kurz gültig, danach nicht mehr verwendbar</span></div>
+  <div><b>Anmeldesitzungen (mit IP-Adresse und Browserkennung)</b><span>bis Sie sich abmelden oder Ihr Konto gelöscht wird</span></div>
+  <div><b>Technische Protokolle bei Supabase</b><span>1 Tag</span></div>
+  <div><b>Push-Geräte</b><span>bis Sie Benachrichtigungen ausschalten oder das Gerät die Adresse ungültig macht</span></div>
+  <div><b>Wöchentliche Sicherung</b><span>90 Tage, danach automatisch gelöscht</span></div>
+</div>
+<p>Gelöschte Daten bleiben noch bis zu 90 Tage in der verschlüsselten Sicherung und sind danach endgültig entfernt.</p>
+<p>Unterlagen, die der Verein gesetzlich aufbewahren muss (etwa Abrechnungen und Buchhaltung), legt die Leitung keinem Projekt zu. Sie fallen deshalb nicht unter die Löschung nach Projektende und bleiben bis zum Ende der gesetzlichen Aufbewahrungsfrist gespeichert.</p>
+
+<h2>7. Ihre Rechte</h2>
+<p>Sie haben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18) und Datenübertragbarkeit (Art. 20). Eine Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen, bei Benachrichtigungen einfach durch Ausschalten. Eine E-Mail an <a href="mailto:office@thephilharmonicbrass.com">office@thephilharmonicbrass.com</a> genügt.</p>
+<p class="box"><b>Widerspruchsrecht.</b> Soweit wir Daten auf Grundlage eines berechtigten Interesses verarbeiten (Art. 6 Abs. 1 lit. f DSGVO), können Sie dieser Verarbeitung jederzeit aus Gründen, die sich aus Ihrer besonderen Situation ergeben, widersprechen (Art. 21 DSGVO).</p>
+<p>Wenn Sie meinen, dass wir Ihre Daten nicht rechtmäßig verarbeiten, können Sie sich bei der Aufsichtsbehörde beschweren:</p>
+<address>Österreichische Datenschutzbehörde<br>Barichgasse 40–42, 1030 Wien<br>E-Mail: <a href="mailto:dsb@dsb.gv.at">dsb@dsb.gv.at</a> · Telefon: +43 1 521 52 25 69<br><a href="https://www.dsb.gv.at/" rel="noopener">www.dsb.gv.at</a></address>
+
+<h2>8. Weitere Hinweise</h2>
+<p><b>Speicher auf Ihrem Gerät.</b> Die App legt im Browser-Speicher Ihres Geräts nur ab, was sie zum Funktionieren braucht: Ihre Anmeldung, die gewählte Schriftgröße, ob der Installationshinweis ausgeblendet ist, die App-Seite und, damit die App auch ohne Netz funktioniert, den zuletzt geladenen Stand (Termine, Zusagen, Besetzung, Mitgliederliste) sowie ausgewählte Dateien (fürs Ensemble freigegebene, solche mit Leseaufforderung an Sie und solche zu Projekten der nächsten 30 Tage). Beim Abmelden werden diese Daten vom Gerät gelöscht. Es gibt keine Cookies zu Werbe- oder Analysezwecken. Diese Speicherung ist für den von Ihnen gewünschten Dienst unbedingt erforderlich (§ 165 Abs. 3 TKG 2021).</p>
+<p><b>Pflicht zur Angabe.</b> Ohne Name und E-Mail-Adresse kann kein Konto angelegt werden. Benachrichtigungen sind freiwillig.</p>
+<p><b>Keine automatisierten Entscheidungen.</b> Die App trifft keine Entscheidungen, die allein auf automatisierter Verarbeitung beruhen (Art. 22 DSGVO).</p>
+<p><b>Änderungen.</b> Ändert sich etwas an der App, passen wir diese Erklärung an. Die aktuelle Fassung steht immer unter Infos.</p>
+</article>
+
+<article lang="en" id="text-en" hidden>
+<p class="eyebrow">The Philharmonic Brass</p>
+<h1>Privacy Policy of the TPB App</h1>
+<p class="stand">Last updated: 3 November 2026 · In case of doubt, the German version applies.</p>
+
+<h2>1. Who is responsible?</h2>
+<p>The controller responsible for processing your data in the TPB App is:</p>
+<address>Die Philharmonischen Blechbläser/The Philharmonic Brass<br>Association (Verein), ZVR number 1253759849<br>Kastanienallee 3, 3730 Eggenburg, Austria<br>represented by Paul Halwax, Chairman (Obmann)<br>Email: <a href="mailto:office@thephilharmonicbrass.com">office@thephilharmonicbrass.com</a></address>
+<p>Please send questions about data protection and requests concerning your rights to this address. The association has not appointed a data protection officer.</p>
+
+<h2>2. What data does the app process?</h2>
+<p>The app is used for the internal organisation of the ensemble: dates, confirmations, documents and messages. Only members invited by the management can use it.</p>
+<div class="tab">
+  <div><b>Account</b><span>Name, email address, section, seat, role (management or musician), management area, active or not</span><span class="meta">Who can see it: name, section and seat all members; the email address only the management and you</span></div>
+  <div><b>Sign-in</b><span>One-time code by email, time of sign-in, IP address and browser identifier of the session</span><span class="meta">Who can see it: only the technical provider (Supabase), not the members</span></div>
+  <div><b>Confirmations</b><span>Your answer per project and seat, time, who entered it, reminders</span><span class="meta">Who can see it: all members; substitutes and their names only the management</span></div>
+  <div><b>Line-up</b><span>Who plays which seat in which project (seat swaps)</span><span class="meta">Who can see it: all members</span></div>
+  <div><b>Documents</b><span>Files and links from the management with title, size and who added them</span><span class="meta">Who can see it: level “Ensemble” all members; “internal” the management and anyone asked to read the file</span></div>
+  <div><b>Read requests</b><span>Who was asked, who asked, when read, when reminded</span><span class="meta">Who can see it: the management, and you for your own</span></div>
+  <div><b>Stage plans</b><span>Set-ups with project, who saved and changed them</span><span class="meta">Who can see it: all members</span></div>
+  <div><b>Push devices</b><span>Delivery address of your device for notifications and the related keys, only if you turn notifications on</span><span class="meta">Who can see it: only you and the technical provider</span></div>
+</div>
+<p>Files in the documents area may themselves contain personal data, such as travel lists. The same access level applies as for the file.</p>
+
+<h2>3. For what purpose and on what legal basis?</h2>
+<div class="tab">
+  <div><b>Organising rehearsals, concerts and travel</b><span>Account, sign-in, dates, confirmations, line-up, documents, read requests, stage plans</span><span class="meta">Art. 6(1)(b) GDPR – membership in or participation with the ensemble</span></div>
+  <div><b>Push notifications</b><span class="meta">Art. 6(1)(a) GDPR – your consent by turning them on; can be withdrawn at any time under Infos or in your device settings</span></div>
+  <div><b>Reminder about unread read requests after 7 days</b><span class="meta">Art. 6(1)(a) GDPR (only with notifications turned on)</span></div>
+  <div><b>Security</b><span>Sign-in log, access rights, weekly backup</span><span class="meta">Art. 6(1)(f) GDPR – legitimate interest in secure and reliable operation; Art. 32 GDPR</span></div>
+  <div><b>Delivering the app pages</b><span>IP address when the pages are loaded</span><span class="meta">Art. 6(1)(f) GDPR – legitimate interest in technical provision</span></div>
+</div>
+<p>The app contains no advertising, no profiling and no analysis of user behaviour.</p>
+
+<h2>4. Who processes data on our behalf?</h2>
+<p>We do not pass your data on to third parties and do not sell it. We use the following services to run the app. A data processing agreement (Art. 28 GDPR) is in place with Supabase; one with Kilmulis Design is being prepared. GitHub provides the app pages and the backup under its own terms of service and privacy terms.</p>
+<div class="tab">
+  <div><b>Supabase Pte. Ltd.</b><span>65 Chulia Street #38-02/03, OCBC Centre, Singapore 049513</span><span>Sign-in, database, file storage, sending notifications</span><span class="meta">Data: everything listed in section 2 · Location: servers in Frankfurt am Main (EU)</span></div>
+  <div><b>Kilmulis Design with Hetzner Online GmbH</b><span>Industriestr. 25, 91710 Gunzenhausen, Germany</span><span>Email mailbox used to send the sign-in codes</span><span class="meta">Data: email address, code · Location: Germany</span></div>
+  <div><b>GitHub, Inc. (USA)</b><span>Delivering the app pages, fonts and program libraries; weekly database backup, encrypted in a private repository</span><span class="meta">Data: IP address and browser identifier when loading; GitHub cannot read the backup · Location: USA</span></div>
+</div>
+<p>If you turn notifications on, they are delivered by the push service of your device or browser (Apple, Google or Mozilla). This service does not act on our behalf but is part of your device or browser; the provider’s own privacy terms apply. It receives your device’s delivery address; the content of the message is end-to-end encrypted. The service may be located outside the EU.</p>
+<p>Within the ensemble, members only see data to the extent described in section 2.</p>
+
+<h2>5. Transfers to countries outside the EU</h2>
+<p>The database is located in Frankfurt am Main. Supabase is based in Singapore; access from there is possible. The EU Standard Contractual Clauses (Implementing Decision (EU) 2021/914, Module 2) in the data processing agreement with Supabase apply.</p>
+<p>With GitHub (USA) and the push services, data is transferred to the USA. This is based on the EU-US Data Privacy Framework (adequacy decision of the European Commission) or the provider’s Standard Contractual Clauses.</p>
+
+<h2>6. How long is data stored?</h2>
+<div class="tab">
+  <div><b>Account</b><span>As long as you are a member of the association; the account is deleted when you leave</span></div>
+  <div><b>Confirmations, line-up, substitutes, read requests and files for a project</b><span>Deleted 3 days after the end of the project</span></div>
+  <div><b>Documents and stage plans</b><span>Until the management deletes them (for project files see above); the project itself remains as an entry with title and dates</span></div>
+  <div><b>Sign-in codes</b><span>Valid only briefly, then unusable</span></div>
+  <div><b>Sign-in sessions (with IP address and browser identifier)</b><span>Until you sign out or your account is deleted</span></div>
+  <div><b>Technical logs at Supabase</b><span>1 day</span></div>
+  <div><b>Push devices</b><span>Until you turn notifications off or the device invalidates the address</span></div>
+  <div><b>Weekly backup</b><span>90 days, then deleted automatically</span></div>
+</div>
+<p>Deleted data remains in the encrypted backup for up to 90 days and is then removed permanently.</p>
+<p>Documents the association is legally required to keep (such as invoices and accounting records) are not assigned to a project by the management. They are therefore not deleted after the end of a project and are kept until the statutory retention period ends.</p>
+
+<h2>7. Your rights</h2>
+<p>You have the right of access (Art. 15 GDPR), rectification (Art. 16), erasure (Art. 17), restriction of processing (Art. 18) and data portability (Art. 20). You can withdraw consent at any time with effect for the future; for notifications, simply turn them off. An email to <a href="mailto:office@thephilharmonicbrass.com">office@thephilharmonicbrass.com</a> is sufficient.</p>
+<p class="box"><b>Right to object.</b> Where we process data on the basis of a legitimate interest (Art. 6(1)(f) GDPR), you may object to this processing at any time on grounds relating to your particular situation (Art. 21 GDPR).</p>
+<p>If you believe that we are not processing your data lawfully, you can lodge a complaint with the supervisory authority:</p>
+<address>Österreichische Datenschutzbehörde (Austrian Data Protection Authority)<br>Barichgasse 40–42, 1030 Vienna, Austria<br>Email: <a href="mailto:dsb@dsb.gv.at">dsb@dsb.gv.at</a> · Phone: +43 1 521 52 25 69<br><a href="https://www.dsb.gv.at/" rel="noopener">www.dsb.gv.at</a></address>
+
+<h2>8. Further information</h2>
+<p><b>Storage on your device.</b> The app stores in your device’s browser storage only what it needs to work: your sign-in, the chosen font size, whether the installation hint is hidden, the app page and, so that the app also works offline, the most recently loaded data (dates, confirmations, line-up, member list) and selected files (those shared with the ensemble, those with a read request to you and those for projects in the next 30 days). This data is deleted from the device when you sign out. There are no cookies for advertising or analytics. This storage is strictly necessary for the service you requested (§ 165(3) Austrian Telecommunications Act 2021).</p>
+<p><b>Required information.</b> An account cannot be created without a name and email address. Notifications are optional.</p>
+<p><b>No automated decisions.</b> The app makes no decisions based solely on automated processing (Art. 22 GDPR).</p>
+<p><b>Changes.</b> If the app changes, we will update this policy. The current version is always available under Infos.</p>
+</article>
+</div>
+<script>
+(function () {
+  /* Schriftgröße wie in der App (Infos → Schriftgröße), ohne eigene Speicherung */
+  try {
+    var ui = JSON.parse(localStorage.getItem("tpb-beta-ui") || "null");
+    var f = parseFloat(ui && ui.fs) || 1, base = 16;
+    if (window.CSS && CSS.supports && CSS.supports("font", "-apple-system-body")) {
+      var d = document.createElement("div");
+      d.style.cssText = "position:absolute;visibility:hidden;font:-apple-system-body";
+      document.body.appendChild(d);
+      var v = parseFloat(getComputedStyle(d).fontSize);
+      d.parentNode.removeChild(d);
+      if (v > 0) base = v * 16 / 17;
+    }
+    document.documentElement.style.fontSize = Math.round(Math.min(base * f, 26) * 100) / 100 + "px";
+  } catch (e) { /* Standardgröße */ }
+  /* Sprache: #en oder #de in der Adresse (kein Element trägt diese id, damit die Seite oben bleibt), sonst Gerätesprache (Deutsch, wenn sie Deutsch ist) */
+  function setLang(l) {
+    document.documentElement.lang = l;
+    document.getElementById("text-de").hidden = l !== "de";
+    document.getElementById("text-en").hidden = l !== "en";
+    document.title = l === "en" ? "Privacy · TPB Ensemble" : "Datenschutz · TPB Ensemble";
+    [].forEach.call(document.querySelectorAll("[data-lang]"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === l)); });
+    var back = document.querySelector(".back");
+    back.textContent = back.getAttribute("data-" + l);
+  }
+  var h = location.hash.replace("#", "");
+  setLang(h === "en" || h === "de" ? h : (/^de\b/i.test(navigator.language || "de") ? "de" : "en"));
+  document.querySelector(".lang").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-lang]");
+    if (!b) return;
+    setLang(b.getAttribute("data-lang"));
+    try { history.replaceState(null, "", "#" + b.getAttribute("data-lang")); } catch (x) { /* egal */ }
+  });
+})();
+</script>
+</body>
+</html>
