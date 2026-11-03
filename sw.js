@@ -1,13 +1,14 @@
-/* TPB Ensemble · Service Worker (Version 11, F-034 Offline)
+/* TPB Ensemble · Service Worker (Version 12: Datenschutzerklärung F-035; Offline seit Version 11, F-034)
    - App-Seite: zuerst aus dem Netz (damit Updates sofort ankommen), ohne Netz oder bei sehr langsamem Netz aus dem Speicher.
    - Schriften, Bibliothek, Icons: aus dem Speicher (Dateinamen sind versioniert).
    - Dateien für unterwegs: legt die App unter …/datei/<id> im Speicher „tpb-dateien-v1“ ab; dieser Worker liefert sie aus.
    - Alte Adresse beta/: leitet auf die Hauptadresse weiter, auch ohne Netz.
+   - Datenschutzerklärung datenschutz/: Netz zuerst, ohne Netz aus dem Speicher (F-035).
    Für eine neue Version VERSION hochzählen. */
-const VERSION = "tpb-ensemble-v12";
+const VERSION = "tpb-ensemble-v13";
 const DATEIEN = "tpb-dateien-v1";
 const SHELL = [
-  "./", "./manifest.webmanifest?v=3",
+  "./", "./manifest.webmanifest?v=3", "datenschutz/",
   "apple-touch-icon.png?v=3", "icon-192.png?v=3", "icon-512.png?v=3", "icon-maskable-512.png?v=3",
   "assets/schrift/schrift.css?v=1",
   "assets/schrift/bodoni-moda-latin-opsz-normal.woff2", "assets/schrift/bodoni-moda-latin-opsz-italic.woff2",
@@ -62,6 +63,14 @@ self.addEventListener("fetch", (e) => {
   }
   if (req.mode === "navigate") {
     if (path === scopePath || path === scopePath + "index.html") { e.respondWith(appSeite(req)); return; }
+    if (path === scopePath + "datenschutz/" || path === scopePath + "datenschutz/index.html") {
+      e.respondWith(fetch(req).then((res) => {
+        if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put("datenschutz/", copy)); }
+        return res;
+      }).catch(() => caches.open(VERSION).then((c) => c.match("datenschutz/")).then((hit) =>
+        hit || seite("<p>Die Datenschutzerklärung ist noch nicht auf diesem Gerät gespeichert. Bitte einmal mit Netz öffnen.</p>", 503))));
+      return;
+    }
     if (path.startsWith(scopePath + "beta")) {
       e.respondWith(fetch(req).catch(() => Response.redirect(self.registration.scope + url.hash, 302)));
       return;

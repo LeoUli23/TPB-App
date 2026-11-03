@@ -408,7 +408,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var SB_URL = "https://vibrpjzjwpzifpljjukp.supabase.co";
   var SB_KEY = "sb_publishable_lVHKTlObiihOnrm-724Wdg_oPmVxItB";
   var UI_KEY = "tpb-beta-ui";
-  var VERSION_LABEL = "Version 11 · Stand 31.10.2026";
+  var VERSION_LABEL = "Version 12 · Stand 03.11.2026";
 
   var $ = function (s) { return document.querySelector(s); };
   function esc(s) {
@@ -486,6 +486,8 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var readReqs = [];
   var pendingHash = location.hash || "";
   var APP_ART = /\/beta\//.test(location.pathname) ? "beta" : "haupt";
+  /* Pfad zu den Dateien im Hauptordner (Logo, Datenschutz): unter /beta/ eine Ebene höher */
+  var BASIS = APP_ART === "beta" ? "../" : "";
   var pushOn = false;
   var members = [];
   var emails = {};
@@ -1325,6 +1327,9 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       '<section class="sec"><h2 class="sec-h">Als App installieren</h2><ol class="steps">' +
       "<li>iPhone: Seite in Safari öffnen (Link aus WhatsApp oder Mail erst mit „In Safari öffnen“), unten Teilen tippen, „Zum Home-Bildschirm“ wählen.</li>" +
       "<li>Android: Seite in Chrome öffnen, im Menü „App installieren“ wählen.</li></ol></section>" +
+      '<section class="sec"><h2 class="sec-h">Datenschutz</h2><div class="links">' +
+      '<a class="row" href="' + BASIS + 'datenschutz/#de" data-dsgvo="de"><span><b>Datenschutzerklärung</b><span>Welche Daten die App speichert, wer sie sieht, welche Rechte bestehen</span></span></a>' +
+      '<a class="row" href="' + BASIS + 'datenschutz/#en" lang="en" data-dsgvo="en"><span><b>Privacy Policy</b><span>English version</span></span></a></div></section>' +
       '<section class="sec"><h2 class="sec-h">Version</h2><p class="note">' + VERSION_LABEL + " · Daten liegen bei Supabase in Frankfurt.</p></section>";
   }
 
@@ -1409,13 +1414,14 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   function renderLogin() {
     var err = login.error ? '<p class="form-error" role="alert">' + esc(login.error) + "</p>" : "";
     var info = login.info ? '<p class="form-ok" role="status">' + esc(login.info) + "</p>" : "";
-    var h = '<div class="login"><img class="login-logo" src="../apple-touch-icon.png?v=3" alt="" width="84" height="84">' +
+    var h = '<div class="login"><img class="login-logo" src="' + BASIS + 'apple-touch-icon.png?v=3" alt="" width="84" height="84">' +
       '<div><p class="eyebrow">The Philharmonic Brass</p><h1>Ensemble-App</h1></div>';
     if (login.step === "email") {
       h += '<p class="note">Melde dich mit der E-Mail-Adresse an, unter der dich die Leitung eingetragen hat. Du bekommst einen Code per E-Mail, ein Passwort brauchst du nicht.</p>' +
         '<form id="f-login" novalidate><div class="fld"><label for="f-email">E-Mail-Adresse</label>' +
         '<input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" required value="' + esc(login.email) + '"></div>' +
-        err + info + '<button type="submit" class="btn primary">Code anfordern</button></form>';
+        err + info + '<button type="submit" class="btn primary">Code anfordern</button></form>' +
+        '<p class="note">Mit der Anmeldung verarbeitet die App deine Daten wie in der <a href="' + BASIS + 'datenschutz/#de">Datenschutzerklärung</a> beschrieben (<a href="' + BASIS + 'datenschutz/#en" lang="en">Privacy Policy</a>).</p>';
     } else {
       h += '<p class="note">Wir haben einen Code an <b>' + esc(login.email) + "</b> geschickt. Er kommt meist innerhalb einer Minute, sonst bitte im Spam-Ordner nachsehen.</p>" +
         '<form id="f-code" novalidate><div class="fld"><label for="f-code-in">Code aus der E-Mail</label>' +
@@ -1484,15 +1490,15 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     if (phase === "login") { renderLogin(); return; }
     var body;
     if (phase === "noaccess") {
-      body = '<div class="login"><img class="login-logo" src="../apple-touch-icon.png?v=3" alt="" width="84" height="84"><div><p class="eyebrow">The Philharmonic Brass</p><h1>Kein Zugang</h1></div>' +
+      body = '<div class="login"><img class="login-logo" src="' + BASIS + 'apple-touch-icon.png?v=3" alt="" width="84" height="84"><div><p class="eyebrow">The Philharmonic Brass</p><h1>Kein Zugang</h1></div>' +
         '<p class="note">Du bist angemeldet als <b>' + esc(userEmail) + "</b>, aber dieses Konto ist nicht (mehr) für die App freigeschaltet. Bitte wende dich an die Leitung.</p>" +
         '<div class="btns"><button type="button" class="btn" data-action="logout">Abmelden</button></div></div>';
     } else if (phase === "error") {
-      body = '<div class="login"><img class="login-logo" src="../apple-touch-icon.png?v=3" alt="" width="84" height="84"><div><p class="eyebrow">The Philharmonic Brass</p><h1>Gerade nicht erreichbar</h1></div>' +
+      body = '<div class="login"><img class="login-logo" src="' + BASIS + 'apple-touch-icon.png?v=3" alt="" width="84" height="84"><div><p class="eyebrow">The Philharmonic Brass</p><h1>Gerade nicht erreichbar</h1></div>' +
         '<p class="note">' + esc(loadErr || "Die Daten konnten nicht geladen werden.") + "</p>" +
         '<div class="btns"><button type="button" class="btn primary" data-action="reload">Erneut versuchen</button><button type="button" class="btn" data-action="logout">Abmelden</button></div></div>';
     } else {
-      body = '<div class="login"><img class="login-logo" src="../apple-touch-icon.png?v=3" alt="" width="84" height="84"><p class="note" role="status">Lädt …</p></div>';
+      body = '<div class="login"><img class="login-logo" src="' + BASIS + 'apple-touch-icon.png?v=3" alt="" width="84" height="84"><p class="note" role="status">Lädt …</p></div>';
     }
     $("#app").innerHTML = body;
   }
