@@ -1,0 +1,9 @@
+# Gitleaks-Einstellungen für TPB (SICHERHEIT.md, Abschnitt 2)
+title = "TPB Gitleaks"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Der Publishable Key von Supabase ist öffentlich und schützt nichts; der Schutz kommt aus den Datenbank-Regeln (SICHERHEIT.md, Abschnitt 1). Secret Key und Service-Role-Key bleiben gesperrt."
+regexes = ['''sb_publishable_[A-Za-z0-9_\-]{20,}''']

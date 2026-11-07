@@ -1,0 +1,101 @@
+# Release-Prüfung bei jedem Pull Request nach main (F-036).
+# Die Prüfskripte liegen im privaten Repository TPB-Backup (Ordner app-werkzeug) und werden hier mit einem
+# Lese-Token geholt (Geheimwert TPB_BACKUP_LESEN, nur "Contents: Read" auf TPB-Backup, von Leo angelegt).
+# Der Job heißt "Release Prüfung" – so heißt die Pflichtprüfung im Regelsatz "Pull Request" von main.
+# Bewusst "pull_request", nicht "pull_request_target": Pull Requests aus fremden Kopien bekommen keine Geheimwerte.
+name: Release-Prüfung
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-pruefung-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pruefung:
+    name: Release Prüfung
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TPB_BACKUP_LESEN: ${{ secrets.TPB_BACKUP_LESEN }}
+      TPB_APP_DIR: ${{ github.workspace }}/app
+    steps:
+      - name: Zugang zu den Prüfskripten prüfen
+        run: |
+          if [ -z "$TPB_BACKUP_LESEN" ]; then
+            echo "::error title=Geheimwert fehlt::TPB_BACKUP_LESEN ist nicht gesetzt (Settings → Secrets and variables → Actions). Bei Pull Requests aus fremden Kopien ist das gewollt: dort laufen die Prüfungen nicht."
+            exit 1
+          fi
+
+      - name: App holen (Stand des Pull Requests)
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          path: app
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Gitleaks (keine Geheimwerte in Code und Git-Geschichte)
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/gitleaks.tgz" https://github.com/gitleaks/gitleaks/releases/download/v8.28.0/gitleaks_8.28.0_linux_x64.tar.gz
+          echo "a65b5253807a68ac0cafa4414031fd740aeb55f54fb7e55f386acb52e6a840eb  $RUNNER_TEMP/gitleaks.tgz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/gitleaks.tgz" -C "$RUNNER_TEMP" gitleaks
+          cd app
+          "$RUNNER_TEMP/gitleaks" git . --log-opts="--all" --config .gitleaks.toml --redact --no-banner --exit-code 1
+          "$RUNNER_TEMP/gitleaks" dir . --config .gitleaks.toml --redact --no-banner --exit-code 1
+
+      - name: Prüfskripte holen (TPB-Backup, nur app-werkzeug)
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          repository: LeoUli23/TPB-Backup
+          token: ${{ secrets.TPB_BACKUP_LESEN }}
+          path: werkzeug
+          sparse-checkout: app-werkzeug
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+
+      - name: Playwright und Chromium installieren
+        working-directory: werkzeug/app-werkzeug
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Versionsangabe der App lesen
+        run: |
+          label=$(grep -o 'VERSION_LABEL = "[^"]*"' app/index.html | head -1 | sed 's/^VERSION_LABEL = "//; s/"$//')
+          if [ -z "$label" ]; then echo "::error::Keine Versionsangabe in index.html gefunden"; exit 1; fi
+          echo "ERWARTET_APP=$label" >> "$GITHUB_ENV"
+          echo "Version laut App: $label"
+
+      - name: App-Prüfung, Lauf 1 (Bedienung und Rechte)
+        working-directory: werkzeug/app-werkzeug/pruefung
+        run: node beta-test.js
+
+      - name: App-Prüfung, Lauf 2
+        working-directory: werkzeug/app-werkzeug/pruefung
+        run: node beta-test.js
+
+      - name: Flugmodus
+        working-directory: werkzeug/app-werkzeug/pruefung
+        run: node offline-test.js
+
+      - name: Breiten 360/375 px, Schriftstufen, Kontrast, Schriften, fremde Server
+        working-directory: werkzeug/app-werkzeug/pruefung
+        run: node release-pruefung.js
+
+      - name: Bilder der Prüfung sichern (nur bei Fehler)
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: pruefung-bilder
+          path: werkzeug/app-werkzeug/pruefung/shots
+          retention-days: 7
+          if-no-files-found: ignore
