@@ -1,0 +1,11 @@
+# TPB-Sicherheitsregeln (SICHERHEIT.md, Abschnitt 2): nichts davon gehört ins Repository
+.env*
+*.pem
+*.key
+*.7z
+*.sql.gz
+*dump*
+sicherung/
+
+# Arbeitsdateien der Prüfungen
+node_modules/
