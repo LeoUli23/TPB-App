@@ -14,7 +14,7 @@ Von Hand gepflegt und hier direkt änderbar: `sw.js` (bei jedem Release `VERSION
 
 ## Prüfungen (Skripte in TPB-Backup/app-werkzeug/pruefung, laufen bei jedem Pull Request als „Release Prüfung“)
 
-- `beta-test.js` – 61 Prüfungen (Bedienung, Rechte, Aufruf-Zähler Supabase), `offline-test.js` – 14 (Flugmodus), `release-pruefung.js` – 360 und 375 px, alle drei Schriftstufen, kein seitliches Scrollen, Kontrast jeder sichtbaren Schrift mindestens 4,5 : 1, Schriften und Bilder, Datenschutzseite DE/EN.
+- `beta-test.js` – 66 Prüfungen (Bedienung, Rechte, Aufruf-Zähler Supabase), `offline-test.js` – 14 (Flugmodus), `release-pruefung.js` – 360 und 375 px, alle drei Schriftstufen, kein seitliches Scrollen, Kontrast jeder sichtbaren Schrift mindestens 4,5 : 1, Schriften und Bilder, Datenschutzseite DE/EN.
 - Kein Abruf bei fremden Servern außer Supabase und GitHub (wird erzwungen).
 - Gitleaks läuft mit; Konfiguration `.gitleaks.toml` (nur der öffentliche Publishable Key ist erlaubt).
 - Lokal: `ERWARTET_APP` auf die Versionsangabe der App setzen, `TPB_APP_DIR` auf dieses Repository.
