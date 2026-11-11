@@ -19,6 +19,8 @@ Von Hand gepflegt und hier direkt änderbar: `sw.js` (bei jedem Release `VERSION
 - Gitleaks läuft mit; Konfiguration `.gitleaks.toml` (nur der öffentliche Publishable Key ist erlaubt).
 - Lokal: `ERWARTET_APP` auf die Versionsangabe der App setzen, `TPB_APP_DIR` auf dieses Repository.
 
+Ablauf für Releases: Skill `.claude/skills/tpb-app-release/SKILL.md` (Kopie des Skills aus Leos Konto, damit Claude Code in der Cloud ihn sicher sieht).
+
 ## Regeln
 
 - Release nur nach Leos Go, als Pull Request auf einem Branch `release/<name>`; Leo mergt, Claude mergt nie.
