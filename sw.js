@@ -5,7 +5,7 @@
    - Alte Adresse beta/: leitet auf die Hauptadresse weiter, auch ohne Netz.
    - Datenschutzerklärung datenschutz/: Netz zuerst, ohne Netz aus dem Speicher (F-035).
    Für eine neue Version VERSION hochzählen. */
-const VERSION = "tpb-ensemble-v13";
+const VERSION = "tpb-ensemble-v14";
 const DATEIEN = "tpb-dateien-v1";
 const SHELL = [
   "./", "./manifest.webmanifest?v=3", "datenschutz/",

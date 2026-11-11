@@ -408,7 +408,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
   var SB_URL = "https://vibrpjzjwpzifpljjukp.supabase.co";
   var SB_KEY = "sb_publishable_lVHKTlObiihOnrm-724Wdg_oPmVxItB";
   var UI_KEY = "tpb-beta-ui";
-  var VERSION_LABEL = "Version 12 · Stand 03.11.2026";
+  var VERSION_LABEL = "Version 13 · Stand 11.11.2026";
 
   var $ = function (s) { return document.querySelector(s); };
   function esc(s) {
@@ -545,7 +545,20 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       return { id: d.id, d: d.day, e: d.day_end, t: d.time_text, type: d.type, text: d.text, place: d.place, confirmed: d.confirmed };
     });
     return { id: p.id, slug: p.slug, title: p.title, status: p.status, start: p.start_date, end: p.end_date,
-      rangeLabel: p.range_label, conductor: p.conductor, hint: p.hint, seats: seats, days: days, resp: resp, players: players };
+      rangeLabel: p.range_label, conductor: p.conductor, hint: p.hint, seats: seats, days: days, resp: resp, players: players,
+      /* Löschregel mit Vorwarnung (Migration 012): fehlen die Felder (ältere Datenbank), gilt die Datumsregel */
+      loeschFelder: p.daten_geloescht_am !== undefined, deletedAt: p.daten_geloescht_am || null,
+      aufschub: p.loeschung_aufgeschoben_bis || null, vorgewarnt: p.loeschung_vorgewarnt_am || null };
+  }
+
+  var PROJ_SEL = "id,slug,title,status,start_date,end_date,range_label,conductor,hint," +
+    "project_days(id,day,day_end,time_text,type,text,place,confirmed,sort)," +
+    "project_seats(seat,member_id,responses(answer,reminded_at,answered_by,updated_at),substitutes(status,note,name))";
+  /* Mit den Feldern der Löschregel (012); fehlen sie in der Datenbank noch, ohne sie */
+  async function loadProjects() {
+    var r = await sb.from("projects").select(PROJ_SEL + ",daten_geloescht_am,loeschung_aufgeschoben_bis,loeschung_vorgewarnt_am");
+    if (r.error && !isNetErr(r.error)) r = await sb.from("projects").select(PROJ_SEL);
+    return r;
   }
 
   async function loadAll(silent) {
@@ -569,9 +582,7 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
       if (!me || !me.active) { clearOffline(); phase = "noaccess"; render(); return; }
       var res = await Promise.all([
         sb.from("seats").select("id,register,label,sort").order("sort"),
-        sb.from("projects").select("id,slug,title,status,start_date,end_date,range_label,conductor,hint," +
-          "project_days(id,day,day_end,time_text,type,text,place,confirmed,sort)," +
-          "project_seats(seat,member_id,responses(answer,reminded_at,answered_by,updated_at),substitutes(status,note,name))"),
+        loadProjects(),
         sb.from("documents").select("id,sparte,stage,title,kind,url,storage_path,file_type,file_size,project_id,created_by,created_at").order("created_at", { ascending: false }),
         sb.from("members").select("id,name,register,seat,is_leitung,sparte,active,user_id").order("name"),
         isLead() ? sb.from("member_emails").select("member_id,email") : Promise.resolve({ data: [] }),
@@ -766,7 +777,16 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     var d = new Date(iso + "T12:00:00"); d.setDate(d.getDate() + n);
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   }
-  function archived(p) { var e = projEnd(p); return !!e && plusDays(e, 3) <= todayIso(); }
+  function archived(p) {
+    if (p.loeschFelder) return !!p.deletedAt;
+    var e = projEnd(p); return !!e && plusDays(e, 3) <= todayIso();
+  }
+  /* Löschtag wie in der Datenbank: 3 Tage nach Projektende, bei Aufschub frühestens am Aufschub-Tag */
+  function loeschtag(p) {
+    var e = projEnd(p); if (!e) return null;
+    var t = plusDays(e, 3);
+    return p.aufschub && p.aufschub > t ? p.aufschub : t;
+  }
   var STATUS_LABEL = { zugesagt: "Zugesagt", planung: "In Planung", idee: "Idee" };
   var TYPE_LABEL = { reise: "Reise", probe: "Probe", konzert: "Konzert", aufnahme: "Aufnahme" };
   function byId(id) { return projects.filter(function (p) { return p.id === id; })[0]; }
@@ -1348,6 +1368,13 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     var s = mySeatIn(p);
     var html = '<p class="meta"><span class="chip ' + p.status + '">' + STATUS_LABEL[p.status] + "</span><span>" + esc(range(p)) + "</span>" + (p.conductor ? "<span>" + esc(p.conductor) + "</span>" : "") + "</p>";
     if (p.hint) html += '<p class="note">' + esc(p.hint) + "</p>";
+    var lt = p.loeschFelder && !p.deletedAt ? loeschtag(p) : null;
+    if (lead && lt && (lt <= plusDays(todayIso(), 14) || p.aufschub)) {
+      var ltTxt = lt < todayIso() ? "frühestens 3 Tage nach der Vorwarnung" : "am " + dmy(lt + "T12:00:00");
+      html += '<div class="panel"><p><b>Löschregel</b></p><p>Zusagen, Besetzung, Aushilfen und Unterlagen zu diesem Projekt werden ' + esc(ltTxt) +
+        " gelöscht. Das Projekt bleibt mit seinen Terminen im Archiv." + (p.aufschub ? " Bereits aufgeschoben." : "") + "</p>" +
+        '<div class="btns"><button type="button" class="btn" data-action="aufschieben" data-pid="' + p.id + '">Löschung um 30 Tage aufschieben</button></div></div>';
+    }
     if (archived(p)) {
       html += '<div class="panel locked"><p><span class="lock">' + LOCK + "Projekt abgeschlossen</span></p>" +
         "<p>Zusagen, Besetzung und Unterlagen zu diesem Projekt werden 3 Tage nach Projektende gelöscht. Das Projekt bleibt mit seinen Terminen als Eintrag.</p></div>";
@@ -1982,6 +2009,15 @@ button.file:active { background: var(--tap); box-shadow: var(--press); }
     }
     else if (a === "confirmproject" && p && isLead()) {
       run(async function () { await sb.from("projects").update({ status: "zugesagt" }).eq("id", p.id).then(chk); notify({ art: "projekt", project_id: p.id }); }, "Projekt zugesagt. Die Besetzung ist jetzt offen für Rückmeldungen.");
+      return;
+    }
+    else if (a === "aufschieben" && p && isLead()) {
+      var neuTag = null;
+      run(async function () {
+        var r = chk(await sb.rpc("loeschung_aufschieben", { p_project_id: p.id }));
+        neuTag = r.data;
+        toast("Löschung aufgeschoben bis " + dmy(String(neuTag) + "T12:00:00") + ". Vorher kommt eine neue Vorwarnung.");
+      }, null);
       return;
     }
     else if (a === "toplan" && p && isLead()) {
