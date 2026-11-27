@@ -9,7 +9,7 @@
 <link rel="icon" href="../icon-192.png?v=3">
 <link rel="stylesheet" href="../assets/schrift/schrift.css?v=1">
 <style>
-/* Datenschutzerklärung der TPB-App (F-035, Version 12). Quelle: TPB-Backup/app-werkzeug/quelle/datenschutz.html,
+/* Datenschutzerklärung der TPB-App (F-035, Version 12; Sicherung F-060, Version 13.1). Quelle: TPB-Backup/app-werkzeug/quelle/datenschutz.html,
    wird von baue_app.py nach TPB-App/datenschutz/index.html kopiert. Lesbar ohne Anmeldung und ohne Netz. */
 :root {
   color-scheme: dark;
@@ -60,7 +60,7 @@ address { font-style: normal; margin: 0 0 12px; padding: 12px 14px; border: 1px 
 <article lang="de" id="text-de">
 <p class="eyebrow">The Philharmonic Brass</p>
 <h1>Datenschutzerklärung der TPB-App</h1>
-<p class="stand">Stand: 3. November 2026</p>
+<p class="stand">Stand: 27. November 2026</p>
 
 <h2>1. Wer ist verantwortlich?</h2>
 <p>Verantwortlich für die Verarbeitung Ihrer Daten in der TPB-App ist:</p>
@@ -86,7 +86,7 @@ address { font-style: normal; margin: 0 0 12px; padding: 12px 14px; border: 1px 
   <div><b>Organisation der Proben, Konzerte und Reisen</b><span>Konto, Anmeldung, Termine, Zusagen, Besetzung, Ablage, Leseaufforderungen, Bühnenpläne</span><span class="meta">Art. 6 Abs. 1 lit. b DSGVO – Mitgliedschaft bzw. Mitwirkung im Ensemble</span></div>
   <div><b>Push-Benachrichtigungen</b><span class="meta">Art. 6 Abs. 1 lit. a DSGVO – Ihre Einwilligung durch Einschalten; jederzeit unter Infos oder in den Geräte-Einstellungen widerrufbar</span></div>
   <div><b>Erinnerung an ungelesene Leseaufforderungen nach 7 Tagen</b><span class="meta">Art. 6 Abs. 1 lit. a DSGVO (nur bei eingeschalteten Benachrichtigungen)</span></div>
-  <div><b>Sicherheit</b><span>Anmeldeprotokoll, Zugriffsrechte, wöchentliche Sicherung</span><span class="meta">Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse an einem sicheren, ausfallfreien Betrieb; Art. 32 DSGVO</span></div>
+  <div><b>Sicherheit</b><span>Anmeldeprotokoll, Zugriffsrechte, tägliche Sicherung</span><span class="meta">Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse an einem sicheren, ausfallfreien Betrieb; Art. 32 DSGVO</span></div>
   <div><b>Ausliefern der App-Seiten</b><span>IP-Adresse beim Abruf</span><span class="meta">Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse an der technischen Bereitstellung</span></div>
 </div>
 <p>Werbung, Profilbildung oder Auswertung des Nutzungsverhaltens gibt es in der App nicht.</p>
@@ -96,7 +96,7 @@ address { font-style: normal; margin: 0 0 12px; padding: 12px 14px; border: 1px 
 <div class="tab">
   <div><b>Supabase Pte. Ltd.</b><span>65 Chulia Street #38-02/03, OCBC Centre, Singapur 049513</span><span>Anmeldung, Datenbank, Dateispeicher, Versand der Benachrichtigungen</span><span class="meta">Daten: alle in Abschnitt 2 genannten · Ort: Server in Frankfurt am Main (EU)</span></div>
   <div><b>Kilmulis Design mit Hetzner Online GmbH</b><span>Industriestr. 25, 91710 Gunzenhausen</span><span>E-Mail-Postfach, über das die Anmelde-Codes verschickt werden</span><span class="meta">Daten: E-Mail-Adresse, Code · Ort: Deutschland</span></div>
-  <div><b>GitHub, Inc. (USA)</b><span>Ausliefern der App-Seiten, Schriften und Programmbibliotheken; wöchentliche Sicherung der Datenbank, verschlüsselt in einem privaten Repository</span><span class="meta">Daten: beim Abruf IP-Adresse und Browserkennung; die Sicherung kann GitHub nicht lesen · Ort: USA</span></div>
+  <div><b>GitHub, Inc. (USA)</b><span>Ausliefern der App-Seiten, Schriften und Programmbibliotheken; tägliche Sicherung der Datenbank und der hochgeladenen Dateien, verschlüsselt in einem privaten Repository</span><span class="meta">Daten: beim Abruf IP-Adresse und Browserkennung; die Sicherung kann GitHub nicht lesen · Ort: USA</span></div>
 </div>
 <p>Wenn Sie Benachrichtigungen einschalten, stellt der Push-Dienst Ihres Geräts bzw. Browsers (Apple, Google oder Mozilla) sie zu. Dieser Dienst arbeitet nicht in unserem Auftrag, sondern gehört zu Ihrem Gerät bzw. Browser; es gelten die Datenschutzbestimmungen des jeweiligen Anbieters. Er erhält die Zustelladresse Ihres Geräts, der Inhalt der Nachricht ist Ende-zu-Ende verschlüsselt. Der Dienst kann auch außerhalb der EU sitzen.</p>
 <p>Innerhalb des Ensembles sehen Mitglieder Daten nur im Umfang der Übersicht in Abschnitt 2.</p>
@@ -114,7 +114,7 @@ address { font-style: normal; margin: 0 0 12px; padding: 12px 14px; border: 1px 
   <div><b>Anmeldesitzungen (mit IP-Adresse und Browserkennung)</b><span>bis Sie sich abmelden oder Ihr Konto gelöscht wird</span></div>
   <div><b>Technische Protokolle bei Supabase</b><span>1 Tag</span></div>
   <div><b>Push-Geräte</b><span>bis Sie Benachrichtigungen ausschalten oder das Gerät die Adresse ungültig macht</span></div>
-  <div><b>Wöchentliche Sicherung</b><span>90 Tage, danach automatisch gelöscht</span></div>
+  <div><b>Sicherung</b><span>tägliche Sicherung 30 Tage, Sonntags-Sicherung und Sicherung vor einer Löschung 90 Tage, danach automatisch gelöscht</span></div>
 </div>
 <p>Gelöschte Daten bleiben noch bis zu 90 Tage in der verschlüsselten Sicherung und sind danach endgültig entfernt.</p>
 <p>Unterlagen, die der Verein gesetzlich aufbewahren muss (etwa Abrechnungen und Buchhaltung), legt die Leitung keinem Projekt zu. Sie fallen deshalb nicht unter die Löschung nach Projektende und bleiben bis zum Ende der gesetzlichen Aufbewahrungsfrist gespeichert.</p>
@@ -135,7 +135,7 @@ address { font-style: normal; margin: 0 0 12px; padding: 12px 14px; border: 1px 
 <article lang="en" id="text-en" hidden>
 <p class="eyebrow">The Philharmonic Brass</p>
 <h1>Privacy Policy of the TPB App</h1>
-<p class="stand">Last updated: 3 November 2026 · In case of doubt, the German version applies.</p>
+<p class="stand">Last updated: 27 November 2026 · In case of doubt, the German version applies.</p>
 
 <h2>1. Who is responsible?</h2>
 <p>The controller responsible for processing your data in the TPB App is:</p>
@@ -161,7 +161,7 @@ address { font-style: normal; margin: 0 0 12px; padding: 12px 14px; border: 1px 
   <div><b>Organising rehearsals, concerts and travel</b><span>Account, sign-in, dates, confirmations, line-up, documents, read requests, stage plans</span><span class="meta">Art. 6(1)(b) GDPR – membership in or participation with the ensemble</span></div>
   <div><b>Push notifications</b><span class="meta">Art. 6(1)(a) GDPR – your consent by turning them on; can be withdrawn at any time under Infos or in your device settings</span></div>
   <div><b>Reminder about unread read requests after 7 days</b><span class="meta">Art. 6(1)(a) GDPR (only with notifications turned on)</span></div>
-  <div><b>Security</b><span>Sign-in log, access rights, weekly backup</span><span class="meta">Art. 6(1)(f) GDPR – legitimate interest in secure and reliable operation; Art. 32 GDPR</span></div>
+  <div><b>Security</b><span>Sign-in log, access rights, daily backup</span><span class="meta">Art. 6(1)(f) GDPR – legitimate interest in secure and reliable operation; Art. 32 GDPR</span></div>
   <div><b>Delivering the app pages</b><span>IP address when the pages are loaded</span><span class="meta">Art. 6(1)(f) GDPR – legitimate interest in technical provision</span></div>
 </div>
 <p>The app contains no advertising, no profiling and no analysis of user behaviour.</p>
@@ -171,7 +171,7 @@ address { font-style: normal; margin: 0 0 12px; padding: 12px 14px; border: 1px 
 <div class="tab">
   <div><b>Supabase Pte. Ltd.</b><span>65 Chulia Street #38-02/03, OCBC Centre, Singapore 049513</span><span>Sign-in, database, file storage, sending notifications</span><span class="meta">Data: everything listed in section 2 · Location: servers in Frankfurt am Main (EU)</span></div>
   <div><b>Kilmulis Design with Hetzner Online GmbH</b><span>Industriestr. 25, 91710 Gunzenhausen, Germany</span><span>Email mailbox used to send the sign-in codes</span><span class="meta">Data: email address, code · Location: Germany</span></div>
-  <div><b>GitHub, Inc. (USA)</b><span>Delivering the app pages, fonts and program libraries; weekly database backup, encrypted in a private repository</span><span class="meta">Data: IP address and browser identifier when loading; GitHub cannot read the backup · Location: USA</span></div>
+  <div><b>GitHub, Inc. (USA)</b><span>Delivering the app pages, fonts and program libraries; daily backup of the database and uploaded files, encrypted in a private repository</span><span class="meta">Data: IP address and browser identifier when loading; GitHub cannot read the backup · Location: USA</span></div>
 </div>
 <p>If you turn notifications on, they are delivered by the push service of your device or browser (Apple, Google or Mozilla). This service does not act on our behalf but is part of your device or browser; the provider’s own privacy terms apply. It receives your device’s delivery address; the content of the message is end-to-end encrypted. The service may be located outside the EU.</p>
 <p>Within the ensemble, members only see data to the extent described in section 2.</p>
@@ -189,7 +189,7 @@ address { font-style: normal; margin: 0 0 12px; padding: 12px 14px; border: 1px 
   <div><b>Sign-in sessions (with IP address and browser identifier)</b><span>Until you sign out or your account is deleted</span></div>
   <div><b>Technical logs at Supabase</b><span>1 day</span></div>
   <div><b>Push devices</b><span>Until you turn notifications off or the device invalidates the address</span></div>
-  <div><b>Weekly backup</b><span>90 days, then deleted automatically</span></div>
+  <div><b>Backup</b><span>daily backups 30 days, Sunday backups and backups made before a deletion 90 days, then deleted automatically</span></div>
 </div>
 <p>Deleted data remains in the encrypted backup for up to 90 days and is then removed permanently.</p>
 <p>Documents the association is legally required to keep (such as invoices and accounting records) are not assigned to a project by the management. They are therefore not deleted after the end of a project and are kept until the statutory retention period ends.</p>
