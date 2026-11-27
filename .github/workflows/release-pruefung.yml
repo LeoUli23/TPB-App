@@ -20,7 +20,7 @@ concurrency:
 jobs:
   pruefung:
     name: Release Prüfung
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # fest: ubuntu-latest ist seit Nov. 2026 Ubuntu 26.04, Playwright 1.56.1 hat dort kein Chromium
     timeout-minutes: 20
     env:
       TPB_BACKUP_LESEN: ${{ secrets.TPB_BACKUP_LESEN }}
